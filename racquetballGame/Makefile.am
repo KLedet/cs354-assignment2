@@ -1,12 +1,16 @@
-ACLOCAL_AMFLAGS= -I m4
-noinst_HEADERS= BaseApplication.h OgreBall.h
+noinst_HEADERS = BaseApplication.h OgreBall.h Ball.h Room.h
 
-bin_PROGRAMS= OgreApp
-OgreApp_CPPFLAGS= -I$(top_srcdir)
-OgreApp_SOURCES= BaseApplication.cpp OgreBall.cpp
-OgreApp_CXXFLAGS= -I/usr/include/OGRE -pthread $(OIS_CFLAGS)
-OgreApp_LDADD= -L/usr/lib/x86_64-linux-gnu/OGRE-1.9.0 -lOgreMain -lpthread $(OIS_LIBS)
-OgreApp_LDFLAGS= -lOgreOverlay -lboost_system
+## May want these at a later time: ControlListener.h GameObject.h OgreMotionState.h Overlay.h Player.h PlayerCamera.h PlayingField.h Simulator.h Wall.h
 
-EXTRA_DIST= buildit makeit
-AUTOMAKE_OPTIONS= foreign
+bin_PROGRAMS = OgreBall
+OgreBall_CPPFLAGS = -I$(top_srcdir)
+OgreBall_SOURCES = BaseApplication.cpp OgreBall.cpp
+
+## May want these at a later time: Ball.cpp ControlListener.cpp GameObject.cpp Overlay.cpp Player.cpp PlayerCamera.cpp PlayingField.cpp Simulator.cpp Wall.cpp
+
+OgreBall_CXXFLAGS = $(OGRE_CFLAGS) $(OIS_CFLAGS) $(bullet_CFLAGS)
+OgreBall_LDADD = $(OGRE_LIBS) $(OIS_LIBS) $(bullet_LIBS)
+OgreBall_LDFLAGS = -lOgreOverlay -lboost_system
+
+EXTRA_DIST = buildit makeit
+AUTOMAKE_OPTIONS = foreign
