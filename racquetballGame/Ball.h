@@ -15,5 +15,6 @@ class Ball {
     void move(const Ogre::FrameEvent& evt);
     Ogre::SceneNode* getNode() { return rootNode; }
     Ogre::Vector3 getPosition(){ return bPosition; }
+    void update(float elapsedTime);
     // void setRoom(Room * r) { room = r; }
 };

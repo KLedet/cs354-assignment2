@@ -106,7 +106,7 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_OgreBall_OBJECTS = OgreBall-BaseApplication.$(OBJEXT) \
-	OgreBall-OgreBall.$(OBJEXT)
+	OgreBall-OgreBall.$(OBJEXT) OgreBall-Simulator.$(OBJEXT)
 OgreBall_OBJECTS = $(am_OgreBall_OBJECTS)
 am__DEPENDENCIES_1 =
 OgreBall_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -333,9 +333,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_HEADERS = BaseApplication.h OgreBall.h Ball.h Room.h
+noinst_HEADERS = BaseApplication.h OgreBall.h Ball.h Room.h Simulator.h
 OgreBall_CPPFLAGS = -I$(top_srcdir)
-OgreBall_SOURCES = BaseApplication.cpp OgreBall.cpp
+OgreBall_SOURCES = BaseApplication.cpp OgreBall.cpp Simulator.cpp
 OgreBall_CXXFLAGS = $(OGRE_CFLAGS) $(OIS_CFLAGS) $(bullet_CFLAGS)
 OgreBall_LDADD = $(OGRE_LIBS) $(OIS_LIBS) $(bullet_LIBS)
 OgreBall_LDFLAGS = -lOgreOverlay -lboost_system
@@ -456,6 +456,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OgreBall-BaseApplication.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OgreBall-OgreBall.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OgreBall-Simulator.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -505,6 +506,20 @@ OgreBall-OgreBall.obj: OgreBall.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='OgreBall.cpp' object='OgreBall-OgreBall.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -c -o OgreBall-OgreBall.obj `if test -f 'OgreBall.cpp'; then $(CYGPATH_W) 'OgreBall.cpp'; else $(CYGPATH_W) '$(srcdir)/OgreBall.cpp'; fi`
+
+OgreBall-Simulator.o: Simulator.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -MT OgreBall-Simulator.o -MD -MP -MF $(DEPDIR)/OgreBall-Simulator.Tpo -c -o OgreBall-Simulator.o `test -f 'Simulator.cpp' || echo '$(srcdir)/'`Simulator.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/OgreBall-Simulator.Tpo $(DEPDIR)/OgreBall-Simulator.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Simulator.cpp' object='OgreBall-Simulator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -c -o OgreBall-Simulator.o `test -f 'Simulator.cpp' || echo '$(srcdir)/'`Simulator.cpp
+
+OgreBall-Simulator.obj: Simulator.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -MT OgreBall-Simulator.obj -MD -MP -MF $(DEPDIR)/OgreBall-Simulator.Tpo -c -o OgreBall-Simulator.obj `if test -f 'Simulator.cpp'; then $(CYGPATH_W) 'Simulator.cpp'; else $(CYGPATH_W) '$(srcdir)/Simulator.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/OgreBall-Simulator.Tpo $(DEPDIR)/OgreBall-Simulator.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Simulator.cpp' object='OgreBall-Simulator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -c -o OgreBall-Simulator.obj `if test -f 'Simulator.cpp'; then $(CYGPATH_W) 'Simulator.cpp'; else $(CYGPATH_W) '$(srcdir)/Simulator.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

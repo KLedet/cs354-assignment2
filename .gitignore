@@ -1,10 +1,11 @@
 racquetballGame/autom4te.cache/
 racquetballGame/Ogre.log
 racquetballGame/.deps/
-racquetballGame/OgreApp-BaseApplication.o
-racquetballGame/OgreApp-OgreBall.o
+racquetballGame/OgreBall-BaseApplication.o
+racquetballGame/OgreBall-OgreBall.o
 racquetballGame/Makefile
-racquetballGame/OgreApp
+racquetballGame/OgreBall
 racquetballGame/config.log
 racquetballGame/config.status
 racquetballGame/libtool
+racquetballGame/OgreBall-Simulator.o
