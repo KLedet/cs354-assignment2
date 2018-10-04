@@ -1,14 +1,19 @@
+#ifndef __Ball_h_
+#define __Ball_h_
+
 #include <Ogre.h>
+#include "GameObject.h"
 // #include "Room.h"
 
+//TODO: refactor using inheritance
 class Ball {
   protected:
-    Ogre::SceneNode* rootNode;
     Ogre::Real bRadius;
     Ogre::Vector3 bDirection;
     Ogre::Real bSpeed;
     Ogre::Vector3 bPosition;
-    // Room * room;
+    Ogre::SceneNode* rootNode;
+    
   public:
     Ball(Ogre::SceneManager* scnMgr);
     ~Ball();
@@ -16,5 +21,6 @@ class Ball {
     Ogre::SceneNode* getNode() { return rootNode; }
     Ogre::Vector3 getPosition(){ return bPosition; }
     void update(float elapsedTime);
-    // void setRoom(Room * r) { room = r; }
 };
+
+#endif

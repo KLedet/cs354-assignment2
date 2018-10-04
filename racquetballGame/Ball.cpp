@@ -21,13 +21,13 @@ Ball::Ball(Ogre::SceneManager* scnMgr) {
   // Randomly decide which direction ball will go
   Ogre::Real x_val = (Ogre::Real)(rand() % 8 + 1);
   if(rand() % 3 == 1)
-    x_val *= -1;
+	x_val *= -1;
   Ogre::Real y_val = (Ogre::Real)(rand() % 8 + 1);
   if(rand() % 3 == 1)
-    y_val *= -1;
+	y_val *= -1;
   Ogre::Real z_val = (Ogre::Real)(rand() % 8 + 1);
   if(rand() % 3 == 1)
-    z_val *= -1;
+	z_val *= -1;
 
   // Tell ball which direction to move
   bDirection = Ogre::Vector3(x_val, y_val, z_val);
@@ -38,30 +38,30 @@ Ball::Ball(Ogre::SceneManager* scnMgr) {
 
 void Ball::move(const Ogre::FrameEvent& evt){
 
-  // Move ball and check for collision where our room will be occupying
-  if(rootNode->getPosition().x < 250 && rootNode->getPosition().x > -250 
-    && rootNode->getPosition().y < 250 && rootNode->getPosition().y > -250
-    && rootNode->getPosition().z < 250 && rootNode->getPosition().z > -250)
-  {
-    rootNode->translate(bSpeed * evt.timeSinceLastFrame * bDirection);
-  }
-  if(rootNode->getPosition().x >= 250 || rootNode->getPosition().x <= -250)
-  {
-    bDirection.x *= -1;
-    rootNode->translate(bSpeed * evt.timeSinceLastFrame * bDirection);
-  }
-  if(rootNode->getPosition().y >= 250 || rootNode->getPosition().y <= -250)
-  {
-    bDirection.y *= -1;
-    rootNode->translate(bSpeed * evt.timeSinceLastFrame * bDirection);
-  }
-  if(rootNode->getPosition().z >= 250 || rootNode->getPosition().z <= -250)
-  {
-    bDirection.z *= -1;
-    rootNode->translate(bSpeed * evt.timeSinceLastFrame * bDirection);
-  }
+	  // Move ball and check for collision where our room will be occupying
+	if(rootNode->getPosition().x < 250 && rootNode->getPosition().x > -250 
+		&& rootNode->getPosition().y < 250 && rootNode->getPosition().y > -250
+		&& rootNode->getPosition().z < 250 && rootNode->getPosition().z > -250)
+	{
+		rootNode->translate(bSpeed * evt.timeSinceLastFrame * bDirection);
+	}
+	if(rootNode->getPosition().x >= 250 || rootNode->getPosition().x <= -250)
+	{
+		bDirection.x *= -1;
+		rootNode->translate(bSpeed * evt.timeSinceLastFrame * bDirection);
+	}
+	if(rootNode->getPosition().y >= 250 || rootNode->getPosition().y <= -250)
+	{
+		bDirection.y *= -1;
+		rootNode->translate(bSpeed * evt.timeSinceLastFrame * bDirection);
+	}
+	if(rootNode->getPosition().z >= 250 || rootNode->getPosition().z <= -250)
+	{
+		bDirection.z *= -1;
+		rootNode->translate(bSpeed * evt.timeSinceLastFrame * bDirection);
+	}
 
-  bPosition = rootNode->getPosition();
+	bPosition = rootNode->getPosition();
 }
 
 void Ball::update(float elapsedTime) {

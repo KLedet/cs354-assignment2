@@ -1,4 +1,4 @@
-noinst_HEADERS = BaseApplication.h OgreBall.h Ball.h Room.h Simulator.h
+noinst_HEADERS = BaseApplication.h OgreBall.h Ball.h Room.h Simulator.h GameObject.h
 
 ## May want these at a later time: ControlListener.h Overlay.h Player.h PlayerCamera.h PlayingField.h  Wall.h OgreMotionState.h GameObject.h
 
