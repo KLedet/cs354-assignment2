@@ -41,7 +41,7 @@ public:
 	GameObject(void); //TODO: params
 	~GameObject(void); //clean up components
 	btRigidBody* getBody(){return body;}
-
+	bool doUpdates(){return needsUpdates;}
 };
 
 #endif
