@@ -235,6 +235,9 @@ bool BaseApplication::setup(void)
     // Create the scene
     createScene();
 
+    // Create our physics simulator
+    createSimulator();
+
     createFrameListener();
 
     return true;
@@ -311,5 +314,10 @@ void BaseApplication::windowClosed(Ogre::RenderWindow* rw)
             mInputManager = 0;
         }
     }
+}
+//---------------------------------------------------------------------------
+void BaseApplication::createSimulator(void)
+{
+    mSim = new Simulator();
 }
 //---------------------------------------------------------------------------

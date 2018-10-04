@@ -63,10 +63,19 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     mMouse->capture();
     //input handled in device listeners
 
+
+    // Just have this for now so we can tell this function is being called
+    // repeatedly
+    mCamera->lookAt(ball->getPosition());
+    ball->move(fe);
+
     /*do physics step here?
 		calculate timestep
 		pass into Sim.stepsim
 	*/
+    float elapsedTime = 1.0;
+    mSim->stepSimulation(elapsedTime);
+    
     return true;
 }
 //---------------------------------------------------------------------------

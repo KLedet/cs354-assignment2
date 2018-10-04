@@ -30,6 +30,9 @@ http://www.ogre3d.org/wiki/
 #include <OgreWindowEventUtilities.h>
 #include <OgreFrameListener.h>
 #include <Overlay/OgreOverlaySystem.h>
+#include "Simulator.h"
+#include "GameObject.h"
+
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #  include <OIS/OISEvents.h>
@@ -89,6 +92,7 @@ protected:
     virtual void createResourceListener(void);
     virtual void loadResources(void);
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+    virtual void createSimulator(void);
 
     virtual bool keyPressed(const OIS::KeyEvent &arg);
     virtual bool keyReleased(const OIS::KeyEvent &arg);
@@ -117,6 +121,8 @@ protected:
     OIS::InputManager*          mInputManager;
     OIS::Mouse*                 mMouse;
     OIS::Keyboard*              mKeyboard;
+
+    Simulator*                  mSim;
 
     // Added for Mac compatibility
     Ogre::String                 m_ResourcePath;
