@@ -1,10 +1,10 @@
-noinst_HEADERS = BaseApplication.h OgreBall.h Ball.h Room.h Simulator.h GameObject.h GUI.h
+noinst_HEADERS = BaseApplication.h OgreBall.h Ball.h Room.h Simulator.h GameObject.h GUI.h Player.h 
 
 ## May want these at a later time: ControlListener.h Overlay.h Player.h PlayerCamera.h PlayingField.h  Wall.h OgreMotionState.h GameObject.h
 
 bin_PROGRAMS = OgreBall
 OgreBall_CPPFLAGS = -I$(top_srcdir)
-OgreBall_SOURCES = BaseApplication.cpp OgreBall.cpp Simulator.cpp GUI.cpp
+OgreBall_SOURCES = BaseApplication.cpp OgreBall.cpp Simulator.cpp GUI.cpp Ball.cpp GameObject.cpp Player.cpp 
 
 ## May want these at a later time: Ball.cpp ControlListener.cpp  Overlay.cpp Player.cpp PlayerCamera.cpp PlayingField.cpp  Wall.cpp GameObject.cpp
 

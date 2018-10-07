@@ -6,17 +6,18 @@
 // #include "Room.h"
 
 //TODO: refactor using inheritance
-class Ball :GameObject{
+class Ball : GameObject{
   protected:
     Ogre::Real bRadius;
     Ogre::Vector3 bDirection;
     Ogre::Real bSpeed;
     Ogre::SceneNode* rootNode;
+    Ogre::Vector3 bPosition;
     
   public:
     Ball(Ogre::SceneManager* scnMgr);
     ~Ball();
-    void update(btWorldTransform &worldTrans);
+    void update(btTransform &worldTrans);
     
 
     //not necessary

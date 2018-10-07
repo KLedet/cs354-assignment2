@@ -5,8 +5,10 @@
 
 class Player : GameObject{
 private:
-	btTransform mVelocity;
+	btVector3 mVelocity;
 public:
-	void input(btTransform &newVelocity);
-}
+	void input(btVector3 &newVelocity);
+	Player(void){}
+	~Player(void){}
+};
 #endif
