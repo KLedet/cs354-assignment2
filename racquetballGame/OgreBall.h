@@ -14,15 +14,20 @@ Filename:    OgreBall.h
 class OgreBall : public BaseApplication
 {
 public:
-	Player* player;
+
     OgreBall(void);
     virtual ~OgreBall(void);
 
 protected:
     virtual void createScene(void);
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& fe);
-    
+    bool OgreBall::keyPressed( const OIS::KeyEvent &arg );
+    bool OgreBall::keyReleased(const OIS::KeyEvent &arg);
+
+    Player* player;
+	Ball* ball;
 private:
+
   	virtual bool processUnbufferedInput(const Ogre::FrameEvent& fe);
 };
 
