@@ -8,5 +8,5 @@ private:
 	btTransform mVelocity;
 public:
 	void input(btTransform &newVelocity);
-}
+};
 #endif

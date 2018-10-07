@@ -12,12 +12,13 @@ class Ball :GameObject{
     Ogre::Vector3 bDirection;
     Ogre::Real bSpeed;
     Ogre::SceneNode* rootNode;
-    
+    Ogre::Vector3 bPosition;
+
   public:
     Ball(Ogre::SceneManager* scnMgr);
     ~Ball();
-    void update(btWorldTransform &worldTrans);
-    
+    void update(btTransform &worldTrans);
+
 
     //not necessary
     Ogre::SceneNode* getNode() { return rootNode; }

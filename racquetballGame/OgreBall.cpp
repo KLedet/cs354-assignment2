@@ -10,6 +10,7 @@ Filename:    OgreBall.cpp
 #include "GUI.cpp"
 
 Ball* ball;
+GUI* gui;
 
 //---------------------------------------------------------------------------
 OgreBall::OgreBall(void)
@@ -44,6 +45,9 @@ void OgreBall::createScene(void)
 	ball = new Ball(mSceneMgr);
 	player = new Player(); //TODO: add way to specify initial position and rotation in constructor
 	// Create GUI
+
+	gui = new GUI();
+
 
 	// Reposition camera
 	Ogre::Vector3 cam_position = Ogre::Vector3(ball->getPosition().x - 100, ball->getPosition().y, ball->getPosition().z);
