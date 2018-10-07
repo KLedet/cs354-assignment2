@@ -65,17 +65,3 @@ void Ball::move(const Ogre::FrameEvent& evt){
 	bPosition = rootNode->getPosition();
 }
 */
-void Ball::update(btWorldTranform &worldTrans) {
-	//move this into simulator? might actually be unnecessary if the dynamicsWorld already calculates this
-  // lastTime += elapsedTime;
-  // simulator->getWorld()->contactTest(body, *cCallBack);
-  // if (context->hit && (context->velNorm > 2.0 || context->velNorm < -2.0) 
-  //   && (lastTime > 0.5 || (context->lastBody != context->body && lastTime > 0.1))) {
-  //   //Handle the hit
-  //   lastTime = 0.0f;
-  // }
-  // context->hit = false;
-
-	//this method should update the objects position in the rendered scene using motionstates
-	motionState.setWorldTransform(worldTrans);
-}

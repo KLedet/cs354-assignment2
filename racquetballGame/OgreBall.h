@@ -8,12 +8,13 @@ Filename:    OgreBall.h
 #define __OgreBall_h_
 
 #include "BaseApplication.h"
-
+#include "Player.h"
 //---------------------------------------------------------------------------
 
 class OgreBall : public BaseApplication
 {
 public:
+	Player* player;
     OgreBall(void);
     virtual ~OgreBall(void);
 

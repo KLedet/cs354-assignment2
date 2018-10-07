@@ -42,9 +42,8 @@ void OgreBall::createScene(void)
 
 	// Create Ball
 	ball = new Ball(mSceneMgr);
-
+	player = new Player(); //TODO: add way to specify initial position and rotation in constructor
 	// Create GUI
-
 
 	// Reposition camera
 	Ogre::Vector3 cam_position = Ogre::Vector3(ball->getPosition().x - 100, ball->getPosition().y, ball->getPosition().z);
@@ -71,7 +70,8 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     // Just have this for now so we can tell this function is being called
     // repeatedly
     mCamera->lookAt(ball->getPosition());
-    ball->move(fe);
+
+    //update player velocity before physics stepsimulation
 
     /*do physics step here?
 		calculate timestep
@@ -89,13 +89,47 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
   if (arg.key == OIS::KC_ESCAPE) {
     mShutDown = true;
   }
-  else {
+  btTransform vel; //TODO: might need to be a btVector3 not sure
+  switch(arg.key){
+  	case OIS::KC_W:
+  		vel.y = 10.0;
+  		break;
+  	case OIS::KC_S:
+  		vel.y = -10.0;
+  		break;
+  	case OIS::KC_A:
+  		vel.x = 10.0;
+  		break;
+  	case OIS::KC_D:
+  		vel.x = -10.0;
+  		break;
+  	default:
+  		break;
   }
+  player->input(vel);
   return true;
 }
 //---------------------------------------------------------------------------
 bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
 {
+	btTransform vel;
+  switch(arg.key){
+  	case OIS::KC_W:
+  		vel.y = 0;
+  		break;
+  	case OIS::KC_S:
+  		vel.y = 0;
+  		break;
+  	case OIS::KC_A:
+  		vel.x =0;
+  		break;
+  	case OIS::KC_D:
+  		vel.x = 0;
+  		break;
+  	default:
+  		break;
+  }
+  player->input(vel); //TODO:: add a player* to the app
     return true;
 }
 

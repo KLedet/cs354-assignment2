@@ -21,6 +21,7 @@ public:
 	virtual void getWorldTransform(btTransform &worldTrans) const {
 		worldTrans = mPos1;
 	}
+
 	virtual void setWorldTransform(const btTransform &worldTrans) {
 		if (mVisibleobj == 0)
 			return; // silently return before we set a node

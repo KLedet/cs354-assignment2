@@ -2,8 +2,6 @@
 #define __GameObject_h_
 
 #include <Ogre.h>
-
-#include "Simulator.h"
 #include "OgreMotionState.h"
 
 class GameObject {
@@ -20,28 +18,30 @@ protected:
 	Ogre::SceneNode* rootNode;
 	Ogre::Entity* geom;*/
 	OgreMotionState* motionState;
-
-	btCollisionShape* shape;
 	btRigidBody* body;
+	
+	btCollisionShape* shape;
+	
 	btTransform tr;
 	btVector3 inertia;
 
 	btScalar mass;
 	btScalar restitution;
 	btScalar friction;
-	bool kinematic; 
+	bool isKinematic;  
 	bool needsUpdates;
 
 	CollisionContext* context;
 	BulletContactCallback* cCallBack;
 
-	//should be overriden by inherited classes
-	virtual void update();
+	
 public:
-	GameObject(void); //TODO: params
+	GameObject(void); //should be called in the initialization list
 	~GameObject(void); //clean up components
 	btRigidBody* getBody(){return body;}
 	bool doUpdates(){return needsUpdates;}
+	//should just synchronize world representations for renderer and phys engine
+	void update();
 };
 
 #endif
