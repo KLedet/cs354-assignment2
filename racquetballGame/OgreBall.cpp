@@ -7,6 +7,7 @@ Filename:    OgreBall.cpp
 #include "OgreBall.h"
 #include "Room.cpp"
 #include "Ball.cpp"
+#include "GUI.cpp"
 
 Ball* ball;
 
@@ -26,7 +27,7 @@ void OgreBall::createScene(void)
 
 	// Set ambient light
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
- 
+
 	// Create a diffuse light
 	Ogre::Light* l = mSceneMgr->createLight("MainLight");
 	l->setType(Ogre::Light::LT_POINT);
@@ -37,10 +38,13 @@ void OgreBall::createScene(void)
 	mSceneMgr->setSkyBox(true, "Examples/MorningSkyBox", 5000, false);
 
 	// Create Room
-	Room* room = new Room(mSceneMgr); 
+	Room* room = new Room(mSceneMgr);
 
 	// Create Ball
 	ball = new Ball(mSceneMgr);
+
+	// Create GUI
+
 
 	// Reposition camera
 	Ogre::Vector3 cam_position = Ogre::Vector3(ball->getPosition().x - 100, ball->getPosition().y, ball->getPosition().z);
@@ -75,7 +79,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 	*/
     float elapsedTime = 1.0;
     mSim->stepSimulation(elapsedTime);
-    
+
     return true;
 }
 //---------------------------------------------------------------------------
