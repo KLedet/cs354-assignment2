@@ -9,8 +9,10 @@ Filename:    OgreBall.cpp
 #include "Ball.cpp"
 #include "GUI.cpp"
 
+
 Ball* ball;
 GUI* gui;
+
 
 //---------------------------------------------------------------------------
 OgreBall::OgreBall(void)
