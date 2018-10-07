@@ -9,7 +9,7 @@ Simulator::Simulator() {
 												overlappingPairCache,
 												solver,
 												collisionConfiguration);
-												dynamicsWorld->setGravity(btVector3(0.0, -0.098, 0.0));
+	dynamicsWorld->setGravity(btVector3(0.0, -0.098, 0.0));
 	//Add collision shapes to reuse among rigid bodies
 }
 
@@ -22,6 +22,8 @@ void Simulator::addObject (GameObject* o) {
 void Simulator::stepSimulation(const Ogre::Real elapsedTime, int maxSubSteps, const Ogre::Real fixedTimestep) {
 	for (int i = 0; i != objList.size(); i++)
 		dynamicsWorld->stepSimulation(elapsedTime, maxSubSteps, fixedTimestep);
+	//handle collision here
+	//iterate through objects and update()
 	// for (unsigned int i = 0; i < objList.size(); i++)
 	//   if (objList[i]->gObject->doUpdates()) objList[i]->gObject->update(elapsedTime);
 }

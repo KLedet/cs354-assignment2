@@ -80,7 +80,22 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 }
 //---------------------------------------------------------------------------
 
+bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
+{
+  if (arg.key == OIS::KC_ESCAPE) {
+    mShutDown = true;
+  }
+  else {
+  }
+  return true;
+}
+//---------------------------------------------------------------------------
+bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
+{
+    return true;
+}
 
+/*
 //we can get rid of this and replace with device listeners
 bool OgreBall::processUnbufferedInput(const Ogre::FrameEvent& fe)
 {
@@ -113,7 +128,7 @@ bool OgreBall::processUnbufferedInput(const Ogre::FrameEvent& fe)
 	mouseDownLastFrame = leftMouseDown;
 
 	return true;
-}
+}*/
 //---------------------------------------------------------------------------
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32

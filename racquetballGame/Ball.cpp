@@ -36,6 +36,7 @@ Ball::Ball(Ogre::SceneManager* scnMgr) {
   bPosition = rootNode->getPosition();
 }
 
+/* replace with physics
 void Ball::move(const Ogre::FrameEvent& evt){
 
 	  // Move ball and check for collision where our room will be occupying
@@ -63,8 +64,9 @@ void Ball::move(const Ogre::FrameEvent& evt){
 
 	bPosition = rootNode->getPosition();
 }
-
-void Ball::update(float elapsedTime) {
+*/
+void Ball::update(btWorldTranform &worldTrans) {
+	//move this into simulator? might actually be unnecessary if the dynamicsWorld already calculates this
   // lastTime += elapsedTime;
   // simulator->getWorld()->contactTest(body, *cCallBack);
   // if (context->hit && (context->velNorm > 2.0 || context->velNorm < -2.0) 
@@ -73,4 +75,7 @@ void Ball::update(float elapsedTime) {
   //   lastTime = 0.0f;
   // }
   // context->hit = false;
+
+	//this method should update the objects position in the rendered scene using motionstates
+	motionState.setWorldTransform(worldTrans);
 }
