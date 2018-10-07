@@ -1,4 +1,5 @@
 #include "Simulator.h"
+#include "GameObject.h"
 
 Simulator::Simulator() {
 	collisionConfiguration = new btDefaultCollisionConfiguration();

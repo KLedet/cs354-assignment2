@@ -4,7 +4,7 @@
 #include <Ogre.h>
 #include <OgreMotionState.h>
 
-#include "GameObject.h"
+class GameObject;
 
 class Simulator {
 

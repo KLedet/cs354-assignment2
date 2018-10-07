@@ -6,7 +6,7 @@
 // #include "Room.h"
 
 //TODO: refactor using inheritance
-class Ball :GameObject{
+class Ball : GameObject{
   protected:
     Ogre::Real bRadius;
     Ogre::Vector3 bDirection;

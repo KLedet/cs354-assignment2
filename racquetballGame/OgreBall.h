@@ -9,26 +9,25 @@ Filename:    OgreBall.h
 
 #include "BaseApplication.h"
 #include "Player.h"
+#include "Ball.h"
 //---------------------------------------------------------------------------
 
 class OgreBall : public BaseApplication
 {
-public:
 
+
+public:
+	Player* player;
+	Ball* ball;
     OgreBall(void);
     virtual ~OgreBall(void);
 
 protected:
     virtual void createScene(void);
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& fe);
-    bool OgreBall::keyPressed( const OIS::KeyEvent &arg );
-    bool OgreBall::keyReleased(const OIS::KeyEvent &arg);
+    bool keyPressed( const OIS::KeyEvent &arg );
+    bool keyReleased(const OIS::KeyEvent &arg);
 
-    Player* player;
-	Ball* ball;
-private:
-
-  	virtual bool processUnbufferedInput(const Ogre::FrameEvent& fe);
 };
 
 //---------------------------------------------------------------------------

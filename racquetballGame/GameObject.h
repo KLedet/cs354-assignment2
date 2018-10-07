@@ -3,13 +3,13 @@
 
 #include <Ogre.h>
 #include "OgreMotionState.h"
+#include "Simulator.h"
 
 class GameObject {
 protected:
 
 	/*TODO: 
 		constructor/destructor
-		switch to component architecture?
 
 	*/
 	Ogre::String name;
@@ -36,12 +36,18 @@ protected:
 
 	
 public:
+
+	//TODO:
+	//set initial position
+	//initialize rigid body
 	GameObject(void); //should be called in the initialization list
 	~GameObject(void); //clean up components
+	//void init(btVector3 &initPos);
 	btRigidBody* getBody(){return body;}
 	bool doUpdates(){return needsUpdates;}
 	//should just synchronize world representations for renderer and phys engine
-	void update();
+	void update(btTransform &worldTrans);
+	void addToSimulator(Simulator* simulator);
 };
 
 #endif

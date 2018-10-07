@@ -6,7 +6,6 @@ Filename:    OgreBall.cpp
 
 #include "OgreBall.h"
 #include "Room.cpp"
-#include "Ball.cpp"
 #include "GUI.cpp"
 
 
@@ -95,19 +94,19 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
   if (arg.key == OIS::KC_ESCAPE) {
     mShutDown = true;
   }
-  btTransform vel; //TODO: might need to be a btVector3 not sure
+  btVector3 vel; //TODO: might need to be a btVector3 not sure
   switch(arg.key){
   	case OIS::KC_W:
-  		vel.y = 10.0;
+  		vel.setY(10.0);
   		break;
   	case OIS::KC_S:
-  		vel.y = -10.0;
+  		vel.setY(-10.0);
   		break;
   	case OIS::KC_A:
-  		vel.x = 10.0;
+  		vel.setX(10.0);
   		break;
   	case OIS::KC_D:
-  		vel.x = -10.0;
+  		vel.setX(10.0);
   		break;
   	default:
   		break;
@@ -118,19 +117,19 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
 //---------------------------------------------------------------------------
 bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
 {
-	btTransform vel;
+	btVector3 vel;
   switch(arg.key){
   	case OIS::KC_W:
-  		vel.y = 0;
+  		vel.setY(0);
   		break;
   	case OIS::KC_S:
-  		vel.y = 0;
+  		vel.setY(0);
   		break;
   	case OIS::KC_A:
-  		vel.x =0;
+  		vel.setX(0);
   		break;
   	case OIS::KC_D:
-  		vel.x = 0;
+  		vel.setX(0);  		
   		break;
   	default:
   		break;
@@ -139,40 +138,7 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
     return true;
 }
 
-/*
-//we can get rid of this and replace with device listeners
-bool OgreBall::processUnbufferedInput(const Ogre::FrameEvent& fe)
-{
-	// Set up variables for camera and light
-	static bool mouseDownLastFrame = false;
-	static Ogre::Real toggleTimer = 0.0;
-	static Ogre::Real rotate = .13;
-	static Ogre::Real move = 250;
-	Ogre::Real speed = 100;
-	Ogre::Vector3 dir = mCamera->getDirection();
-	dir.normalise();
 
-	// See if mouse has been pressed down
-	bool leftMouseDown = mMouse->getMouseState().buttonDown(OIS::MB_Left);
-
-	// Camera controls
-	if(mKeyboard->isKeyDown(OIS::KC_W))
-		mCamera->move( dir * speed * fe.timeSinceLastFrame );
-
-	if(mKeyboard->isKeyDown(OIS::KC_S))
-		mCamera->move( -1 * dir * speed * fe.timeSinceLastFrame );
-
-	// Turn light on and off
-	if (leftMouseDown && !mouseDownLastFrame)
-	{
-	  Ogre::Light* light = mSceneMgr->getLight("MainLight");
-	  light->setVisible(!light->isVisible());
-	}
-
-	mouseDownLastFrame = leftMouseDown;
-
-	return true;
-}*/
 //---------------------------------------------------------------------------
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
