@@ -76,7 +76,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 		calculate timestep
 		pass into Sim.stepsim
 	*/
-    float elapsedTime = 1.0;
+    const Ogre::Real elapsedTime = 1.0f/60.0f;
     mSim->stepSimulation(elapsedTime);
 
     return true;
@@ -88,7 +88,7 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
   if (arg.key == OIS::KC_ESCAPE) {
     mShutDown = true;
   }
-  btVector3 vel; //TODO: might need to be a btVector3 not sure
+  btVector3 vel = btVector3(0,0,0); //TODO: might need to be a btVector3 not sure
   switch(arg.key){
   	case OIS::KC_W:
   		vel.setY(10.0);
