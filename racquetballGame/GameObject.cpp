@@ -10,7 +10,7 @@ GameObject::GameObject(void) :
 	mass(1),
 	friction(0),
 	restitution(1),
-	isKinematic(true)
+	isKinematic(false)
 	{
 	//construct motionState
 }

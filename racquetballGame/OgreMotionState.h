@@ -27,9 +27,9 @@ public:
 			return; // silently return before we set a node
 
 		btQuaternion rot = worldTrans.getRotation();
-		mVisibleobj->setOrientation(rot.w(), rot.x(), rot.y(), rot.z());
+		mVisibleobj->setOrientation(Ogre::Quaternion(rot.w(), rot.x(), rot.y(), rot.z()));
 		btVector3 pos = worldTrans.getOrigin();
-		mVisibleobj->setPosition(pos.x(), pos.y(), pos.z());
+		mVisibleobj->setPosition(Ogre::Vector3(pos.x(), pos.y(), pos.z()));
 	}
 }; 
 
