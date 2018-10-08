@@ -32,6 +32,7 @@ void Simulator::stepSimulation(const Ogre::Real elapsedTime, int maxSubSteps, co
 	//iterate through objects and update()
 	// for (unsigned int i = 0; i < objList.size(); i++)
 	//   if (objList[i]->gObject->doUpdates()) objList[i]->gObject->update(elapsedTime);
+	//
 	for (unsigned int i = 0; i < objList.size(); i++) {
 		btVector3 pos = objList[i]->getBody()->getCenterOfMassPosition();
 		printf("%f: (%f, %f, %f)\n", i, pos.x(), pos.y(), pos.z());

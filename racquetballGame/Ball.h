@@ -13,12 +13,12 @@ class Ball : GameObject{
     Ogre::Real bSpeed;
     Ogre::SceneNode* rootNode;
     Ogre::Vector3 bPosition;
-    
+
   public:
     Ball(Ogre::SceneManager* scnMgr, Simulator* sim);
     ~Ball();
     void update(btTransform &worldTrans);
-    
+
 
     //not necessary
     Ogre::SceneNode* getNode() { return rootNode; }
