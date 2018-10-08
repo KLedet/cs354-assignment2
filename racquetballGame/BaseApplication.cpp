@@ -232,11 +232,11 @@ bool BaseApplication::setup(void)
     // Load resources
     loadResources();
 
-    // Create the scene
-    createScene();
-
     // Create our physics simulator
     createSimulator();
+    
+    // Create the scene
+    createScene();
 
     createFrameListener();
 

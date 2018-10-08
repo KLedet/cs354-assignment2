@@ -40,12 +40,12 @@ void OgreBall::createScene(void)
 	Room* room = new Room(mSceneMgr);
 
 	// Create Ball
-	ball = new Ball(mSceneMgr);
-	player = new Player(); //TODO: add way to specify initial position and rotation in constructor
+	ball = new Ball(mSceneMgr, mSim);
+	 //TODO: add way to specify initial position and rotation in constructor
 	// Create GUI
 
 	// Reposition camera
-	Ogre::Vector3 cam_position = Ogre::Vector3(ball->getPosition().x - 100, ball->getPosition().y, ball->getPosition().z);
+	Ogre::Vector3 cam_position = Ogre::Vector3(0, 0, 500);
 	mCamera->setPosition(cam_position);
 }
 
@@ -88,7 +88,7 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
   if (arg.key == OIS::KC_ESCAPE) {
     mShutDown = true;
   }
-  btVector3 vel; //TODO: might need to be a btVector3 not sure
+  btVector3 vel = btVector3(0,0,0); //TODO: might need to be a btVector3 not sure
   switch(arg.key){
   	case OIS::KC_W:
   		vel.setY(10.0);
@@ -105,13 +105,13 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
   	default:
   		break;
   }
-  player->input(vel);
+  //player->input(vel);
   return true;
 }
 //---------------------------------------------------------------------------
 bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
 {
-	btVector3 vel;
+	btVector3 vel = btVector3(0,0,0);
   switch(arg.key){
   	case OIS::KC_W:
   		vel.setY(0);
@@ -128,7 +128,7 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
   	default:
   		break;
   }
-  player->input(vel); //TODO:: add a player* to the app
+  //player->input(vel); //TODO:: add a player* to the app
     return true;
 }
 

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "Ball.h"
 
-Ball::Ball(Ogre::SceneManager* scnMgr) {
+Ball::Ball(Ogre::SceneManager* scnMgr, Simulator* sim) {
 
   // Get a new seed for rand() each time
   srand(time(0));
@@ -17,8 +17,10 @@ Ball::Ball(Ogre::SceneManager* scnMgr) {
   rootNode->scale(0.1f,0.1f,0.1f);
   bRadius = 10.0f;
 
-
+  this->init(btVector3(0,0,0), rootNode);
+  sim->addObject(this);
   // Randomly decide which direction ball will go
+  /*
   Ogre::Real x_val = (Ogre::Real)(rand() % 8 + 1);
   if(rand() % 3 == 1)
 	x_val *= -1;
@@ -34,6 +36,8 @@ Ball::Ball(Ogre::SceneManager* scnMgr) {
   bDirection.normalise();
   bSpeed = (Ogre::Real)(rand() % 200 + 100);
   bPosition = rootNode->getPosition();
+  */
+
 }
 
 /* replace with physics

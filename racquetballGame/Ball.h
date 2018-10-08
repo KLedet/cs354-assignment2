@@ -15,7 +15,7 @@ class Ball : GameObject{
     Ogre::Vector3 bPosition;
     
   public:
-    Ball(Ogre::SceneManager* scnMgr);
+    Ball(Ogre::SceneManager* scnMgr, Simulator* sim);
     ~Ball();
     void update(btTransform &worldTrans);
     

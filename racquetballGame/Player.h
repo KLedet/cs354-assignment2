@@ -4,6 +4,8 @@
 #include "GameObject.h"
 
 class Player : GameObject{
+
+	//TODO: attach the camera to the player
 private:
 	btVector3 mVelocity;
 public:
