@@ -40,18 +40,19 @@ void OgreBall::createScene(void)
 	mSceneMgr->setSkyBox(true, "Examples/MorningSkyBox", 5000, false);
 
 	// Create Room
-	Room* room = new Room(mSceneMgr);
+	Room* room = new Room(mSceneMgr, mSim);
 
 	// Create Ball
 	ball = new Ball(mSceneMgr, mSim);
 	 //TODO: add way to specify initial position and rotation in constructor
 	// Create GUI
+  player = new Player(mSceneMgr, mSim);
 
 	gui = new GUI();
 
 
 	// Reposition camera
-	Ogre::Vector3 cam_position = Ogre::Vector3(0, 0, 500);
+	Ogre::Vector3 cam_position = Ogre::Vector3(0, 0, 1000);
 	mCamera->setPosition(cam_position);
 }
 
@@ -86,7 +87,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 	*/
 
 		gui->injectTimestamps(fe);
-    const Ogre::Real elapsedTime = 1.0f/60.0f;
+    const Ogre::Real elapsedTime = fe.timeSinceLastFrame;
 
     mSim->stepSimulation(elapsedTime);
 
@@ -106,22 +107,23 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
   btVector3 vel = btVector3(0,0,0); //TODO: might need to be a btVector3 not sure
 
   switch(arg.key){
-  	case OIS::KC_W:
+  	/*case OIS::KC_W:
   		vel.setY(10.0);
   		break;
   	case OIS::KC_S:
   		vel.setY(-10.0);
-  		break;
+  		break;*/
   	case OIS::KC_A:
-  		vel.setX(10.0);
+  		vel.setX(-1.0);
   		break;
   	case OIS::KC_D:
-  		vel.setX(10.0);
+  		vel.setX(1.0);
   		break;
   	default:
   		break;
   }
-  //player->input(vel);
+  printf("%f %f %f\n", vel.x(), vel.y(), vel.z());
+  player->input(vel);
   return true;
 }
 //---------------------------------------------------------------------------
@@ -147,7 +149,7 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
   	default:
   		break;
   }
-  //player->input(vel); //TODO:: add a player* to the app
+  player->input(vel); //TODO:: add a player* to the app
     return true;
 }
 

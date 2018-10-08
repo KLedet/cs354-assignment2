@@ -9,8 +9,9 @@ class Player : GameObject{
 private:
 	btVector3 mVelocity;
 public:
-	void input(btVector3 &newVelocity);
-	Player(void){}
+	void input(btVector3 newVelocity);
+	Player(Ogre::SceneManager* scnMgr, Simulator* sim);
 	~Player(void){}
+	void update(Ogre::Real elapsedTime);
 };
 #endif

@@ -25,7 +25,7 @@ public:
 	virtual void setWorldTransform(const btTransform &worldTrans) {
 		if (mVisibleobj == 0)
 			return; // silently return before we set a node
-
+		mPos1 = worldTrans;
 		btQuaternion rot = worldTrans.getRotation();
 		mVisibleobj->setOrientation(Ogre::Quaternion(rot.w(), rot.x(), rot.y(), rot.z()));
 		btVector3 pos = worldTrans.getOrigin();
