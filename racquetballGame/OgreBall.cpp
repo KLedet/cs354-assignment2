@@ -6,7 +6,7 @@ Filename:    OgreBall.cpp
 
 #include "OgreBall.h"
 #include "Room.cpp"
-#include "GUI.cpp"
+#include "GUI.h"
 
 
 Ball* ball;
@@ -55,6 +55,8 @@ void OgreBall::createScene(void)
 	mCamera->setPosition(cam_position);
 }
 
+
+
 //---------------------------------------------------------------------------
 bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 {
@@ -82,6 +84,8 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 		calculate timestep
 		pass into Sim.stepsim
 	*/
+		gui->injectTimestamps(fe);
+
     float elapsedTime = 1.0;
     mSim->stepSimulation(elapsedTime);
 
@@ -94,6 +98,9 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
   if (arg.key == OIS::KC_ESCAPE) {
     mShutDown = true;
   }
+	//Inject input into the GUI
+	gui->injectDownInput(arg);
+
   btVector3 vel; //TODO: might need to be a btVector3 not sure
   switch(arg.key){
   	case OIS::KC_W:
@@ -117,6 +124,7 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
 //---------------------------------------------------------------------------
 bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
 {
+	gui->injectUpInput(arg);
 	btVector3 vel;
   switch(arg.key){
   	case OIS::KC_W:
@@ -129,7 +137,7 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
   		vel.setX(0);
   		break;
   	case OIS::KC_D:
-  		vel.setX(0);  		
+  		vel.setX(0);
   		break;
   	default:
   		break;
@@ -140,6 +148,21 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
 
 
 //---------------------------------------------------------------------------
+
+bool OgreBall::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
+	gui->injectMouseDownInput(id);
+	return true;
+}
+
+bool OgreBall::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
+	gui->injectMouseUpInput(id);
+	return true;
+}
+
+bool OgreBall::mouseMoved(const OIS::MouseEvent &arg){
+	gui->injectMouseMovement(arg);
+	return true;
+}
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN

@@ -107,7 +107,8 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_OgreBall_OBJECTS = OgreBall-BaseApplication.$(OBJEXT) \
 	OgreBall-OgreBall.$(OBJEXT) OgreBall-Simulator.$(OBJEXT) \
-	OgreBall-GUI.$(OBJEXT)
+	OgreBall-GUI.$(OBJEXT) OgreBall-Ball.$(OBJEXT) \
+	OgreBall-GameObject.$(OBJEXT) OgreBall-Player.$(OBJEXT)
 OgreBall_OBJECTS = $(am_OgreBall_OBJECTS)
 am__DEPENDENCIES_1 =
 OgreBall_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -338,9 +339,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_HEADERS = BaseApplication.h OgreBall.h Ball.h Room.h Simulator.h GameObject.h GUI.h
+noinst_HEADERS = BaseApplication.h OgreBall.h Ball.h Room.h Simulator.h GameObject.h GUI.h Player.h 
 OgreBall_CPPFLAGS = -I$(top_srcdir)
-OgreBall_SOURCES = BaseApplication.cpp OgreBall.cpp Simulator.cpp GUI.cpp
+OgreBall_SOURCES = BaseApplication.cpp OgreBall.cpp Simulator.cpp GUI.cpp Ball.cpp GameObject.cpp Player.cpp 
 OgreBall_CXXFLAGS = $(OGRE_CFLAGS) $(OIS_CFLAGS) $(bullet_CFLAGS) -I/lusr/opt/cegui-0.8.7/include/cegui-0
 OgreBall_LDADD = $(OGRE_LIBS) $(OIS_LIBS) $(bullet_LIBS) -L/lusr/opt/cegui-0.8.7/lib -lCEGUIBase-0 -lCEGUIOgreRenderer-0
 OgreBall_LDFLAGS = -lOgreOverlay -lboost_system -R/lusr/lib/cegui-0.8
@@ -459,9 +460,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OgreBall-Ball.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OgreBall-BaseApplication.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OgreBall-GUI.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OgreBall-GameObject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OgreBall-OgreBall.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OgreBall-Player.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OgreBall-Simulator.Po@am__quote@
 
 .cpp.o:
@@ -540,6 +544,48 @@ OgreBall-GUI.obj: GUI.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GUI.cpp' object='OgreBall-GUI.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -c -o OgreBall-GUI.obj `if test -f 'GUI.cpp'; then $(CYGPATH_W) 'GUI.cpp'; else $(CYGPATH_W) '$(srcdir)/GUI.cpp'; fi`
+
+OgreBall-Ball.o: Ball.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -MT OgreBall-Ball.o -MD -MP -MF $(DEPDIR)/OgreBall-Ball.Tpo -c -o OgreBall-Ball.o `test -f 'Ball.cpp' || echo '$(srcdir)/'`Ball.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/OgreBall-Ball.Tpo $(DEPDIR)/OgreBall-Ball.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Ball.cpp' object='OgreBall-Ball.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -c -o OgreBall-Ball.o `test -f 'Ball.cpp' || echo '$(srcdir)/'`Ball.cpp
+
+OgreBall-Ball.obj: Ball.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -MT OgreBall-Ball.obj -MD -MP -MF $(DEPDIR)/OgreBall-Ball.Tpo -c -o OgreBall-Ball.obj `if test -f 'Ball.cpp'; then $(CYGPATH_W) 'Ball.cpp'; else $(CYGPATH_W) '$(srcdir)/Ball.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/OgreBall-Ball.Tpo $(DEPDIR)/OgreBall-Ball.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Ball.cpp' object='OgreBall-Ball.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -c -o OgreBall-Ball.obj `if test -f 'Ball.cpp'; then $(CYGPATH_W) 'Ball.cpp'; else $(CYGPATH_W) '$(srcdir)/Ball.cpp'; fi`
+
+OgreBall-GameObject.o: GameObject.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -MT OgreBall-GameObject.o -MD -MP -MF $(DEPDIR)/OgreBall-GameObject.Tpo -c -o OgreBall-GameObject.o `test -f 'GameObject.cpp' || echo '$(srcdir)/'`GameObject.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/OgreBall-GameObject.Tpo $(DEPDIR)/OgreBall-GameObject.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GameObject.cpp' object='OgreBall-GameObject.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -c -o OgreBall-GameObject.o `test -f 'GameObject.cpp' || echo '$(srcdir)/'`GameObject.cpp
+
+OgreBall-GameObject.obj: GameObject.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -MT OgreBall-GameObject.obj -MD -MP -MF $(DEPDIR)/OgreBall-GameObject.Tpo -c -o OgreBall-GameObject.obj `if test -f 'GameObject.cpp'; then $(CYGPATH_W) 'GameObject.cpp'; else $(CYGPATH_W) '$(srcdir)/GameObject.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/OgreBall-GameObject.Tpo $(DEPDIR)/OgreBall-GameObject.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GameObject.cpp' object='OgreBall-GameObject.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -c -o OgreBall-GameObject.obj `if test -f 'GameObject.cpp'; then $(CYGPATH_W) 'GameObject.cpp'; else $(CYGPATH_W) '$(srcdir)/GameObject.cpp'; fi`
+
+OgreBall-Player.o: Player.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -MT OgreBall-Player.o -MD -MP -MF $(DEPDIR)/OgreBall-Player.Tpo -c -o OgreBall-Player.o `test -f 'Player.cpp' || echo '$(srcdir)/'`Player.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/OgreBall-Player.Tpo $(DEPDIR)/OgreBall-Player.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Player.cpp' object='OgreBall-Player.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -c -o OgreBall-Player.o `test -f 'Player.cpp' || echo '$(srcdir)/'`Player.cpp
+
+OgreBall-Player.obj: Player.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -MT OgreBall-Player.obj -MD -MP -MF $(DEPDIR)/OgreBall-Player.Tpo -c -o OgreBall-Player.obj `if test -f 'Player.cpp'; then $(CYGPATH_W) 'Player.cpp'; else $(CYGPATH_W) '$(srcdir)/Player.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/OgreBall-Player.Tpo $(DEPDIR)/OgreBall-Player.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='Player.cpp' object='OgreBall-Player.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(OgreBall_CPPFLAGS) $(CPPFLAGS) $(OgreBall_CXXFLAGS) $(CXXFLAGS) -c -o OgreBall-Player.obj `if test -f 'Player.cpp'; then $(CYGPATH_W) 'Player.cpp'; else $(CYGPATH_W) '$(srcdir)/Player.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
