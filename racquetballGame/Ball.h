@@ -22,7 +22,7 @@ class Ball : GameObject{
 
     //not necessary
     Ogre::SceneNode* getNode() { return rootNode; }
-    Ogre::Vector3 getPosition(){ return bPosition; }
+    Ogre::Vector3 getPosition(){ return rootNode->getPosition(); }
     //void move(const Ogre::FrameEvent& evt);
 };
 

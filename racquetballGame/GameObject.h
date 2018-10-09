@@ -42,11 +42,13 @@ public:
 	//initialize rigid body
 	GameObject(void); //should be called in the initialization list
 	~GameObject(void); //clean up components
-	void init(btVector3 initPos, Ogre::SceneNode* node);
+	void init(Ogre::SceneNode* node);
 	btRigidBody* getBody(){return body;}
 	bool doUpdates(){return needsUpdates;}
 	//should just synchronize world representations for renderer and phys engine
-	void update(btTransform &worldTrans);
+	virtual void update(const Ogre::Real elapsedTime);
+
+	bool getIsKinematic(){ return isKinematic;}
 	
 };
 

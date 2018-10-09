@@ -14,10 +14,16 @@ Ball::Ball(Ogre::SceneManager* scnMgr, Simulator* sim) {
   ball->setCastShadows(true);
   rootNode = scnMgr->getRootSceneNode()->createChildSceneNode("Ball");
   rootNode->attachObject(ball);
-  rootNode->scale(0.1f,0.1f,0.1f);
+  rootNode->scale(0.2f,0.2f,0.2f);
   bRadius = 10.0f;
 
-  this->init(btVector3(0,0,0), rootNode);
+  	tr.setIdentity();
+	tr.setRotation(btQuaternion(1.0f, 1.0f, 1.0f, 0));
+	tr.setOrigin(btVector3(0,0,0));
+	shape = new btSphereShape(bRadius);
+  this->init(rootNode);
+  body->setLinearVelocity(btVector3(0, 0, -100));
+  
   sim->addObject(this);
   // Randomly decide which direction ball will go
   /*
