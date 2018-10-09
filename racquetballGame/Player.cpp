@@ -8,7 +8,7 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim){
 	Ogre::Entity* paddle = scnMgr->createEntity("cube.mesh");
   	paddle->setMaterialName("Examples/OgreLogo");
   	paddle->setCastShadows(true);
-  	Ogre::SceneNode* rootNode = scnMgr->getRootSceneNode()->createChildSceneNode("Cubo");
+  	rootNode = scnMgr->getRootSceneNode()->createChildSceneNode("Cubo");
   	rootNode->attachObject(paddle);
   	rootNode->scale(0.4f,0.2f,0.05f);
   	tr.setIdentity();
@@ -35,4 +35,3 @@ void Player::update(Ogre::Real elapsedTime){
 	trans.setOrigin(trans.getOrigin() + dist);
 	motionState->setWorldTransform(trans);
 }
-
