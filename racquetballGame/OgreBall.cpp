@@ -7,11 +7,11 @@ Filename:    OgreBall.cpp
 #include "OgreBall.h"
 #include "Room.cpp"
 #include "GUI.h"
+#include "Audio/src/audio.h"
 
 
 Ball* ball;
 GUI* gui;
-
 
 //---------------------------------------------------------------------------
 OgreBall::OgreBall(void)
@@ -104,7 +104,6 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
 	gui->injectDownInput(arg);
 
   btVector3 vel = btVector3(0,0,0); //TODO: might need to be a btVector3 not sure
-
   switch(arg.key){
   	case OIS::KC_W:
   		vel.setY(10.0);

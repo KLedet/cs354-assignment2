@@ -11,6 +11,10 @@ GUI::GUI(){
 
   CEGUI::SchemeManager::getSingleton().createFromFile( "TaharezLook.scheme" );
   CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
+
+  // Uncomment these lines if you want to view the test GUI window
+  /*CEGUI::Window *guiRoot = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("TextDemo.layout");
+  CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(guiRoot);*/
 }
 
 void GUI::injectTimestamps(const Ogre::FrameEvent& evt){
