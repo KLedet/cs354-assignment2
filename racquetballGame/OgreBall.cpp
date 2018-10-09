@@ -37,7 +37,7 @@ void OgreBall::createScene(void)
 	l->setDiffuseColour(Ogre::ColourValue::White);
 
 	// Add skybox
-	mSceneMgr->setSkyBox(true, "Examples/MorningSkyBox", 5000, false);
+	// mSceneMgr->setSkyBox(true, "Examples/MorningSkyBox", 5000, false);
 
 	// Create Room
 	Room* room = new Room(mSceneMgr, mSim);
@@ -52,7 +52,7 @@ void OgreBall::createScene(void)
 
 
 	// Reposition camera
-	Ogre::Vector3 cam_position = Ogre::Vector3(0, 0, 1000);
+	Ogre::Vector3 cam_position = Ogre::Vector3(0, 150,  750);
 	mCamera->setPosition(cam_position);
 }
 
@@ -106,12 +106,12 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
 
   btVector3 vel = btVector3(0,0,0); //TODO: might need to be a btVector3 not sure
   switch(arg.key){
-  	/*case OIS::KC_W:
-  		vel.setY(10.0);
+  	case OIS::KC_W:
+  		vel.setY(1.0);
   		break;
   	case OIS::KC_S:
-  		vel.setY(-10.0);
-  		break;*/
+  		vel.setY(-1.0);
+  		break;
   	case OIS::KC_A:
   		vel.setX(-1.0);
   		break;

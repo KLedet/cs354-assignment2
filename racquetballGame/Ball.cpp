@@ -22,7 +22,7 @@ Ball::Ball(Ogre::SceneManager* scnMgr, Simulator* sim) {
 	tr.setOrigin(btVector3(0,0,0));
 	shape = new btSphereShape(bRadius);
   this->init(rootNode);
-  body->setLinearVelocity(btVector3(0, 0, -100));
+  body->setLinearVelocity(btVector3(0, 200, -200));
   
   sim->addObject(this);
   // Randomly decide which direction ball will go

@@ -10,7 +10,7 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim){
   	paddle->setCastShadows(true);
   	rootNode = scnMgr->getRootSceneNode()->createChildSceneNode("Cubo");
   	rootNode->attachObject(paddle);
-  	rootNode->scale(0.4f,0.2f,0.05f);
+  	rootNode->scale(0.8f,0.4f,0.05f);
   	tr.setIdentity();
 	tr.setRotation(btQuaternion(0,0,0,1.0f));
 	tr.setOrigin(btVector3(10, 0, 0));
