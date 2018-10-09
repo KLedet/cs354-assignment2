@@ -15,6 +15,16 @@ GUI::GUI(){
   // Uncomment these lines if you want to view the test GUI window
   /*CEGUI::Window *guiRoot = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("TextDemo.layout");
   CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(guiRoot);*/
+
+  CEGUI::WindowManager &wmgr = CEGUI::WindowManager::getSingleton();
+  CEGUI::Window *sheet = wmgr.createWindow("DefaultWindow", "TopGUI/Sheet");
+
+  CEGUI::Window *scoreboard = wmgr.createWindow("TaharezLook/Button", "TopGUI/Scoreboard");
+  scoreboard->setText("0-0");
+  scoreboard->setSize(CEGUI::USize(CEGUI::UDim(0.15, 0), CEGUI::UDim(0.05, 0)));
+
+  sheet->addChild(scoreboard);
+  CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
 }
 
 void GUI::injectTimestamps(const Ogre::FrameEvent& evt){
