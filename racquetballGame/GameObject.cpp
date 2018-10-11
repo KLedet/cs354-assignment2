@@ -9,7 +9,7 @@ GameObject::GameObject(void) :
 	shape(0),
 	mass(1),
 	friction(0),
-	restitution(.8f),
+	restitution(0.9f),
 	isKinematic(false) {
 }
 

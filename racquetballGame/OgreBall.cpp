@@ -52,7 +52,7 @@ void OgreBall::createScene(void)
 
 
 	// Reposition camera
-	Ogre::Vector3 cam_position = Ogre::Vector3(0, 150,  750);
+	Ogre::Vector3 cam_position = Ogre::Vector3(0, 300,  750);
 	mCamera->setPosition(cam_position);
 }
 

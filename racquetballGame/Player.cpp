@@ -4,7 +4,7 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim){
 	mVelocity = btVector3(0,0,0);
 	isKinematic = true;
 	mass = 10.0f;
-	shape = new btBoxShape(btVector3(1.0f, 1.0f, 1.0f));
+	shape = new btBoxShape(btVector3(20.0f, 10.0f, 1.0f));
 	Ogre::Entity* paddle = scnMgr->createEntity("cube.mesh");
   	paddle->setMaterialName("Examples/OgreLogo");
   	paddle->setCastShadows(true);
@@ -13,7 +13,7 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim){
   	rootNode->scale(0.8f,0.4f,0.05f);
   	tr.setIdentity();
 	 tr.setRotation(btQuaternion(0,0,0,1.0f));
-	 tr.setOrigin(btVector3(10, 0, 0));
+	 tr.setOrigin(btVector3(0, 0, 150));
   	init(rootNode);
   	sim->addObject(this);
 }
