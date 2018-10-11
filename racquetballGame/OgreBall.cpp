@@ -121,8 +121,11 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
   	default:
   		break;
   }
-  printf("%f %f %f\n", vel.x(), vel.y(), vel.z());
-  player->input(vel);
+  if(vel != btVector3(0,0,0))
+    {
+      // printf("%f %f %f\n", vel.x(), vel.y(), vel.z());
+      player->input(vel);
+    }
   return true;
 }
 //---------------------------------------------------------------------------
@@ -135,20 +138,24 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
   switch(arg.key){
   	case OIS::KC_W:
   		vel.setY(0);
+        player->input(vel);
   		break;
   	case OIS::KC_S:
   		vel.setY(0);
+        player->input(vel);
   		break;
   	case OIS::KC_A:
   		vel.setX(0);
+        player->input(vel);
   		break;
   	case OIS::KC_D:
   		vel.setX(0);
+        player->input(vel);
   		break;
   	default:
   		break;
   }
-  player->input(vel); //TODO:: add a player* to the app
+   //TODO:: add a player* to the app
     return true;
 }
 
@@ -157,11 +164,13 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
 
 bool OgreBall::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 	gui->injectMouseDownInput(id);
+    player->swing();
 	return true;
 }
 
 bool OgreBall::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 	gui->injectMouseUpInput(id);
+    player->unswing();
 	return true;
 }
 

@@ -20,7 +20,7 @@ void Simulator::addObject (GameObject* o) {
 	objList.push_back(o);
 	dynamicsWorld->addRigidBody(o->getBody());
 	btVector3 pos = o->getBody()->getCenterOfMassPosition();
-	printf("(%f, %f, %f)\n", pos.x(), pos.y(), pos.z());
+	//printf("(%f, %f, %f)\n", pos.x(), pos.y(), pos.z());
 	
 }
 

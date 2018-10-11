@@ -14,6 +14,8 @@ public:
 	Player(Ogre::SceneManager* scnMgr, Simulator* sim);
 	~Player(void){}
 	void update(Ogre::Real elapsedTime);
+  void swing();
+  void unswing();
 	Ogre::Vector3 getPosition(){ return rootNode->getPosition(); };
 };
 #endif
