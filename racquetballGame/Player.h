@@ -3,19 +3,23 @@
 
 #include "GameObject.h"
 
-class Player : GameObject{
+class Player : public GameObject{
 
 	//TODO: attach the camera to the player
 private:
 	btVector3 mVelocity;
 	Ogre::SceneNode* rootNode;
+	btKinematicCharacterController* controller;
+	btDiscreteDynamicsWorld* collisionWorld;
 public:
 	void input(btVector3 newVelocity);
 	Player(Ogre::SceneManager* scnMgr, Simulator* sim);
 	~Player(void){}
+	void init(Ogre::SceneNode* node);
 	void update(Ogre::Real elapsedTime);
-  void swing();
-  void unswing();
-	Ogre::Vector3 getPosition(){ return rootNode->getPosition(); };
+	void swing();
+	void unswing();
+	Ogre::Vector3 getPosition(){ return rootNode->getPosition(); }
+	btKinematicCharacterController* getController(){ return controller;}
 };
 #endif

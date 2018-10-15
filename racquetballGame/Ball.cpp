@@ -24,6 +24,7 @@ Ball::Ball(Ogre::SceneManager* scnMgr, Simulator* sim) {
   this->init(rootNode);
   body->setLinearVelocity(btVector3(0, 200, -200));
   
+  needsUpdates = false;
   sim->addObject(this);
   // Randomly decide which direction ball will go
   /*

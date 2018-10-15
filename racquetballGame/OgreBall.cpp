@@ -33,7 +33,7 @@ void OgreBall::createScene(void)
 	// Create a diffuse light
 	Ogre::Light* l = mSceneMgr->createLight("MainLight");
 	l->setType(Ogre::Light::LT_POINT);
-	l->setPosition(20,80,50);
+	l->setPosition(0,500,50);
 	l->setDiffuseColour(Ogre::ColourValue::White);
 
 	// Add skybox

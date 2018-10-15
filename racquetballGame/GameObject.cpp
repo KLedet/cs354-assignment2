@@ -25,7 +25,8 @@ void GameObject::init(Ogre::SceneNode* node){
 	inertia = btVector3(0,0,0);
 	motionState = new OgreMotionState(startTransform, node);
 	motionState->setWorldTransform(startTransform);
-	if (mass != 0.0f) shape->calculateLocalInertia(mass, inertia);
+	if (mass != 0.0f) 
+		shape->calculateLocalInertia(mass, inertia);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, inertia);
 	rbInfo.m_restitution = restitution;
 	rbInfo.m_friction = friction;

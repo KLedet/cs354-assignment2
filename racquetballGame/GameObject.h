@@ -42,7 +42,7 @@ public:
 	//initialize rigid body
 	GameObject(void); //should be called in the initialization list
 	~GameObject(void); //clean up components
-	void init(Ogre::SceneNode* node);
+	virtual void init(Ogre::SceneNode* node);
 	btRigidBody* getBody(){return body;}
 	bool doUpdates(){return needsUpdates;}
 	//should just synchronize world representations for renderer and phys engine

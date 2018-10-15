@@ -4,7 +4,7 @@ Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaterni
 	// Set our texture for the walls
     std::string material_str = "Examples/BumpyMetal";
 
-	isKinematic = true;
+	isKinematic = false;
 	mass = 0;
 	
 
@@ -19,9 +19,13 @@ Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaterni
 	tr.setRotation(rot);
 	tr.setOrigin(pos);
     init(node);
-    
+    body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
     sim->addObject(this);
+    printf("WALL HAS COLLISION RESPONSE: ");
+    printf(body->hasContactResponse() ? "true\n" : "false\n");
+    needsUpdates = false;
 }
 
 Wall::~Wall(void){
 }
+

@@ -2,6 +2,10 @@
 #define __BulletContactCallback_h_
 
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
+#include <BulletDynamics/Character/btKinematicCharacterController.h>
+
+
 class GameObject;
 
 
