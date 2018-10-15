@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Audio/src/audio.h"
 
 Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim){
 
@@ -88,6 +89,7 @@ void Player::swing(){
 
   tr.setOrigin(body->getCenterOfMassPosition());
   tr.setRotation(quat);
+	playSound("Audio/sounds/whiff.wav", SDL_MIX_MAXVOLUME);
 }
 
 void Player::unswing(){

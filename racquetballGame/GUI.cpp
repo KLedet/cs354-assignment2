@@ -20,7 +20,7 @@ GUI::GUI(){
   CEGUI::Window *sheet = wmgr.createWindow("DefaultWindow", "TopGUI/Sheet");
 
   CEGUI::Window *scoreboard = wmgr.createWindow("TaharezLook/Button", "TopGUI/Scoreboard");
-  scoreboard->setText("0-0");
+  scoreboard->setText("Score: 0");
   scoreboard->setSize(CEGUI::USize(CEGUI::UDim(0.15, 0), CEGUI::UDim(0.05, 0)));
 
   sheet->addChild(scoreboard);

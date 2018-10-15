@@ -136,6 +136,12 @@ void pauseAudio(void);
  */
 void unpauseAudio(void);
 
+/*
+ * Toggle boolean-based audio muter
+ *
+ */
+void toggleAudioMute(void);
+
 #ifdef __cplusplus
 }
 #endif
