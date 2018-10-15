@@ -13,6 +13,7 @@ Filename:    OgreBall.h
 #include "KillVolume.h"
 //---------------------------------------------------------------------------
 
+
 class OgreBall : public BaseApplication
 {
 
@@ -20,6 +21,8 @@ class OgreBall : public BaseApplication
 public:
 	Player* player;
 	Ball* ball;
+    Scoreboard* scoreboard;
+    
     OgreBall(void);
     virtual ~OgreBall(void);
 

@@ -40,7 +40,9 @@ void OgreBall::createScene(void)
 	// mSceneMgr->setSkyBox(true, "Examples/MorningSkyBox", 5000, false);
 
 	// Create Room
-	Room* room = new Room(mSceneMgr, mSim);
+  scoreboard = new Scoreboard();
+
+	Room* room = new Room(mSceneMgr, mSim, scoreboard);
 
 	// Create Ball
 	ball = new Ball(mSceneMgr, mSim);
@@ -48,7 +50,6 @@ void OgreBall::createScene(void)
 	// Create GUI
   player = new Player(mSceneMgr, mSim);
 
-  KillVolume* killVolume = new KillVolume(mSim, btVector3(0, 0, 0));
 	gui = new GUI();
 	SDL_Init(SDL_INIT_AUDIO);
 	initAudio();
@@ -92,7 +93,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     const Ogre::Real elapsedTime = fe.timeSinceLastFrame;
 
     mSim->stepSimulation(elapsedTime);
-
+    // printf("rally: %d\n", scoreboard->rally);
     return true;
 }
 //---------------------------------------------------------------------------

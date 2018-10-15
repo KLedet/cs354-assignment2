@@ -1,13 +1,12 @@
 #include "KillVolume.h"
 
-KillVolume::KillVolume(Simulator* sim, btVector3 initPos){
-	tr.setIdentity();
-	tr.setOrigin(initPos);
+KillVolume::KillVolume(Simulator* sim, btTransform initTransform){
+	tr = btTransform(initTransform);
 
 	init();
 	dynamicsWorld = sim->getCollisionWorld();
 	sim->addCollisionObject(triggerVolume);
-	needsUpdates = true;
+	needsUpdates = false;
 }
 
 KillVolume::~KillVolume(){
@@ -16,6 +15,7 @@ KillVolume::~KillVolume(){
 
 void KillVolume::init(Ogre::SceneNode* node){
 	hit = false;
+	reset = false;
 	triggerVolume = new btPairCachingGhostObject();
 	
 
@@ -31,7 +31,6 @@ void KillVolume::init(Ogre::SceneNode* node){
 }
 
 void KillVolume::update(Ogre::Real elapsedTime){
-	
 
 	//don't need elapse time for this
 	btManifoldArray manifoldArray;
@@ -61,21 +60,15 @@ void KillVolume::update(Ogre::Real elapsedTime){
 
 			btScalar direction = isFirstBody ? btScalar(-1.0) : btScalar(1.0);
 
-			for (int p = 0; p < manifold->getNumContacts(); ++p)
-			{
-				const btManifoldPoint& pt = manifold->getContactPoint(p);
-
-				if (pt.getDistance() < 0.f)
-				{
-					const btVector3& ptA = pt.getPositionWorldOnA();
-					const btVector3& ptB = pt.getPositionWorldOnB();
-					const btVector3& normalOnB = pt.m_normalWorldOnB;
-					//collision: hit registered
-					hit = true;
-					return; //return early if we got a hit
-				}
+			if(manifold->getNumContacts() > 0){
+				hit = true;
+				return;
 			}
 		}
 	}
+	if(reset){
+		reset = false;
+	}
 	hit = false;
 }
+

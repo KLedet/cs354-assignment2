@@ -69,7 +69,7 @@ Room::Room(Ogre::SceneManager* mSceneMgr) {
 
 */
 
-Room::Room(Ogre::SceneManager* scnMgr, Simulator* sim){
+Room::Room(Ogre::SceneManager* scnMgr, Simulator* sim, Scoreboard* score){
     Ogre::Plane plane( Ogre::Vector3::UNIT_Z, 0 );
 
     Ogre::Real pSize = 500;
@@ -81,26 +81,28 @@ Room::Room(Ogre::SceneManager* scnMgr, Simulator* sim){
     //Ogre::Quaternion q(Ogre::Degree(-90), Ogre::Vector3::UNIT_X);
     //btQuaternion (yaw, pitch, roll)
     btQuaternion q(0, - SIMD_PI / 2, 0);
-    new Wall(scnMgr, sim, plane, q, btVector3(0, -250, 0));
-
+    Wall* w1 = new Wall(scnMgr, sim, plane, q, btVector3(0, -250, 0));
     //q = Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_X);
     q = btQuaternion(0, SIMD_PI / 2, 0);
-    new Wall(scnMgr, sim, plane, q, btVector3(0, 250, 0));
-
+    Wall* w2 = new Wall(scnMgr, sim, plane, q, btVector3(0, 250, 0));
+    
     //q = Ogre::Quaternion(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
     q = btQuaternion(SIMD_PI / 2, 0, 0);
-    new Wall(scnMgr, sim, plane, q, btVector3(-250, 0, 0));
-
+    Wall* w3 = new Wall(scnMgr, sim, plane, q, btVector3(-250, 0, 0));
+   
     //q = Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y);
     q = btQuaternion(- SIMD_PI / 2, 0, 0);
-    new Wall(scnMgr, sim, plane, q, btVector3(250,0, 0));
-
+    Wall* w4 = new Wall(scnMgr, sim, plane, q, btVector3(250,0, 0));
+    
     //q = Ogre::Quaternion(Ogre::Degree(180), Ogre::Vector3::UNIT_Y);
     q = btQuaternion(SIMD_PI, 0, 0);
-    new Wall(scnMgr, sim, plane, q, btVector3(0,0, 250));
-    //identity
+    Wall* w5 = new Wall(scnMgr, sim, plane, q, btVector3(0,0, 250));
+    
+    //identity, scoring wall
     q = btQuaternion(0,0,0,1.0f);
-    new Wall(scnMgr, sim, plane, q, btVector3(0, 0, -250));
+    Wall* w6= new Wall(scnMgr, sim, plane, q, btVector3(0, 0, -250));
+    w6->setScoreboard(score); //just please, end me
+    
 
 }
 

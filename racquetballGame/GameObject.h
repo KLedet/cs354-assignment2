@@ -5,6 +5,18 @@
 #include "OgreMotionState.h"
 #include "Simulator.h"
 
+struct Scoreboard {
+public:
+    int rally;
+    bool reset;
+
+    Scoreboard(){
+        rally = 0;
+        reset = false;
+    }
+    ~Scoreboard(){}
+};
+
 class GameObject {
 protected:
 
@@ -30,7 +42,7 @@ protected:
 	btScalar friction;
 	bool isKinematic;  
 	bool needsUpdates;
-	
+
 	CollisionContext* context;
 	BulletContactCallback* cCallBack;
 	void addToSimulator(Simulator* simulator);

@@ -9,7 +9,7 @@ class Room {
     Ogre::SceneNode* rootNode;
     Ogre::Real bLength;
   public:
-    Room(Ogre::SceneManager* scnMgr, Simulator* sim);
+    Room(Ogre::SceneManager* scnMgr, Simulator* sim, Scoreboard* score);
     ~Room();
     void addChild(Ogre::SceneNode* sNode);
     Ogre::SceneNode* getNode() { return rootNode; }

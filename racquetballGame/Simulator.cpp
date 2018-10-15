@@ -32,8 +32,8 @@ void Simulator::addAction (Player* o){
 	dynamicsWorld->addCollisionObject(o->getController()->getGhostObject(), btBroadphaseProxy::CharacterFilter , btBroadphaseProxy::DefaultFilter | btBroadphaseProxy::StaticFilter);
 	dynamicsWorld->addAction(o->getController());
 
-	printf("player collision filter group: %d\n", o->getController()->getGhostObject()->getBroadphaseHandle()->m_collisionFilterGroup);
-	printf("player collision filter mask: %d\n", o->getController()->getGhostObject()->getBroadphaseHandle()->m_collisionFilterMask);
+	// printf("player collision filter group: %d\n", o->getController()->getGhostObject()->getBroadphaseHandle()->m_collisionFilterGroup);
+	// printf("player collision filter mask: %d\n", o->getController()->getGhostObject()->getBroadphaseHandle()->m_collisionFilterMask);
 }
 void Simulator::addRigidBody (GameObject* o) {
 	objList.push_back(o);
@@ -44,8 +44,8 @@ void Simulator::addRigidBody (GameObject* o) {
 	filterMask |= (!o->getBody()->isStaticOrKinematicObject()) ? btBroadphaseProxy::StaticFilter | btBroadphaseProxy::SensorTrigger : 0;
 
 	dynamicsWorld->addRigidBody(o->getBody(), filterGroup, filterMask);
-	printf("collision filter group: %d\n", o->getBody()->getBroadphaseProxy()->m_collisionFilterGroup);
-	printf("collision filter mask: %d\n", o->getBody()->getBroadphaseProxy()->m_collisionFilterMask);
+	// printf("collision filter group: %d\n", o->getBody()->getBroadphaseProxy()->m_collisionFilterGroup);
+	// printf("collision filter mask: %d\n", o->getBody()->getBroadphaseProxy()->m_collisionFilterMask);
 	//btVector3 pos = o->getBody()->getCenterOfMassPosition();
 	//printf("(%f, %f, %f)\n", pos.x(), pos.y(), pos.z());
 }
@@ -55,8 +55,8 @@ void Simulator::addCollisionObject(btCollisionObject* obj) {
 	int filterGroup = btBroadphaseProxy::SensorTrigger;
 	int filterMask = btBroadphaseProxy::DefaultFilter;
 	dynamicsWorld->addCollisionObject(obj, filterGroup, filterMask);
-	printf("Volume collision filter group: %d\n", obj->getBroadphaseHandle()->m_collisionFilterGroup);
-	printf("Volume collision filter mask: %d\n", obj->getBroadphaseHandle()->m_collisionFilterMask);
+	// printf("Volume collision filter group: %d\n", obj->getBroadphaseHandle()->m_collisionFilterGroup);
+	// printf("Volume collision filter mask: %d\n", obj->getBroadphaseHandle()->m_collisionFilterMask);
 }
 
 //Update the physics world state and any objects that have collision
