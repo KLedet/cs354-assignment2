@@ -11,6 +11,7 @@ GUI::GUI(){
 
   CEGUI::SchemeManager::getSingleton().createFromFile( "TaharezLook.scheme" );
   CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
+  CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
 
   // Uncomment these lines if you want to view the test GUI window
   /*CEGUI::Window *guiRoot = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("TextDemo.layout");
@@ -19,9 +20,10 @@ GUI::GUI(){
   CEGUI::WindowManager &wmgr = CEGUI::WindowManager::getSingleton();
   CEGUI::Window *sheet = wmgr.createWindow("DefaultWindow", "TopGUI/Sheet");
 
-  CEGUI::Window *scoreboard = wmgr.createWindow("TaharezLook/Button", "TopGUI/Scoreboard");
+  CEGUI::Window *scoreboard = wmgr.createWindow("TaharezLook/StaticText", "TopGUI/Scoreboard");
   scoreboard->setText("Score: 0");
-  scoreboard->setSize(CEGUI::USize(CEGUI::UDim(0.15, 0), CEGUI::UDim(0.05, 0)));
+  scoreboard->setPosition(CEGUI::UVector2(CEGUI::UDim(0.45, 0), CEGUI::UDim(0.00, 0)));
+  scoreboard->setSize(CEGUI::USize(CEGUI::UDim(0.10, 0), CEGUI::UDim(0.05, 0)));
 
   sheet->addChild(scoreboard);
   CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
