@@ -46,8 +46,9 @@ void Player::init(Ogre::SceneNode* node){
   controller->setUseGhostSweepTest(true);
   controller->setGravity(0.0f);
   
+  context = new CollisionContext();
+  context->theObject = this;
   
-
   
 
 }
@@ -61,7 +62,7 @@ void Player::input(btVector3 newVelocity){
 void Player::update(Ogre::Real elapsedTime){
   //printf("num collisions: %d\n", controller->getGhostObject()->getNumOverlappingObjects());
   btTransform transform = controller->getGhostObject()->getWorldTransform();
-  motionState->setWorldTransform(transform);
+  motionState->setWorldTransform(transform); //collision will stop working without this
 	// printf("%f | ", elapsedTime);
 	btVector3 dist = elapsedTime * 100.0 * mVelocity;
 	// printf("dist: %f %f %f\n", dist.x(), dist.y(), dist.z());
@@ -84,11 +85,8 @@ void Player::swing(){
   btScalar roll = 0.0f;
   printf("Swinging\n");
 
-  btQuaternion quat;
-  quat.setEuler(yaw,pitch,roll);
-
-  tr.setOrigin(body->getCenterOfMassPosition());
-  tr.setRotation(quat);
+  btTransform transform = controller->getGhostObject()->getWorldTransform();
+  //controller->setAngularVelocity(btVector3(0, -10.0, 0));
 	playSound("Audio/sounds/whiff.wav", SDL_MIX_MAXVOLUME);
 }
 
@@ -98,8 +96,5 @@ void Player::unswing(){
   btScalar roll = 0.0f;
   printf("Un-Swinging\n");
 
-  btQuaternion quat;
-  quat.setEuler(yaw,pitch,roll);
-  tr.setOrigin(body->getCenterOfMassPosition());
-  tr.setRotation(quat);
+  //controller->setAngularVelocity(btVector3(0,0,0));
 }

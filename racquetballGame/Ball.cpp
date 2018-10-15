@@ -25,7 +25,7 @@ Ball::Ball(Ogre::SceneManager* scnMgr, Simulator* sim) {
   body->setLinearVelocity(btVector3(0, 200, -200));
   
   needsUpdates = false;
-  sim->addObject(this);
+  sim->addRigidBody(this);
   // Randomly decide which direction ball will go
   /*
   Ogre::Real x_val = (Ogre::Real)(rand() % 8 + 1);

@@ -20,7 +20,7 @@ Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaterni
 	tr.setOrigin(pos);
     init(node);
     body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
-    sim->addObject(this);
+    sim->addRigidBody(this);
     printf("WALL HAS COLLISION RESPONSE: ");
     printf(body->hasContactResponse() ? "true\n" : "false\n");
     needsUpdates = false;

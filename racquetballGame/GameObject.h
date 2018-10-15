@@ -30,11 +30,12 @@ protected:
 	btScalar friction;
 	bool isKinematic;  
 	bool needsUpdates;
-
+	
 	CollisionContext* context;
 	BulletContactCallback* cCallBack;
 	void addToSimulator(Simulator* simulator);
 	
+
 public:
 
 	//TODO:

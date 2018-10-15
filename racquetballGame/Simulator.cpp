@@ -29,20 +29,34 @@ Simulator::Simulator() {
 
 void Simulator::addAction (Player* o){
 	objList.push_back(o);
-	dynamicsWorld->addCollisionObject(o->getController()->getGhostObject(), btBroadphaseProxy::CharacterFilter |
-		btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter, btBroadphaseProxy::AllFilter);
+	dynamicsWorld->addCollisionObject(o->getController()->getGhostObject(), btBroadphaseProxy::CharacterFilter , btBroadphaseProxy::DefaultFilter | btBroadphaseProxy::StaticFilter);
 	dynamicsWorld->addAction(o->getController());
 
 	printf("player collision filter group: %d\n", o->getController()->getGhostObject()->getBroadphaseHandle()->m_collisionFilterGroup);
 	printf("player collision filter mask: %d\n", o->getController()->getGhostObject()->getBroadphaseHandle()->m_collisionFilterMask);
 }
-void Simulator::addObject (GameObject* o) {
+void Simulator::addRigidBody (GameObject* o) {
 	objList.push_back(o);
-	dynamicsWorld->addRigidBody(o->getBody(), btBroadphaseProxy::StaticFilter, btBroadphaseProxy::StaticFilter | btBroadphaseProxy::AllFilter);
+	int filterGroup = 0;
+	filterGroup |= (!o->getBody()->isStaticOrKinematicObject()) ? btBroadphaseProxy::DefaultFilter : btBroadphaseProxy::StaticFilter;
+
+	int filterMask = btBroadphaseProxy::DefaultFilter | btBroadphaseProxy::CharacterFilter;
+	filterMask |= (!o->getBody()->isStaticOrKinematicObject()) ? btBroadphaseProxy::StaticFilter | btBroadphaseProxy::SensorTrigger : 0;
+
+	dynamicsWorld->addRigidBody(o->getBody(), filterGroup, filterMask);
 	printf("collision filter group: %d\n", o->getBody()->getBroadphaseProxy()->m_collisionFilterGroup);
 	printf("collision filter mask: %d\n", o->getBody()->getBroadphaseProxy()->m_collisionFilterMask);
 	//btVector3 pos = o->getBody()->getCenterOfMassPosition();
 	//printf("(%f, %f, %f)\n", pos.x(), pos.y(), pos.z());
+}
+
+void Simulator::addCollisionObject(btCollisionObject* obj) {
+	objList.push_back(static_cast<GameObject*>(obj->getUserPointer()));
+	int filterGroup = btBroadphaseProxy::SensorTrigger;
+	int filterMask = btBroadphaseProxy::DefaultFilter;
+	dynamicsWorld->addCollisionObject(obj, filterGroup, filterMask);
+	printf("Volume collision filter group: %d\n", obj->getBroadphaseHandle()->m_collisionFilterGroup);
+	printf("Volume collision filter mask: %d\n", obj->getBroadphaseHandle()->m_collisionFilterMask);
 }
 
 //Update the physics world state and any objects that have collision
