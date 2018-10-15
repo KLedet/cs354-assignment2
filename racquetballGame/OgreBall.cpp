@@ -49,7 +49,8 @@ void OgreBall::createScene(void)
   player = new Player(mSceneMgr, mSim);
 
 	gui = new GUI();
-
+	SDL_Init(SDL_INIT_AUDIO);
+	initAudio();
 
 	// Reposition camera
 	Ogre::Vector3 cam_position = Ogre::Vector3(0, 300,  750);
@@ -118,6 +119,8 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
   	case OIS::KC_D:
   		vel.setX(1.0);
   		break;
+		case OIS::KC_M:
+			toggleAudioMute();
   	default:
   		break;
   }

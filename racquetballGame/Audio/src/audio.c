@@ -72,10 +72,13 @@ typedef struct privateAudioDevice
     uint8_t audioEnabled;
 } PrivateAudioDevice;
 
+typedef enum { false, true } bool;
+
 /* File scope variables to persist data */
 static PrivateAudioDevice * gDevice;
 static uint32_t gSoundCount;
 
+static bool audioMuted = false;
 /*
  * Add a music to the queue, addAudio wrapper for music due to fade
  *
@@ -116,7 +119,8 @@ static inline void audioCallback(void * userdata, uint8_t * stream, int len);
 
 void playSound(const char * filename, int volume)
 {
-    playAudio(filename, NULL, 0, volume);
+    if(!audioMuted)
+      playAudio(filename, NULL, 0, volume);
 }
 
 void playMusic(const char * filename, int volume)
@@ -456,4 +460,9 @@ static void addAudio(Audio * root, Audio * new)
     }
 
     root->next = new;
+}
+
+void toggleAudioMute()
+{
+  audioMuted = !audioMuted;
 }

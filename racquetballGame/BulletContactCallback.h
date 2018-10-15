@@ -37,16 +37,16 @@ A struct to handle contactTest queries via the ContactResultCallback
 Based on this example code: http://www.bulletphysics.org/mediawiki-1.5.8/index.php?title=Collision_Callbacks_and_Triggers
 */
 struct BulletContactCallback : public btCollisionWorld::ContactResultCallback {
-	
+
   	// Constructor, pass whatever context you want to have available when processing contacts
   	/* You may also want to set m_collisionFilterGroup and m_collisionFilterMask
   	 *  (supplied by the superclass) for needsCollision() */
 	BulletContactCallback(btRigidBody& tgtBody , CollisionContext& context /*, ... */)
 		: btCollisionWorld::ContactResultCallback(), body(tgtBody), ctxt(context) { }
-		
+
 	btRigidBody& body; // The body the sensor is monitoring
 	CollisionContext& ctxt; // External information for contact processing
-	  
+
 	  // If you don't want to consider collisions where the bodies are joined by a constraint, override needsCollision:
 	  /* However, if you use a btCollisionObject for #body instead of a btRigidBody,
 	   *  then this is unnecessary -- checkCollideWithOverride isn't available */
@@ -57,7 +57,7 @@ struct BulletContactCallback : public btCollisionWorld::ContactResultCallback {
 		// if passed filters, may also want to avoid contacts between constraints
 		return body.checkCollideWithOverride(static_cast<btCollisionObject*>(proxy->m_clientObject));
 	}
-	  
+
 	  // Called with each contact for your own processing
 	virtual btScalar addSingleResult(btManifoldPoint& cp,
 		const btCollisionObject* colObj0, int partId0, int index0,
