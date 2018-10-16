@@ -19,16 +19,7 @@ public:
 
 class GameObject {
 protected:
-
-	/*TODO: 
-		constructor/destructor
-
-	*/
 	Ogre::String name;
-	/* might be unnecessary? implemented in motionState
-	Ogre::SceneManager* sceneMgr;
-	Ogre::SceneNode* rootNode;
-	Ogre::Entity* geom;*/
 	OgreMotionState* motionState;
 	btRigidBody* body;
 	
@@ -45,20 +36,14 @@ protected:
 
 	CollisionContext* context;
 	BulletContactCallback* cCallBack;
-	void addToSimulator(Simulator* simulator);
 	
 
 public:
-
-	//TODO:
-	//initialization
-	//initialize rigid body
-	GameObject(void); //should be called in the initialization list
-	~GameObject(void); //clean up components
+	GameObject(void); 
+	~GameObject(void);
 	virtual void init(Ogre::SceneNode* node);
 	btRigidBody* getBody(){return body;}
 	bool doUpdates(){return needsUpdates;}
-	//should just synchronize world representations for renderer and phys engine
 	virtual void update(const Ogre::Real elapsedTime);
 
 	bool getIsKinematic(){ return isKinematic;}
