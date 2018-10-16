@@ -37,10 +37,15 @@ void OgreBall::createScene(void)
 	// Create a directional light for shadows
 	Ogre::Light* l2 = mSceneMgr->createLight("DirectionalLight");
 	l2->setType(Ogre::Light::LT_DIRECTIONAL);
-    //l->setCastShadows(true);
     l2->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
 	l2->setPosition(0,200,0);
 	l2->setDiffuseColour(Ogre::ColourValue::White);
+
+    Ogre::Light* l3 = mSceneMgr->createLight("DirectionalLight3");
+    l3->setType(Ogre::Light::LT_DIRECTIONAL);
+    l3->setDirection(Ogre::Vector3::NEGATIVE_UNIT_X);
+    l3->setPosition(200,0,0);
+    l3->setDiffuseColour(Ogre::ColourValue::White);
 
 	// Create Scoreboard
     scoreboard = new Scoreboard();
