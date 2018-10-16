@@ -1,4 +1,5 @@
 #include "Wall.h"
+#include "Audio/src/audio.h"
 
 Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaternion rot, btVector3 pos){
 	// Set our texture for the walls
@@ -6,7 +7,7 @@ Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaterni
     scoreboard = NULL;
 	isKinematic = false;
 	mass = 0;
-	
+
 
 	Ogre::Entity* wall = scnMgr->createEntity("wall");
     wall->setMaterialName(material_str);
@@ -30,15 +31,17 @@ Wall::~Wall(void){
 
 void Wall::update(Ogre::Real elapsedTime){
     volume->update();
+    if(volume->hitRegistered())
+      playSound("Audio/sounds/bounce.wav", SDL_MIX_MAXVOLUME/6);
 
-    
     if(scoreboard){
         if (volume->hitRegistered()){
             if(!scoreboard->reset){
                 scoreboard->rally++;
+                playSound("Audio/sounds/score2.wav", SDL_MIX_MAXVOLUME);
                 scoreboard->reset = true;
             }
-        }  
+        }
         else {
             scoreboard->reset = false;
         }

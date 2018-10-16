@@ -93,6 +93,10 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     const Ogre::Real elapsedTime = fe.timeSinceLastFrame;
 
     mSim->stepSimulation(elapsedTime);
+
+		if(scoreboard->reset){
+			gui->updateScore(scoreboard->rally);
+		}
     // printf("rally: %d\n", scoreboard->rally);
     return true;
 }

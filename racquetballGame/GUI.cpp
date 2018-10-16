@@ -1,4 +1,6 @@
 #include "GUI.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 GUI::GUI(){
   CEGUI::OgreRenderer* renderer = &CEGUI::OgreRenderer::bootstrapSystem();
@@ -20,7 +22,7 @@ GUI::GUI(){
   CEGUI::WindowManager &wmgr = CEGUI::WindowManager::getSingleton();
   CEGUI::Window *sheet = wmgr.createWindow("DefaultWindow", "TopGUI/Sheet");
 
-  CEGUI::Window *scoreboard = wmgr.createWindow("TaharezLook/StaticText", "TopGUI/Scoreboard");
+  scoreboard = wmgr.createWindow("TaharezLook/StaticText", "TopGUI/Scoreboard");
   scoreboard->setText("Score: 0");
   scoreboard->setPosition(CEGUI::UVector2(CEGUI::UDim(0.45, 0), CEGUI::UDim(0.00, 0)));
   scoreboard->setSize(CEGUI::USize(CEGUI::UDim(0.10, 0), CEGUI::UDim(0.05, 0)));
@@ -75,4 +77,10 @@ void GUI::injectMouseMovement(const OIS::MouseEvent &arg){
   // Scroll wheel.
   if (arg.state.Z.rel)
     sys.injectMouseWheelChange(arg.state.Z.rel / 120.0f);
+}
+
+void GUI::updateScore(int rallyCount){
+  char buffer[20];
+  sprintf(buffer, "Score: %d", rallyCount);
+  scoreboard->setText(buffer);
 }

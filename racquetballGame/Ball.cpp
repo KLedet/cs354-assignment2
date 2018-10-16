@@ -22,8 +22,8 @@ Ball::Ball(Ogre::SceneManager* scnMgr, Simulator* sim) {
 	tr.setOrigin(btVector3(0,0,0));
 	shape = new btSphereShape(bRadius);
   this->init(rootNode);
-  body->setLinearVelocity(btVector3(0, 200, -200));
-  
+  body->setLinearVelocity(btVector3(0, 50, -400));
+
   needsUpdates = false;
   sim->addRigidBody(this);
   // Randomly decide which direction ball will go
@@ -51,7 +51,7 @@ Ball::Ball(Ogre::SceneManager* scnMgr, Simulator* sim) {
 void Ball::move(const Ogre::FrameEvent& evt){
 
 	  // Move ball and check for collision where our room will be occupying
-	if(rootNode->getPosition().x < 250 && rootNode->getPosition().x > -250 
+	if(rootNode->getPosition().x < 250 && rootNode->getPosition().x > -250
 		&& rootNode->getPosition().y < 250 && rootNode->getPosition().y > -250
 		&& rootNode->getPosition().z < 250 && rootNode->getPosition().z > -250)
 	{
