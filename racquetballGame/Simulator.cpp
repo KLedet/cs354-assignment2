@@ -11,7 +11,7 @@ Simulator::Simulator() {
 	//create overlapping pair cache
 	btVector3 worldMin(-500,-500,-500);
 	btVector3 worldMax(500,500,500);
-	
+
 	mBroadphase = new btAxisSweep3(worldMin,worldMax);
 	mBroadphase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
@@ -20,10 +20,10 @@ Simulator::Simulator() {
 												mBroadphase,
 												solver,
 												collisionConfiguration);
-	dynamicsWorld->setGravity(btVector3(0.0, 0, 0.0));
-	
-  	
-	
+	dynamicsWorld->setGravity(btVector3(0.0, -90.8, 0.0));
+
+
+
 	//Add collision shapes to reuse among rigid bodies
 }
 
@@ -67,6 +67,6 @@ void Simulator::stepSimulation(const Ogre::Real elapsedTime, int maxSubSteps, co
 	//iterate through objects and update()
 	for (unsigned int i = 0; i < objList.size(); i++)
 		if (objList[i]->doUpdates()) objList[i]->update(elapsedTime);
-	
-	
+
+
 }

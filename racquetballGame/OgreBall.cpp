@@ -66,7 +66,7 @@ void OgreBall::createScene(void)
 
 
 	// Reposition camera
-	Ogre::Vector3 cam_position = player->getPosition() + Ogre::Vector3(0, 300, 600);
+	Ogre::Vector3 cam_position = player->getPosition() + Ogre::Vector3(-75, 375, 600);
 	mCamera->setPosition(cam_position);
 
     mSceneMgr->setShadowCasterRenderBackFaces(false);
@@ -96,7 +96,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     // Just have this for now so we can tell this function is being called
     // repeatedly
     mCamera->lookAt(player->getPosition());
-    mCamera->setPosition(player->getPosition() + Ogre::Vector3(0, 300, 600));
+    mCamera->setPosition(player->getPosition() + Ogre::Vector3(-75, 375, 600));
 
     //update player velocity before physics stepsimulation
 
@@ -110,17 +110,17 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 
     mSim->stepSimulation(elapsedTime);
 
-		if(scoreboard->reset){
-			gui->updateScore(scoreboard->rally);
-		}
-    // printf("rally: %d\n", scoreboard->rally);
-
-    if(ball->getBody()->getLinearVelocity().norm() < 3){
+    if(ball->getBody()->getLinearVelocity().norm() < 10){
         printf("We are resetting");
         scoreboard->rally = 0;
         scoreboard->reset = true;
         ball->update(0);
     }
+
+		if(scoreboard->reset){
+			gui->updateScore(scoreboard->rally);
+		}
+    // printf("rally: %d\n", scoreboard->rally);
 
     return true;
 }
