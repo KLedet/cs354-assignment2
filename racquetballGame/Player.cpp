@@ -21,17 +21,17 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim){
 
   collisionWorld = sim->getCollisionWorld();
   needsUpdates = true;
-
+	volume = new KillVolume(sim, tr);
   init(rootNode);
-  
 
   sim->addAction(this);
 }
 
 void Player::init(Ogre::SceneNode* node){
   btTransform startTransform = tr;
-  
+
   btConvexShape* convexShape = new btBoxShape(btVector3(35.0f, 13.0f, 3.0f));
+	volume->getTriggerVolume()->setCollisionShape(convexShape);
   btPairCachingGhostObject* ghostObject = new btPairCachingGhostObject();
   ghostObject->setWorldTransform(startTransform);
   ghostObject->setCollisionShape( convexShape);
@@ -45,11 +45,11 @@ void Player::init(Ogre::SceneNode* node){
   controller = new btKinematicCharacterController(ghostObject, convexShape, btScalar(.5f));
   controller->setUseGhostSweepTest(true);
   controller->setGravity(0.0f);
-  
+
   context = new CollisionContext();
   context->theObject = this;
 
-  
+
 
 }
 
@@ -78,6 +78,12 @@ void Player::update(Ogre::Real elapsedTime){
   controller->getGhostObject()->setWorldTransform(trans);
   controller->setWalkDirection(mVelocity);
 	motionState->setWorldTransform(trans);
+
+	if(volume->hitRegistered()){
+		playSound("Audio/sounds/bounce.wav", SDL_MIX_MAXVOLUME/6);
+	}
+
+
 }
 
 void Player::swing(){

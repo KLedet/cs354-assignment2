@@ -2,6 +2,7 @@
 #define __Player_h_
 
 #include "GameObject.h"
+#include "KillVolume.h"
 
 class Player : public GameObject{
 
@@ -12,6 +13,7 @@ private:
 	btKinematicCharacterController* controller;
 	btDiscreteDynamicsWorld* collisionWorld;
 	btQuaternion rotation;
+	KillVolume* volume;
 public:
 	void input(btVector3 newVelocity);
 	Player(Ogre::SceneManager* scnMgr, Simulator* sim);

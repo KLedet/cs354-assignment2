@@ -18,6 +18,7 @@ public:
 	bool hitRegistered() { return hit; }
 	bool isReset() { return reset;}
 	const btCollisionObject* getCollidedObject(){ return collidedObj;}
+	btPairCachingGhostObject* getTriggerVolume(){ return triggerVolume;}
 };
 
 #endif

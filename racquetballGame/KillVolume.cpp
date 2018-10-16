@@ -18,7 +18,7 @@ void KillVolume::init(Ogre::SceneNode* node){
 	hit = false;
 	reset = false;
 	triggerVolume = new btPairCachingGhostObject();
-	
+
 
 	btTransform startTransform = tr;
 
@@ -59,7 +59,7 @@ void KillVolume::update(Ogre::Real elapsedTime){
 
 			bool isFirstBody = manifold->getBody0() == triggerVolume;
 
-			
+
 
 			if(manifold->getNumContacts() > 0){
 				collidedObj = isFirstBody ? manifold->getBody1() : manifold->getBody0();
@@ -75,4 +75,3 @@ void KillVolume::update(Ogre::Real elapsedTime){
 	hit = false;
 	collidedObj = NULL;
 }
-
