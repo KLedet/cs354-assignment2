@@ -11,7 +11,11 @@ private:
 	Ogre::SceneNode* rootNode;
 	btKinematicCharacterController* controller;
 	btDiscreteDynamicsWorld* collisionWorld;
-	btQuaternion rotation;
+	btQuaternion rot_0;
+	btQuaternion rot_1;
+	Ogre::Real last_time;
+	bool isSwinging;
+	float swingSpeed;
 public:
 	void input(btVector3 newVelocity);
 	Player(Ogre::SceneManager* scnMgr, Simulator* sim);

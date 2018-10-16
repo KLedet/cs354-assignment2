@@ -10,7 +10,13 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim){
   rootNode->attachObject(paddle);
   rootNode->scale(0.8f,0.4f,0.05f);
 
+  last_time =0;
   mVelocity = btVector3(0,0,0);
+  rot_0.setEuler(0.0,0.0,0.0);
+  rot_1.setEuler(- SIMD_PI / 2 ,0.0,0.0);
+  isSwinging = false;
+  swingSpeed = 8.0f;
+
   isKinematic = true;
   mass = 10.0f;
   shape = new btBoxShape(btVector3(20.0f, 10.0f, 20.0f));
@@ -68,12 +74,30 @@ void Player::update(Ogre::Real elapsedTime){
 	// printf("dist: %f %f %f\n", dist.x(), dist.y(), dist.z());
 	btTransform trans;
 	btVector3 origin = transform.getOrigin();
+  
 
-  trans.setRotation(trans.getRotation() + rotation*elapsedTime*50);
+  
+  if(isSwinging){
+    last_time += elapsedTime;
+  } else if(last_time > 0.0){
+    last_time -= elapsedTime;
+  }
+  float dt = last_time * swingSpeed;
+  if (dt > 1.0) {
+    dt = 1.0;
+    last_time = 1 / swingSpeed;
+  }
+  if (dt < 0.0) {
+    dt = 0.0;
+    last_time = 0.0;
+  }
+  btQuaternion rot = rot_0.slerp(rot_1, dt);
+  
 
-  btQuaternion rot = trans.getRotation();
-  //printf("w: %f, x: %f, y: %f, z: %f\n",rot.w(), rot.x(), rot.y(), rot.z());
-
+  printf("w: %f, x: %f, y: %f, z: %f\n",rot.w(), rot.x(), rot.y(), rot.z());
+  trans.setRotation(rot);
+  //printf("w: %f, x: %f, y: %f, z: %f\n",rot3.w(), rot3.x(), rot3.y(), rot3.z());
+  
 	trans.setOrigin(transform.getOrigin() + dist);
   controller->getGhostObject()->setWorldTransform(trans);
   controller->setWalkDirection(mVelocity);
@@ -81,22 +105,13 @@ void Player::update(Ogre::Real elapsedTime){
 }
 
 void Player::swing(){
-  btScalar yaw = 80.0f;
-  btScalar pitch = 0.0f;
-  btScalar roll = 0.0f;
-  printf("Swinging\n");
-
-  rotation = btQuaternion(80.0f, 0.0f, 0.0f);
+  isSwinging = true;  
   //controller->setAngularVelocity(btVector3(0, -10.0, 0));
 	playSound("Audio/sounds/whiff.wav", SDL_MIX_MAXVOLUME);
 }
 
 void Player::unswing(){
-  btScalar yaw = 0.0f;
-  btScalar pitch = 0.0f;
-  btScalar roll = 0.0f;
-  printf("Un-Swinging\n");
-
-  rotation = btQuaternion(0.0f, 0.0f, 0.0f);
+  last_time = 1 / swingSpeed;
+  isSwinging = false;
   //controller->setAngularVelocity(btVector3(0,0,0));
 }
