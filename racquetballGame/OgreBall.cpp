@@ -31,11 +31,20 @@ void OgreBall::createScene(void)
 	// Set ambient light
 	//mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
 
+
+    Ogre::Light* l1 = mSceneMgr->createLight("MainLight");
+    l1->setType(Ogre::Light::LT_POINT);
+    l1->setCastShadows(false);
+    l1->setPosition(0,200,250);
+    l1->setDiffuseColour(Ogre::ColourValue::White);
+
 	// Create a diffuse light
-	Ogre::Light* l = mSceneMgr->createLight("MainLight");
-	l->setType(Ogre::Light::LT_POINT);
-	l->setPosition(0,200,250);
-	l->setDiffuseColour(Ogre::ColourValue::White);
+	Ogre::Light* l2 = mSceneMgr->createLight("DirectionalLight");
+	l2->setType(Ogre::Light::LT_DIRECTIONAL);
+    //l->setCastShadows(true);
+    l2->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
+	l2->setPosition(0,200,0);
+	l2->setDiffuseColour(Ogre::ColourValue::White);
 
 	// Add skybox
 	// mSceneMgr->setSkyBox(true, "Examples/MorningSkyBox", 5000, false);
@@ -61,6 +70,8 @@ void OgreBall::createScene(void)
 	mCamera->setPosition(cam_position);
 
     mSceneMgr->setShadowCasterRenderBackFaces(false);
+    mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+    mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
 }
 
 
