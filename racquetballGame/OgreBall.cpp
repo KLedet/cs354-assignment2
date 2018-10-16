@@ -31,11 +31,20 @@ void OgreBall::createScene(void)
 	// Set ambient light
 	//mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
 
+
+    Ogre::Light* l1 = mSceneMgr->createLight("MainLight");
+    l1->setType(Ogre::Light::LT_POINT);
+    l1->setCastShadows(false);
+    l1->setPosition(0,200,0);
+    l1->setDiffuseColour(Ogre::ColourValue::White);
+
 	// Create a diffuse light
-	Ogre::Light* l = mSceneMgr->createLight("MainLight");
-	l->setType(Ogre::Light::LT_POINT);
-	l->setPosition(0,200,250);
-	l->setDiffuseColour(Ogre::ColourValue::White);
+	Ogre::Light* l2 = mSceneMgr->createLight("DirectionalLight");
+	l2->setType(Ogre::Light::LT_DIRECTIONAL);
+    //l->setCastShadows(true);
+    l2->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
+	l2->setPosition(0,200,0);
+	l2->setDiffuseColour(Ogre::ColourValue::White);
 
 	// Add skybox
 	// mSceneMgr->setSkyBox(true, "Examples/MorningSkyBox", 5000, false);
@@ -49,7 +58,7 @@ void OgreBall::createScene(void)
 	ball = new Ball(mSceneMgr, mSim);
 	 //TODO: add way to specify initial position and rotation in constructor
 	// Create GUI
-  player = new Player(mSceneMgr, mSim);
+    player = new Player(mSceneMgr, mSim);
 
 	gui = new GUI();
 	SDL_Init(SDL_INIT_AUDIO);
@@ -57,10 +66,12 @@ void OgreBall::createScene(void)
 
 
 	// Reposition camera
-	Ogre::Vector3 cam_position = Ogre::Vector3(0, 300,  750);
+	Ogre::Vector3 cam_position = player->getPosition() + Ogre::Vector3(0, 300, 600);
 	mCamera->setPosition(cam_position);
 
     mSceneMgr->setShadowCasterRenderBackFaces(false);
+    mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+    mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
 }
 
 
@@ -85,6 +96,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     // Just have this for now so we can tell this function is being called
     // repeatedly
     mCamera->lookAt(player->getPosition());
+    mCamera->setPosition(player->getPosition() + Ogre::Vector3(0, 300, 600));
 
     //update player velocity before physics stepsimulation
 
@@ -104,7 +116,10 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     // printf("rally: %d\n", scoreboard->rally);
 
     if(ball->getBody()->getLinearVelocity().norm() < 3){
-        printf("Ball stopped.");
+        printf("We are resetting");
+        scoreboard->rally = 0;
+        scoreboard->reset = true;
+        ball->update(0);
     }
 
     return true;
@@ -122,16 +137,16 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
 
   switch(arg.key){
   	case OIS::KC_W:
-  		vel.setY(1.0);
+  		vel.setY(3.0);
   		break;
   	case OIS::KC_S:
-  		vel.setY(-1.0);
+  		vel.setY(-3.0);
   		break;
   	case OIS::KC_A:
-  		vel.setX(-1.0);
+  		vel.setX(-3.0);
   		break;
   	case OIS::KC_D:
-  		vel.setX(1.0);
+  		vel.setX(3.0);
   		break;
 		case OIS::KC_M:
 			toggleAudioMute();
