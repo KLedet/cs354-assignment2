@@ -24,6 +24,9 @@ Ball::Ball(Ogre::SceneManager* scnMgr, Simulator* sim) {
   this->init(rootNode);
   body->setLinearVelocity(btVector3(0, 100, -300));
   
+
+
+
   needsUpdates = false;
   sim->addRigidBody(this);
   // Randomly decide which direction ball will go
@@ -55,5 +58,6 @@ void Ball::update(Ogre::Real elapsedTime){
 	body->setWorldTransform(transform);
 	motionState->setWorldTransform(transform);
 	body->setLinearVelocity(btVector3(0,100,-300));
+
 
 }
