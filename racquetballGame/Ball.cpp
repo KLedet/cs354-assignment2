@@ -22,7 +22,12 @@ Ball::Ball(Ogre::SceneManager* scnMgr, Simulator* sim) {
 	tr.setOrigin(btVector3(0,0,-30));
 	shape = new btSphereShape(bRadius);
   this->init(rootNode);
-  body->setLinearVelocity(btVector3(0, 100, -300));
+
+  Ogre::Real x_val = (Ogre::Real)(rand() % 8 + 50);
+  if(rand() % 3 == 1)
+    x_val *= -1;
+
+  body->setLinearVelocity(btVector3(x_val, 100, -300));
   
 
 
@@ -57,7 +62,13 @@ void Ball::update(Ogre::Real elapsedTime){
 	transform.setOrigin(btVector3(0,0,-30));
 	body->setWorldTransform(transform);
 	motionState->setWorldTransform(transform);
-	body->setLinearVelocity(btVector3(0,100,-300));
+
+  srand(time(0));
+
+  Ogre::Real x_val = (Ogre::Real)(rand() % 8 + 50);
+  if(rand() % 3 == 1)
+    x_val *= -1;
+	body->setLinearVelocity(btVector3(x_val,100,-300));
 
 
 }
