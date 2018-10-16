@@ -64,11 +64,12 @@ void KillVolume::update(Ogre::Real elapsedTime){
 			if(manifold->getNumContacts() > 0){
 				collidedObj = isFirstBody ? manifold->getBody1() : manifold->getBody0();
 				hit = true;
+				reset = true;
 				return;
 			}
 		}
 	}
-	if(reset){
+	if(reset && !hit){
 		reset = false;
 	}
 	hit = false;

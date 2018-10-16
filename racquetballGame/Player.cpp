@@ -67,15 +67,16 @@ void Player::update(Ogre::Real elapsedTime){
 	btVector3 dist = elapsedTime * 100.0 * mVelocity;
 	// printf("dist: %f %f %f\n", dist.x(), dist.y(), dist.z());
 	btTransform trans;
-	motionState->getWorldTransform(trans);
-	btVector3 origin = trans.getOrigin();
+	btVector3 origin = transform.getOrigin();
 
-  trans.setRotation(trans.getRotation() + tr.getRotation()*elapsedTime*50);
+  trans.setRotation(trans.getRotation() + rotation*elapsedTime*50);
 
   btQuaternion rot = trans.getRotation();
   //printf("w: %f, x: %f, y: %f, z: %f\n",rot.w(), rot.x(), rot.y(), rot.z());
 
-	trans.setOrigin(trans.getOrigin() + dist);
+	trans.setOrigin(transform.getOrigin() + dist);
+  controller->getGhostObject()->setWorldTransform(trans);
+  controller->setWalkDirection(mVelocity);
 	motionState->setWorldTransform(trans);
 }
 
@@ -85,7 +86,7 @@ void Player::swing(){
   btScalar roll = 0.0f;
   printf("Swinging\n");
 
-  btTransform transform = controller->getGhostObject()->getWorldTransform();
+  rotation = btQuaternion(80.0f, 0.0f, 0.0f);
   //controller->setAngularVelocity(btVector3(0, -10.0, 0));
 	playSound("Audio/sounds/whiff.wav", SDL_MIX_MAXVOLUME);
 }
@@ -96,5 +97,6 @@ void Player::unswing(){
   btScalar roll = 0.0f;
   printf("Un-Swinging\n");
 
+  rotation = btQuaternion(0.0f, 0.0f, 0.0f);
   //controller->setAngularVelocity(btVector3(0,0,0));
 }

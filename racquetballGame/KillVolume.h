@@ -16,7 +16,7 @@ public:
 	void init(Ogre::SceneNode* node=NULL);
 	void update(const Ogre::Real elapsedTime=0);
 	bool hitRegistered() { return hit; }
-	bool volumeReset() { return reset;}
+	bool isReset() { return reset;}
 	const btCollisionObject* getCollidedObject(){ return collidedObj;}
 };
 

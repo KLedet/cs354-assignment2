@@ -11,6 +11,7 @@ private:
 	Ogre::SceneNode* rootNode;
 	btKinematicCharacterController* controller;
 	btDiscreteDynamicsWorld* collisionWorld;
+	btQuaternion rotation;
 public:
 	void input(btVector3 newVelocity);
 	Player(Ogre::SceneManager* scnMgr, Simulator* sim);

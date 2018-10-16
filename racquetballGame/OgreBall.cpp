@@ -122,16 +122,16 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
 
   switch(arg.key){
   	case OIS::KC_W:
-  		vel.setY(3.0);
+  		vel.setY(1.0);
   		break;
   	case OIS::KC_S:
-  		vel.setY(-3.0);
+  		vel.setY(-1.0);
   		break;
   	case OIS::KC_A:
-  		vel.setX(-3.0);
+  		vel.setX(-1.0);
   		break;
   	case OIS::KC_D:
-  		vel.setX(3.0);
+  		vel.setX(1.0);
   		break;
 		case OIS::KC_M:
 			toggleAudioMute();

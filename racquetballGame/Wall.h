@@ -8,6 +8,7 @@ protected:
 	KillVolume* volume;
 	Scoreboard* scoreboard;
 	bool kill;
+	bool isActive;
 public:
 
 	Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaternion initRotation, btVector3 initPos);

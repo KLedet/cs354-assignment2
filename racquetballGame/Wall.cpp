@@ -9,7 +9,7 @@ Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaterni
 	mass = 0;
 
 	kill = false;
-
+    isActive = false;
 	Ogre::Entity* wall = scnMgr->createEntity("wall");
     wall->setMaterialName(material_str);
     Ogre::SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode();
@@ -39,24 +39,35 @@ void Wall::update(Ogre::Real elapsedTime){
     if(volume->hitRegistered())
       playSound("Audio/sounds/bounce.wav", SDL_MIX_MAXVOLUME/6);
 
-
+    
     if(scoreboard){
+
         if (volume->hitRegistered()){
+            if(kill){
+                const btCollisionObject* col = volume->getCollidedObject();
+                if(col){
+                    GameObject* obj = static_cast<GameObject*>(col->getUserPointer());
+                    if(obj) obj->update(0.0f); //doesn't matter
+                }
+                scoreboard->rally = 0;
+                scoreboard->reset = true;
+                isActive = true;
+                return;
+            }
             if(!scoreboard->reset){
+                printf("rally: %d\n", scoreboard->rally);
                 scoreboard->rally++;
                 playSound("Audio/sounds/score2.wav", SDL_MIX_MAXVOLUME);
                 scoreboard->reset = true;
+                printf("rally2: %d\n", scoreboard->rally);
+                isActive = true;
             }
         }
-        else {
+        else if(isActive){
+            isActive = false;
             scoreboard->reset = false;
         }
+
     }
-    if(kill){
-        const btCollisionObject* col = volume->getCollidedObject();
-        if(col){
-            GameObject* obj = static_cast<GameObject*>(col->getUserPointer());
-            if(obj) obj->update(0.0f); //doesn't matter
-        }
-    }
+    
 }
