@@ -8,6 +8,7 @@ private:
 	btPairCachingGhostObject* triggerVolume;
 	bool hit;
 	bool reset;
+	const btCollisionObject* collidedObj;
 	btDiscreteDynamicsWorld* dynamicsWorld;
 public:
 	KillVolume(Simulator* sim, btTransform initPos);
@@ -16,6 +17,7 @@ public:
 	void update(const Ogre::Real elapsedTime=0);
 	bool hitRegistered() { return hit; }
 	bool volumeReset() { return reset;}
+	const btCollisionObject* getCollidedObject(){ return collidedObj;}
 };
 
 #endif

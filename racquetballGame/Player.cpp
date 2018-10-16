@@ -48,13 +48,13 @@ void Player::init(Ogre::SceneNode* node){
   
   context = new CollisionContext();
   context->theObject = this;
-  
+
   
 
 }
 
 void Player::input(btVector3 newVelocity){
-	mVelocity = newVelocity;
+	mVelocity = newVelocity * 5.0;
 	//TODO: rotate with player's orientation
 	controller->setWalkDirection(mVelocity);
 }

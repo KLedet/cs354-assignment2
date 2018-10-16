@@ -17,8 +17,7 @@ class Ball : GameObject{
   public:
     Ball(Ogre::SceneManager* scnMgr, Simulator* sim);
     ~Ball();
-    void update(btTransform &worldTrans);
-
+    void update(Ogre::Real elapsedTime);
 
     //not necessary
     Ogre::SceneNode* getNode() { return rootNode; }

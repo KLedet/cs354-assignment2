@@ -19,10 +19,10 @@ Ball::Ball(Ogre::SceneManager* scnMgr, Simulator* sim) {
 
   	tr.setIdentity();
 	tr.setRotation(btQuaternion(1.0f, 1.0f, 1.0f, 0));
-	tr.setOrigin(btVector3(0,0,0));
+	tr.setOrigin(btVector3(0,0,-30));
 	shape = new btSphereShape(bRadius);
   this->init(rootNode);
-  body->setLinearVelocity(btVector3(0, 200, -200));
+  body->setLinearVelocity(btVector3(0, 100, -300));
   
   needsUpdates = false;
   sim->addRigidBody(this);
@@ -47,32 +47,13 @@ Ball::Ball(Ogre::SceneManager* scnMgr, Simulator* sim) {
 
 }
 
-/* replace with physics
-void Ball::move(const Ogre::FrameEvent& evt){
+void Ball::update(Ogre::Real elapsedTime){
+	btTransform transform;
+	
+	transform.setRotation(btQuaternion(1.0f,1.0f,1.0f,0));
+	transform.setOrigin(btVector3(0,0,-30));
+	body->setWorldTransform(transform);
+	motionState->setWorldTransform(transform);
+	body->setLinearVelocity(btVector3(0,100,-300));
 
-	  // Move ball and check for collision where our room will be occupying
-	if(rootNode->getPosition().x < 250 && rootNode->getPosition().x > -250 
-		&& rootNode->getPosition().y < 250 && rootNode->getPosition().y > -250
-		&& rootNode->getPosition().z < 250 && rootNode->getPosition().z > -250)
-	{
-		rootNode->translate(bSpeed * evt.timeSinceLastFrame * bDirection);
-	}
-	if(rootNode->getPosition().x >= 250 || rootNode->getPosition().x <= -250)
-	{
-		bDirection.x *= -1;
-		rootNode->translate(bSpeed * evt.timeSinceLastFrame * bDirection);
-	}
-	if(rootNode->getPosition().y >= 250 || rootNode->getPosition().y <= -250)
-	{
-		bDirection.y *= -1;
-		rootNode->translate(bSpeed * evt.timeSinceLastFrame * bDirection);
-	}
-	if(rootNode->getPosition().z >= 250 || rootNode->getPosition().z <= -250)
-	{
-		bDirection.z *= -1;
-		rootNode->translate(bSpeed * evt.timeSinceLastFrame * bDirection);
-	}
-
-	bPosition = rootNode->getPosition();
 }
-*/

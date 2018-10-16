@@ -97,6 +97,9 @@ Room::Room(Ogre::SceneManager* scnMgr, Simulator* sim, Scoreboard* score){
     //q = Ogre::Quaternion(Ogre::Degree(180), Ogre::Vector3::UNIT_Y);
     q = btQuaternion(SIMD_PI, 0, 0);
     Wall* w5 = new Wall(scnMgr, sim, plane, q, btVector3(0,0, 250));
+    //kill wall
+    w5->isKill(true);
+    w5->setScoreboard(score);
     
     //identity, scoring wall
     q = btQuaternion(0,0,0,1.0f);

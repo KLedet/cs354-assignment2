@@ -6,7 +6,7 @@ Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaterni
     scoreboard = NULL;
 	isKinematic = false;
 	mass = 0;
-	
+	kill = false;
 
 	Ogre::Entity* wall = scnMgr->createEntity("wall");
     wall->setMaterialName(material_str);
@@ -30,7 +30,7 @@ Wall::~Wall(void){
 
 void Wall::update(Ogre::Real elapsedTime){
     volume->update();
-
+    bool hit = volume->hitRegistered();
     
     if(scoreboard){
         if (volume->hitRegistered()){
@@ -41,6 +41,13 @@ void Wall::update(Ogre::Real elapsedTime){
         }  
         else {
             scoreboard->reset = false;
+        }
+    }
+    if(kill){
+        const btCollisionObject* col = volume->getCollidedObject();
+        if(col){
+            GameObject* obj = static_cast<GameObject*>(col->getUserPointer());
+            if(obj) obj->update(0.0f); //doesn't matter
         }
     }
 }
