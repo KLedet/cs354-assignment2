@@ -27,39 +27,39 @@ OgreBall::~OgreBall(void)
 
 void OgreBall::createScene(void)
 {
-
-	// Set ambient light
-	//mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-
-
+    // Create a diffuse point light
     Ogre::Light* l1 = mSceneMgr->createLight("MainLight");
     l1->setType(Ogre::Light::LT_POINT);
     l1->setCastShadows(false);
     l1->setPosition(0,200,0);
     l1->setDiffuseColour(Ogre::ColourValue::White);
 
-	// Create a diffuse light
+	// Create a directional light for shadows
 	Ogre::Light* l2 = mSceneMgr->createLight("DirectionalLight");
 	l2->setType(Ogre::Light::LT_DIRECTIONAL);
-    //l->setCastShadows(true);
     l2->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
 	l2->setPosition(0,200,0);
 	l2->setDiffuseColour(Ogre::ColourValue::White);
 
-	// Add skybox
-	// mSceneMgr->setSkyBox(true, "Examples/MorningSkyBox", 5000, false);
+    Ogre::Light* l3 = mSceneMgr->createLight("DirectionalLight3");
+    l3->setType(Ogre::Light::LT_DIRECTIONAL);
+    l3->setDirection(Ogre::Vector3::NEGATIVE_UNIT_X);
+    l3->setPosition(200,0,0);
+    l3->setDiffuseColour(Ogre::ColourValue::White);
 
-	// Create Room
-  scoreboard = new Scoreboard();
+	// Create Scoreboard
+    scoreboard = new Scoreboard();
 
+    // Create Room
 	Room* room = new Room(mSceneMgr, mSim, scoreboard);
 
 	// Create Ball
 	ball = new Ball(mSceneMgr, mSim);
-	 //TODO: add way to specify initial position and rotation in constructor
-	// Create GUI
+
+	// Create Player
     player = new Player(mSceneMgr, mSim);
 
+    // Create GUI
 	gui = new GUI();
 	SDL_Init(SDL_INIT_AUDIO);
 	initAudio();
@@ -69,6 +69,8 @@ void OgreBall::createScene(void)
 	Ogre::Vector3 cam_position = player->getPosition() + Ogre::Vector3(-75, 375, 600);
 	mCamera->setPosition(cam_position);
 
+
+    // Set up shadows
     mSceneMgr->setShadowCasterRenderBackFaces(false);
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
     mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
@@ -79,7 +81,7 @@ void OgreBall::createScene(void)
 //---------------------------------------------------------------------------
 bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 {
-	//pretty much the game loop
+	// The game loop
 
     if(mWindow->isClosed())
         return false;
@@ -93,17 +95,11 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     //input handled in device listeners
 
 
-    // Just have this for now so we can tell this function is being called
-    // repeatedly
+    // Have camera follow the paddle
     mCamera->lookAt(player->getPosition());
     mCamera->setPosition(player->getPosition() + Ogre::Vector3(-75, 375, 600));
 
     //update player velocity before physics stepsimulation
-
-    /*do physics step here?
-		calculate timestep
-		pass into Sim.stepsim
-	*/
 
 		gui->injectTimestamps(fe);
     const Ogre::Real elapsedTime = fe.timeSinceLastFrame;
@@ -111,7 +107,6 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     mSim->stepSimulation(elapsedTime);
 
     if(ball->getBody()->getLinearVelocity().norm() < 10){
-        printf("We are resetting");
         scoreboard->rally = 0;
         scoreboard->reset = true;
         ball->update(0);
@@ -155,7 +150,6 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
   }
   if(vel != btVector3(0,0,0))
     {
-      // printf("%f %f %f\n", vel.x(), vel.y(), vel.z());
       player->input(vel);
     }
   return true;
@@ -186,7 +180,6 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
   	default:
   		break;
   }
-   //TODO:: add a player* to the app
     return true;
 }
 
