@@ -13,7 +13,7 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim){
   mVelocity = btVector3(0,0,0);
   isKinematic = true;
   mass = 10.0f;
-  shape = new btBoxShape(btVector3(20.0f, 10.0f, 20.0f));
+  shape = NULL;
 
   tr.setIdentity();
   tr.setRotation(btQuaternion(0,0,0,1.0f));
@@ -31,7 +31,7 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim){
 void Player::init(Ogre::SceneNode* node){
   btTransform startTransform = tr;
   
-  btConvexShape* convexShape = new btBoxShape(btVector3(20.0f, 10.0f, 1.0f));
+  btConvexShape* convexShape = new btBoxShape(btVector3(35.0f, 13.0f, 3.0f));
   btPairCachingGhostObject* ghostObject = new btPairCachingGhostObject();
   ghostObject->setWorldTransform(startTransform);
   ghostObject->setCollisionShape( convexShape);
@@ -54,7 +54,7 @@ void Player::init(Ogre::SceneNode* node){
 }
 
 void Player::input(btVector3 newVelocity){
-	mVelocity = newVelocity * 5.0;
+	mVelocity = newVelocity;
 	//TODO: rotate with player's orientation
 	controller->setWalkDirection(mVelocity);
 }
