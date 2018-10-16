@@ -29,7 +29,7 @@ Simulator::Simulator() {
 
 void Simulator::addAction (Player* o){
 	objList.push_back(o);
-	dynamicsWorld->addCollisionObject(o->getController()->getGhostObject(), btBroadphaseProxy::CharacterFilter , btBroadphaseProxy::DefaultFilter | btBroadphaseProxy::StaticFilter);
+	dynamicsWorld->addCollisionObject(o->getController()->getGhostObject(), btBroadphaseProxy::CharacterFilter , btBroadphaseProxy::StaticFilter);
 	dynamicsWorld->addAction(o->getController());
 
 	// printf("player collision filter group: %d\n", o->getController()->getGhostObject()->getBroadphaseHandle()->m_collisionFilterGroup);

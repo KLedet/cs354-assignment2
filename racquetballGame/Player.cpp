@@ -37,7 +37,9 @@ void Player::init(Ogre::SceneNode* node){
   btTransform startTransform = tr;
 
   btConvexShape* convexShape = new btBoxShape(btVector3(35.0f, 13.0f, 3.0f));
-	volume->getTriggerVolume()->setCollisionShape(convexShape);
+  btConvexShape* convexShape2 = new btBoxShape(btVector3(35.0f, 13.0f, 35.0f));
+
+	volume->getTriggerVolume()->setCollisionShape(convexShape2);
   btPairCachingGhostObject* ghostObject = new btPairCachingGhostObject();
   ghostObject->setWorldTransform(startTransform);
   ghostObject->setCollisionShape( convexShape);
@@ -86,6 +88,7 @@ void Player::update(Ogre::Real elapsedTime){
   if (dt > 1.0) {
     dt = 1.0;
     last_time = 1 / swingSpeed;
+    isSwinging = false;
   }
   if (dt < 0.0) {
     dt = 0.0;
@@ -94,17 +97,26 @@ void Player::update(Ogre::Real elapsedTime){
   btQuaternion rot = rot_0.slerp(rot_1, dt);
   
 
-  printf("w: %f, x: %f, y: %f, z: %f\n",rot.w(), rot.x(), rot.y(), rot.z());
+  //printf("w: %f, x: %f, y: %f, z: %f\n",rot.w(), rot.x(), rot.y(), rot.z());
   trans.setRotation(rot);
-  //printf("w: %f, x: %f, y: %f, z: %f\n",rot3.w(), rot3.x(), rot3.y(), rot3.z());
   
 	trans.setOrigin(transform.getOrigin() + dist);
   controller->getGhostObject()->setWorldTransform(trans);
   controller->setWalkDirection(mVelocity);
 	motionState->setWorldTransform(trans);
 
-	if(volume->hitRegistered()){
+
+  volume->update();
+  volume->getTriggerVolume()->setWorldTransform(btTransform(btQuaternion(1.0, 1.0, 1.0, 0), origin ));
+	if(volume->hitRegistered() && isSwinging){
 		playSound("Audio/sounds/bounce.wav", SDL_MIX_MAXVOLUME/6);
+
+    const btCollisionObject* col = volume->getCollidedObject();
+    if(col){
+        GameObject* obj = static_cast<GameObject*>(col->getUserPointer());
+        Ball* ball = static_cast<Ball*>(obj);
+        if(ball) ball->impulse();
+    }
 	}
 
 
@@ -117,7 +129,6 @@ void Player::swing(){
 }
 
 void Player::unswing(){
-  last_time = 1 / swingSpeed;
   isSwinging = false;
   //controller->setAngularVelocity(btVector3(0,0,0));
 }

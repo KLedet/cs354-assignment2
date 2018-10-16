@@ -3,6 +3,7 @@
 
 #include "GameObject.h"
 #include "KillVolume.h"
+#include "Ball.h"
 
 class Player : public GameObject{
 
@@ -18,7 +19,7 @@ private:
 	Ogre::Real last_time;
 	bool isSwinging;
 	float swingSpeed;
->>>>>>> 0422b5faadebdaeff7b3f950bc38ff7565ab1e4c
+
 public:
 	void input(btVector3 newVelocity);
 	Player(Ogre::SceneManager* scnMgr, Simulator* sim);
