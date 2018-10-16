@@ -63,7 +63,6 @@ void Ball::update(Ogre::Real elapsedTime){
 }
 
 void Ball::impulse(){
-	printf("impulse\n");
-	body->applyCentralImpulse(btVector3(0, 0, -20));
+	body->applyCentralImpulse(btVector3(0, 0, -15));
 	body->activate();
 }
