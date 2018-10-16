@@ -12,6 +12,7 @@ Filename:    OgreBall.cpp
 
 Ball* ball;
 GUI* gui;
+btVector3 vel = btVector3(0,0,0);
 
 //---------------------------------------------------------------------------
 OgreBall::OgreBall(void)
@@ -28,12 +29,12 @@ void OgreBall::createScene(void)
 {
 
 	// Set ambient light
-	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+	//mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
 
 	// Create a diffuse light
 	Ogre::Light* l = mSceneMgr->createLight("MainLight");
 	l->setType(Ogre::Light::LT_POINT);
-	l->setPosition(0,500,50);
+	l->setPosition(0,200,250);
 	l->setDiffuseColour(Ogre::ColourValue::White);
 
 	// Add skybox
@@ -54,9 +55,12 @@ void OgreBall::createScene(void)
 	SDL_Init(SDL_INIT_AUDIO);
 	initAudio();
 
+
 	// Reposition camera
 	Ogre::Vector3 cam_position = Ogre::Vector3(0, 300,  750);
 	mCamera->setPosition(cam_position);
+
+    mSceneMgr->setShadowCasterRenderBackFaces(false);
 }
 
 
@@ -94,6 +98,11 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 
     mSim->stepSimulation(elapsedTime);
     // printf("rally: %d\n", scoreboard->rally);
+
+    if(ball->getBody()->getLinearVelocity().norm() < 3){
+        printf("Ball stopped.");
+    }
+
     return true;
 }
 //---------------------------------------------------------------------------
@@ -107,19 +116,18 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
 	//Inject input into the GUI
 	gui->injectDownInput(arg);
 
-  btVector3 vel = btVector3(0,0,0); //TODO: might need to be a btVector3 not sure
   switch(arg.key){
   	case OIS::KC_W:
-  		vel.setY(1.0);
+  		vel.setY(3.0);
   		break;
   	case OIS::KC_S:
-  		vel.setY(-1.0);
+  		vel.setY(-3.0);
   		break;
   	case OIS::KC_A:
-  		vel.setX(-1.0);
+  		vel.setX(-3.0);
   		break;
   	case OIS::KC_D:
-  		vel.setX(1.0);
+  		vel.setX(3.0);
   		break;
 		case OIS::KC_M:
 			toggleAudioMute();
@@ -138,7 +146,6 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
 {
 
 	gui->injectUpInput(arg);
-	btVector3 vel = btVector3(0,0,0);
 
   switch(arg.key){
   	case OIS::KC_W:
