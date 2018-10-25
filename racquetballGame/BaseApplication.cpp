@@ -213,6 +213,34 @@ void BaseApplication::go(void)
 //---------------------------------------------------------------------------
 bool BaseApplication::setup(void)
 {
+    char response;
+    char response2[100];
+
+    createNetManager();
+
+    std::cout << "Server? (y/n): ";
+    std::cin >> response;
+
+    response == 'y' ? mIsServer = true : mIsServer = false;
+
+    if(mIsServer){
+        std::cout << "Starting server...\n";
+        mNetMan->addNetworkInfo(PROTOCOL_TCP, NULL, 5001);
+        mNetMan->startServer();
+        // bool activity = mNetMan->pollForActivity(50000);
+        // activity ? std::cout << "Activity detected\n" : std::cout << "Activity not detected\n";
+        // activity = mNetMan->pollForActivity(50000);
+        // activity ? std::cout << "Activity detected\n" : std::cout << "Activity not detected\n";
+    }else{
+        std::cout << "Starting client...\n";
+        mNetMan->addNetworkInfo(PROTOCOL_TCP, "scorpius", 5001);
+        mNetMan->startClient();
+        std::cout << "Send message to server: \n";
+        std::cin >> response2;
+        mNetMan->messageServer(PROTOCOL_TCP, response2, 100);
+    }
+
+
     mRoot = new Ogre::Root(mPluginsCfg);
 
     setupResources();
@@ -319,5 +347,11 @@ void BaseApplication::windowClosed(Ogre::RenderWindow* rw)
 void BaseApplication::createSimulator(void)
 {
     mSim = new Simulator();
+}
+//---------------------------------------------------------------------------
+void BaseApplication::createNetManager(void)
+{
+   mNetMan = new NetManager();
+   mNetMan->initNetManager();
 }
 //---------------------------------------------------------------------------

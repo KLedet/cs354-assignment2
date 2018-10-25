@@ -94,6 +94,7 @@ protected:
     virtual void loadResources(void);
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
     virtual void createSimulator(void);
+    virtual void createNetManager(void);
 
     virtual bool keyPressed(const OIS::KeyEvent &arg);
     virtual bool keyReleased(const OIS::KeyEvent &arg);
@@ -118,12 +119,15 @@ protected:
     bool                        mCursorWasVisible;	// Was cursor visible before dialog appeared?
     bool                        mShutDown;
 
+    bool                        mIsServer;
+
     //OIS Input devices
     OIS::InputManager*          mInputManager;
     OIS::Mouse*                 mMouse;
     OIS::Keyboard*              mKeyboard;
 
     Simulator*                  mSim;
+    NetManager*                 mNetMan;
 
     // Added for Mac compatibility
     Ogre::String                 m_ResourcePath;
