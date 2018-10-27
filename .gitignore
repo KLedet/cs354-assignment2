@@ -10,3 +10,6 @@ racquetballGame/config.status
 racquetballGame/libtool
 racquetballGame/OgreBall-Simulator.o
 racquetballGame/CEGUI.log
+racquetballGame/Makefile.in
+racquetballGame/ogre.cfg
+racquetballGame/*.o

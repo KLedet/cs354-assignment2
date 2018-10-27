@@ -32,6 +32,7 @@ http://www.ogre3d.org/wiki/
 #include <Overlay/OgreOverlaySystem.h>
 #include "Simulator.h"
 #include "GameObject.h"
+#include "NetManager.h"
 
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
