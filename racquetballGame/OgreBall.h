@@ -20,6 +20,7 @@ class OgreBall : public BaseApplication
 
 public:
 	Player* player;
+  Player* player2;
 	Ball* ball;
     Scoreboard* scoreboard;
     

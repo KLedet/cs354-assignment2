@@ -29,6 +29,8 @@ public:
 	void swing();
 	void unswing();
 	Ogre::Vector3 getPosition(){ return rootNode->getPosition(); }
+  void setPosition(btVector3 vec);
+  void setRotation2();
 	btKinematicCharacterController* getController(){ return controller;}
 };
 #endif

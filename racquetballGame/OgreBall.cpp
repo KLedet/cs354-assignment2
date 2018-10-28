@@ -59,6 +59,11 @@ void OgreBall::createScene(void)
 	// Create Player
     player = new Player(mSceneMgr, mSim);
 
+    // Create Player
+    player2 = new Player(mSceneMgr, mSim);
+    player2->setPosition(btVector3(0.0f, 0.0f, -150.0f));
+    player2->setRotation2();
+
     // Create GUI
 	gui = new GUI();
 	SDL_Init(SDL_INIT_AUDIO);
@@ -93,9 +98,38 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
         bool activity = mNetMan->pollForActivity((int)fe.timeSinceLastFrame);
         //activity ? std::cout << "Activity detected\n" : std::cout << "Activity not detected\n";
         if(activity){
-            std::cout << "Activity detected\n";
-            if(mNetMan->tcpClientData[0]->updated)
-                printf("%s", mNetMan->tcpClientData[0]->output);
+            if(mNetMan->tcpClientData[0]->updated){
+                std::cout << "Message Recieved\n";
+                char key;
+                int num;
+                btVector3 vel = btVector3(0,0,0);
+                sscanf(mNetMan->tcpClientData[0]->output, "%c:%d", &key, &num);
+
+                printf("About to switch. key:%c, num:%d\n", key, num);
+
+                switch(key){
+                case('W'):
+                    vel.setY(num);
+                    player2->input(vel);
+                    break;
+                case('S'):
+                    vel.setY(-num);
+                    player2->input(vel);
+                    break;
+                case('D'):
+                    vel.setX(-num);
+                    player2->input(vel);
+                    break;
+                case('A'):
+                    vel.setX(num);
+                    player2->input(vel);
+                    break;
+                case('M'):
+                    num > 0 ? player2->swing() : player2->unswing();
+                    break;
+                }
+            }
+
         }
     }
 
@@ -143,28 +177,28 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
   switch(arg.key){
   	case OIS::KC_W:
         if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "W:3", 100);
+            mNetMan->messageServer(PROTOCOL_TCP, "W:3", 5);
         }
         else
   		    vel.setY(3.0);
   		break;
   	case OIS::KC_S:
         if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "S:3", 100);
+            mNetMan->messageServer(PROTOCOL_TCP, "S:3", 5);
         }
         else
   		    vel.setY(-3.0);
   		break;
   	case OIS::KC_A:
         if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "A:3", 100);
+            mNetMan->messageServer(PROTOCOL_TCP, "A:3", 5);
         }
         else
   		    vel.setX(-3.0);
   		break;
   	case OIS::KC_D:
         if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "D:3", 100);
+            mNetMan->messageServer(PROTOCOL_TCP, "D:3", 5);
         }
         else
   		    vel.setX(3.0);
@@ -190,7 +224,7 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
   	case OIS::KC_W:
         vel.setY(0);
         if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "W:0", 100);
+            mNetMan->messageServer(PROTOCOL_TCP, "W:0", 5);
         }
         else
             player->input(vel);
@@ -198,7 +232,7 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
   	case OIS::KC_S:
   		vel.setY(0);
         if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "S:0", 100);
+            mNetMan->messageServer(PROTOCOL_TCP, "S:0", 5);
         }
         else
             player->input(vel);
@@ -206,7 +240,7 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
   	case OIS::KC_A:
   		vel.setX(0);
         if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "A:0", 100);
+            mNetMan->messageServer(PROTOCOL_TCP, "A:0", 5);
         }
         else
             player->input(vel);
@@ -214,7 +248,7 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
   	case OIS::KC_D:
   		vel.setX(0);
         if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "D:0", 100);
+            mNetMan->messageServer(PROTOCOL_TCP, "D:0", 5);
         }
         else
             player->input(vel);
@@ -229,14 +263,20 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
 //---------------------------------------------------------------------------
 
 bool OgreBall::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
-	gui->injectMouseDownInput(id);
-    player->swing();
+    gui->injectMouseDownInput(id);
+    if(!mIsServer)
+            mNetMan->messageServer(PROTOCOL_TCP, "M:1", 5);
+    else
+        player->swing();
 	return true;
 }
 
 bool OgreBall::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 	gui->injectMouseUpInput(id);
-    player->unswing();
+    if(!mIsServer)
+            mNetMan->messageServer(PROTOCOL_TCP, "M:0", 5);
+    else
+        player->unswing();
 	return true;
 }
 

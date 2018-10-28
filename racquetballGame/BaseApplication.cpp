@@ -236,9 +236,9 @@ bool BaseApplication::setup(void)
         std::cout << "Starting client...\n";
         mNetMan->addNetworkInfo(PROTOCOL_TCP, "deaths-head-hawkmoth", 5001);
         mNetMan->startClient();
-        std::cout << "Send message to server: \n";
-        std::cin >> response2;
-        mNetMan->messageServer(PROTOCOL_TCP, response2, 100);
+        // std::cout << "Send message to server: \n";
+        // std::cin >> response2;
+        // mNetMan->messageServer(PROTOCOL_TCP, response2, 100);
     }
 
 

@@ -6,7 +6,7 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim){
 	Ogre::Entity* paddle = scnMgr->createEntity("cube.mesh");
   paddle->setMaterialName("Examples/OgreLogo");
   paddle->setCastShadows(true);
-  rootNode = scnMgr->getRootSceneNode()->createChildSceneNode("Cubo");
+  rootNode = scnMgr->getRootSceneNode()->createChildSceneNode();
   rootNode->attachObject(paddle);
   rootNode->scale(0.8f,0.4f,0.05f);
 
@@ -131,4 +131,20 @@ void Player::swing(){
 void Player::unswing(){
   isSwinging = false;
   //controller->setAngularVelocity(btVector3(0,0,0));
+}
+
+void Player::setPosition(btVector3 vec){
+  btTransform trans;
+  trans.setRotation(controller->getGhostObject()->getWorldTransform().getRotation());
+  trans.setOrigin(vec);
+  controller->getGhostObject()->setWorldTransform(trans);
+}
+
+void Player::setRotation2(){
+  // btTransform trans;
+  // trans.setRotation(rot);
+  // trans.setOrigin(controller->getGhostObject()->getWorldTransform().getOrigin());
+  // controller->getGhostObject()->setWorldTransform(trans);
+  rot_0.setEuler(SIMD_PI,0.0,0.0);
+  rot_1.setEuler(SIMD_PI / 2 ,0.0,0.0);
 }
