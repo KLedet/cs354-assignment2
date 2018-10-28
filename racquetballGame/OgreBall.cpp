@@ -89,6 +89,16 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     if(mShutDown)
         return false;
 
+    if(mIsServer){
+        bool activity = mNetMan->pollForActivity((int)fe.timeSinceLastFrame);
+        //activity ? std::cout << "Activity detected\n" : std::cout << "Activity not detected\n";
+        if(activity){
+            std::cout << "Activity detected\n";
+            if(mNetMan->tcpClientData[0]->updated)
+                printf("%s", mNetMan->tcpClientData[0]->output);
+        }
+    }
+
     // Need to capture/update each device
     mKeyboard->capture();
     mMouse->capture();
@@ -132,19 +142,35 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
 
   switch(arg.key){
   	case OIS::KC_W:
-  		vel.setY(3.0);
+        if(!mIsServer){
+            mNetMan->messageServer(PROTOCOL_TCP, "W:3", 100);
+        }
+        else
+  		    vel.setY(3.0);
   		break;
   	case OIS::KC_S:
-  		vel.setY(-3.0);
+        if(!mIsServer){
+            mNetMan->messageServer(PROTOCOL_TCP, "S:3", 100);
+        }
+        else
+  		    vel.setY(-3.0);
   		break;
   	case OIS::KC_A:
-  		vel.setX(-3.0);
+        if(!mIsServer){
+            mNetMan->messageServer(PROTOCOL_TCP, "A:3", 100);
+        }
+        else
+  		    vel.setX(-3.0);
   		break;
   	case OIS::KC_D:
-  		vel.setX(3.0);
+        if(!mIsServer){
+            mNetMan->messageServer(PROTOCOL_TCP, "D:3", 100);
+        }
+        else
+  		    vel.setX(3.0);
   		break;
-		case OIS::KC_M:
-			toggleAudioMute();
+	case OIS::KC_M:
+		toggleAudioMute();
   	default:
   		break;
   }
@@ -162,20 +188,36 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
 
   switch(arg.key){
   	case OIS::KC_W:
-  		vel.setY(0);
-        player->input(vel);
+        vel.setY(0);
+        if(!mIsServer){
+            mNetMan->messageServer(PROTOCOL_TCP, "W:0", 100);
+        }
+        else
+            player->input(vel);
   		break;
   	case OIS::KC_S:
   		vel.setY(0);
-        player->input(vel);
+        if(!mIsServer){
+            mNetMan->messageServer(PROTOCOL_TCP, "S:0", 100);
+        }
+        else
+            player->input(vel);
   		break;
   	case OIS::KC_A:
   		vel.setX(0);
-        player->input(vel);
+        if(!mIsServer){
+            mNetMan->messageServer(PROTOCOL_TCP, "A:0", 100);
+        }
+        else
+            player->input(vel);
   		break;
   	case OIS::KC_D:
   		vel.setX(0);
-        player->input(vel);
+        if(!mIsServer){
+            mNetMan->messageServer(PROTOCOL_TCP, "D:0", 100);
+        }
+        else
+            player->input(vel);
   		break;
   	default:
   		break;

@@ -227,13 +227,14 @@ bool BaseApplication::setup(void)
         std::cout << "Starting server...\n";
         mNetMan->addNetworkInfo(PROTOCOL_TCP, NULL, 5001);
         mNetMan->startServer();
+        mNetMan->acceptConnections();
         // bool activity = mNetMan->pollForActivity(50000);
         // activity ? std::cout << "Activity detected\n" : std::cout << "Activity not detected\n";
         // activity = mNetMan->pollForActivity(50000);
         // activity ? std::cout << "Activity detected\n" : std::cout << "Activity not detected\n";
     }else{
         std::cout << "Starting client...\n";
-        mNetMan->addNetworkInfo(PROTOCOL_TCP, "scorpius", 5001);
+        mNetMan->addNetworkInfo(PROTOCOL_TCP, "deaths-head-hawkmoth", 5001);
         mNetMan->startClient();
         std::cout << "Send message to server: \n";
         std::cin >> response2;
