@@ -102,7 +102,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
                 std::cout << "Message Recieved\n";
                 char key;
                 int num;
-                btVector3 vel = btVector3(0,0,0);
+                btVector3 vel = player2->getVelocity();
                 sscanf(mNetMan->tcpClientData[0]->output, "%c:%d", &key, &num);
 
                 // printf("About to switch. key:%c, num:%d\n", key, num);
@@ -110,24 +110,25 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
                 switch(key){
                 case('W'):
                     vel.setY(num);
-                    player2->input(vel);
+                    
                     break;
                 case('S'):
                     vel.setY(-num);
-                    player2->input(vel);
+                    
                     break;
                 case('D'):
                     vel.setX(-num);
-                    player2->input(vel);
+                    
                     break;
                 case('A'):
                     vel.setX(num);
-                    player2->input(vel);
+                    
                     break;
                 case('M'):
                     num > 0 ? player2->swing() : player2->unswing();
                     break;
                 }
+                player2->input(vel);
             }
 
         }
@@ -143,6 +144,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
             char key;
 
             // Maybe need to adjust this
+
             Ogre::Real bx, by, bz, playerPosX, playerPosY, playerPosZ, playerRotW, playerRotX, playerRoty, playerRotZ, player2PosX, player2PosY, player2PosZ, player2RotW, player2RotX, player2Roty, player2RotZ;
             sscanf(mNetMan->tcpServerData.output, "B:%f,%f,%f,P1:{(P:%f,%f,%f),(R:%f,%f,%f,%f)},P2:{(P:%f,%f,%f),(R:%f,%f,%f,%f)}",
              &bx, &by, &bz, &playerPosX, &playerPosY, &playerPosZ, &playerRotW, &playerRotX, &playerRoty, &playerRotZ, &player2PosX, &player2PosY, &player2PosZ, &player2RotW, &player2RotX, &player2Roty, &player2RotZ);
