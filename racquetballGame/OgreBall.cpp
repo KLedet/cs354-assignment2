@@ -105,7 +105,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
                 btVector3 vel = btVector3(0,0,0);
                 sscanf(mNetMan->tcpClientData[0]->output, "%c:%d", &key, &num);
 
-                printf("About to switch. key:%c, num:%d\n", key, num);
+                // printf("About to switch. key:%c, num:%d\n", key, num);
 
                 switch(key){
                 case('W'):
@@ -131,6 +131,42 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
             }
 
         }
+    // Have camera follow the paddle
+    mCamera->lookAt(player->getPosition());
+    mCamera->setPosition(player->getPosition() + Ogre::Vector3(-75, 375, 600));
+    }
+    else{
+      bool activity = mNetMan->pollForActivity((int)fe.timeSinceLastFrame);
+      if(activity){
+        if(mNetMan->tcpServerData.updated){
+            std::cout << "Message Recieved\n";
+            char key;
+
+            // Maybe need to adjust this
+            Ogre::Real bx, by, bz, playerPosX, playerPosY, playerPosZ, playerRotW, playerRotX, playerRoty, playerRotZ, player2PosX, player2PosY, player2PosZ, player2RotW, player2RotX, player2Roty, player2RotZ;
+            sscanf(mNetMan->tcpServerData.output, "B:%f,%f,%f,P1:{(P:%f,%f,%f),(R:%f,%f,%f,%f)},P2:{(P:%f,%f,%f),(R:%f,%f,%f,%f)}",
+             &bx, &by, &bz, &playerPosX, &playerPosY, &playerPosZ, &playerRotW, &playerRotX, &playerRoty, &playerRotZ, &player2PosX, &player2PosY, &player2PosZ, &player2RotW, &player2RotX, &player2Roty, &player2RotZ);
+
+            // printf("About to switch. key:%c, num:%d\n", key, num);
+
+            Ogre::Vector3 vec = Ogre::Vector3(bx,by,bz);
+            ball->setPosition(vec);
+
+            vec = Ogre::Vector3(playerPosX, playerPosY, playerPosZ);
+            Ogre::Quaternion rot = Ogre::Quaternion(playerRotW, playerRotX, playerRoty, playerRotZ);
+            player->setOgrePosition(vec);
+            player->setOgreRotation(rot);
+
+            vec = Ogre::Vector3(player2PosX, player2PosY, player2PosZ);
+            rot = Ogre::Quaternion(player2RotW, player2RotX, player2Roty, player2RotZ);
+            player2->setOgrePosition(vec);
+            player2->setOgreRotation(rot);
+        }
+
+    }
+    // Have camera follow the paddle
+    mCamera->lookAt(player2->getPosition());
+    mCamera->setPosition(player2->getPosition() + Ogre::Vector3(-75, 375, -600));
     }
 
     // Need to capture/update each device
@@ -138,28 +174,36 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     mMouse->capture();
     //input handled in device listeners
 
-
-    // Have camera follow the paddle
-    mCamera->lookAt(player->getPosition());
-    mCamera->setPosition(player->getPosition() + Ogre::Vector3(-75, 375, 600));
-
     //update player velocity before physics stepsimulation
 
 		gui->injectTimestamps(fe);
     const Ogre::Real elapsedTime = fe.timeSinceLastFrame;
 
-    mSim->stepSimulation(elapsedTime);
+    if(mIsServer){
+      mSim->stepSimulation(elapsedTime);
 
-    if(ball->getBody()->getLinearVelocity().norm() < 10){
-        scoreboard->rally = 0;
-        scoreboard->reset = true;
-        ball->update(0);
+      if(ball->getBody()->getLinearVelocity().norm() < 10){
+          scoreboard->rally = 0;
+          scoreboard->reset = true;
+          ball->update(0);
+      }
+
+  		if(scoreboard->reset){
+  			gui->updateScore(scoreboard->rally);
+  		}
+
+      if(mNetMan->getClients() > 0){
+        char clientBuff[128];
+        snprintf(clientBuff, sizeof(clientBuff), "B:%.2f,%.2f,%.2f,P1:{(P:%.2f,%.2f,%.2f),(R:%.2f,%.2f,%.2f,%.2f)},P2:{(P:%.2f,%.2f,%.2f),(R:%.2f,%.2f,%.2f,%.2f)}",
+         ball->getPosition().x, ball->getPosition().y, ball->getPosition().z,
+         player->getPosition().x, player->getPosition().y, player->getPosition().z,
+         player->getOrientation().w, player->getOrientation().x, player->getOrientation().y, player->getOrientation().z,
+         player2->getPosition().x, player2->getPosition().y, player2->getPosition().z,
+         player2->getOrientation().w, player2->getOrientation().x, player2->getOrientation().y, player2->getOrientation().z);
+        mNetMan->messageClient(PROTOCOL_TCP, 0, clientBuff, 128);
+      }
     }
 
-		if(scoreboard->reset){
-			gui->updateScore(scoreboard->rally);
-		}
-    // printf("rally: %d\n", scoreboard->rally);
 
     return true;
 }
