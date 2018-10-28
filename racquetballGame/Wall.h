@@ -2,10 +2,10 @@
 #define __Wall_h_
 
 #include "GameObject.h"
-#include "KillVolume.h"
+#include "Volume.h"
 class Wall : GameObject{
 protected:
-	KillVolume* volume;
+	Volume* volume;
 	Scoreboard* scoreboard;
 	bool kill;
 	bool isActive;

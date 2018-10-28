@@ -21,7 +21,7 @@ Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaterni
 	tr.setRotation(rot);
 	tr.setOrigin(pos);
     init(node);
-    volume = new KillVolume(sim, tr);
+    volume = new Volume(sim, tr);
     body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
     sim->addRigidBody(this);
     needsUpdates = true;

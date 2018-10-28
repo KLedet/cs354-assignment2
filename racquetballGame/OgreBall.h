@@ -10,7 +10,7 @@ Filename:    OgreBall.h
 #include "BaseApplication.h"
 #include "Player.h"
 #include "Ball.h"
-#include "KillVolume.h"
+#include "Volume.h"
 //---------------------------------------------------------------------------
 
 
