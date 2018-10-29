@@ -1,7 +1,7 @@
 #include "Wall.h"
 #include "Audio/src/audio.h"
 
-Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaternion rot, btVector3 pos){
+Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaternion rot, btVector3 pos, bool backwall){
 	// Set our texture for the walls
     std::string material_str = "Examples/BumpyMetal";
     scoreboard = NULL;
@@ -10,13 +10,21 @@ Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaterni
 
 	kill = false;
     isActive = false;
-	Ogre::Entity* wall = scnMgr->createEntity("wall");
+    Ogre::Entity* wall;
+
+    if (backwall){
+	   wall = scnMgr->createEntity("backwall")  ;
+        shape = new btBoxShape(btVector3(250.0f, 500.f, 5.0f));
+    } else {
+        wall = scnMgr->createEntity("wall");
+        shape = new btBoxShape(btVector3(250.0f, 250.0f, 5.0f));
+    }
     wall->setMaterialName(material_str);
     Ogre::SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode();
     node->attachObject(wall);
     wall->setCastShadows(true);
 
-    shape = new btBoxShape(btVector3(250.0f, 250.0f, 5.0f));
+    
     tr.setIdentity();
 	tr.setRotation(rot);
 	tr.setOrigin(pos);

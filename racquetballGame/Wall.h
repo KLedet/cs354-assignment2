@@ -10,8 +10,8 @@ protected:
 	bool kill;
 	bool isActive;
 public:
-
-	Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaternion initRotation, btVector3 initPos);
+	
+	Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaternion initRotation, btVector3 initPos, bool backwall=false);
 	~Wall(void);
 	void setScoreboard(Scoreboard* score) {scoreboard = score;}
 	void update(Ogre::Real elapsedTime);

@@ -9,8 +9,8 @@ Simulator::Simulator() {
 	dispatcher = new btCollisionDispatcher(collisionConfiguration);
 
 	//create overlapping pair cache
-	btVector3 worldMin(-500,-500,-500);
-	btVector3 worldMax(500,500,500);
+	btVector3 worldMin(-1000,-1000,-1000);
+	btVector3 worldMax(1000,1000,1000);
 
 	mBroadphase = new btAxisSweep3(worldMin,worldMax);
 	mBroadphase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
