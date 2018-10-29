@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "Audio/src/audio.h"
 
-Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim){
+Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim, int pNum){
 
 	Ogre::Entity* paddle = scnMgr->createEntity("cube.mesh");
   paddle->setMaterialName("Examples/OgreLogo");
@@ -31,6 +31,8 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim){
   init(rootNode);
 
   sim->addAction(this);
+
+  playerNum = pNum;
 }
 
 void Player::init(Ogre::SceneNode* node){
@@ -115,7 +117,7 @@ void Player::update(Ogre::Real elapsedTime){
     if(col){
         GameObject* obj = static_cast<GameObject*>(col->getUserPointer());
         Ball* ball = static_cast<Ball*>(obj);
-        if(ball) ball->impulse();
+        if(ball) ball->impulse(playerNum);
     }
 	}
 

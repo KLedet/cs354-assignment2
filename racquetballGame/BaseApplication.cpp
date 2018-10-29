@@ -214,7 +214,7 @@ void BaseApplication::go(void)
 bool BaseApplication::setup(void)
 {
     char response;
-    char response2[100];
+    char response2[50];
 
     createNetManager();
 
@@ -234,7 +234,9 @@ bool BaseApplication::setup(void)
         // activity ? std::cout << "Activity detected\n" : std::cout << "Activity not detected\n";
     }else{
         std::cout << "Starting client...\n";
-        mNetMan->addNetworkInfo(PROTOCOL_TCP, "deaths-head-hawkmoth", 5001);
+        std::cout << "Input hostname: \n";
+        std::cin >> response2;
+        mNetMan->addNetworkInfo(PROTOCOL_TCP, response2, 5001);
         mNetMan->startClient();
         // std::cout << "Send message to server: \n";
         // std::cin >> response2;

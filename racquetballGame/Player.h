@@ -19,10 +19,11 @@ private:
 	Ogre::Real last_time;
 	bool isSwinging;
 	float swingSpeed;
+  int playerNum;
 
 public:
 	void input(btVector3 newVelocity);
-	Player(Ogre::SceneManager* scnMgr, Simulator* sim);
+	Player(Ogre::SceneManager* scnMgr, Simulator* sim, int pNum);
 	~Player(void){}
 	void init(Ogre::SceneNode* node);
 	void update(Ogre::Real elapsedTime);
