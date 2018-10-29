@@ -61,7 +61,7 @@ void OgreBall::createScene(void)
 
     // Create Player
     player2 = new Player(mSceneMgr, mSim, 2);
-    player2->setPosition(btVector3(0.0f, 0.0f, -150.0f));
+    player2->setPosition(btVector3(0.0f, 0.0f, -250.0f));
     player2->setRotation2();
 
     // Create GUI

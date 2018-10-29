@@ -14,10 +14,10 @@ Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaterni
 
     if (backwall){
 	   wall = scnMgr->createEntity("backwall")  ;
-        shape = new btBoxShape(btVector3(250.0f, 500.f, 5.0f));
+        shape = new btBoxShape(btVector3(250.0f, 250.f, 5.0f));
     } else {
         wall = scnMgr->createEntity("wall");
-        shape = new btBoxShape(btVector3(250.0f, 250.0f, 5.0f));
+        shape = new btBoxShape(btVector3(250.0f, 500.0f, 5.0f));
     }
     wall->setMaterialName(material_str);
     Ogre::SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode();

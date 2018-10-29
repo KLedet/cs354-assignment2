@@ -23,7 +23,7 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim, int pNum){
 
   tr.setIdentity();
   tr.setRotation(btQuaternion(0,0,0,1.0f));
-  tr.setOrigin(btVector3(0, 0, 150));
+  tr.setOrigin(btVector3(0, 0, 250));
 
   collisionWorld = sim->getCollisionWorld();
   needsUpdates = true;
