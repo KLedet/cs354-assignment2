@@ -185,13 +185,13 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
       mSim->stepSimulation(elapsedTime);
 
       if(ball->getBody()->getLinearVelocity().norm() < 10){
-          scoreboard->rally = 0;
+          scoreboard->rally[0] = 0;
           scoreboard->reset = true;
           ball->update(0);
       }
 
   		if(scoreboard->reset){
-  			gui->updateScore(scoreboard->rally);
+  			gui->updateScore(scoreboard->rally[0]);
   		}
 
       if(mNetMan->getClients() > 0){

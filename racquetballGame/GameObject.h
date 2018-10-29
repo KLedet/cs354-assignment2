@@ -7,11 +7,12 @@
 
 struct Scoreboard {
 public:
-    int rally;
+    int rally[2];
     bool reset;
 
     Scoreboard(){
-        rally = 0;
+        rally[0] = 0;
+        rally[1] = 0;
         reset = false;
     }
     ~Scoreboard(){}

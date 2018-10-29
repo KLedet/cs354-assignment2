@@ -9,8 +9,10 @@ protected:
 	Scoreboard* scoreboard;
 	bool kill;
 	bool isActive;
+	int id;
 public:
-	
+	int getID(){return id;}
+	void setID(int newID){id = newID;}
 	Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaternion initRotation, btVector3 initPos, bool backwall=false);
 	~Wall(void);
 	void setScoreboard(Scoreboard* score) {scoreboard = score;}
