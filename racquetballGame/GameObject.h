@@ -5,6 +5,7 @@
 #include "OgreMotionState.h"
 #include "Simulator.h"
 
+//should be implemented as Event
 struct Scoreboard {
 public:
     int rally[2];
