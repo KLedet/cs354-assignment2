@@ -4,6 +4,7 @@
 
 void GUI::closeMenu(){
   CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(1)->hide();
+  CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(0)->show();
   CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
 }
 
