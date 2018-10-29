@@ -2,6 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void GUI::closeMenu(){
+  CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(1)->hide();
+  CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(0)->show();
+  CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
+}
+
 GUI::GUI(){
   CEGUI::OgreRenderer* renderer = &CEGUI::OgreRenderer::bootstrapSystem();
 
@@ -13,22 +19,46 @@ GUI::GUI(){
 
   CEGUI::SchemeManager::getSingleton().createFromFile( "TaharezLook.scheme" );
   CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
-  CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
-
-  // Uncomment these lines if you want to view the test GUI window
-  /*CEGUI::Window *guiRoot = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("TextDemo.layout");
-  CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(guiRoot);*/
+  //CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
 
   CEGUI::WindowManager &wmgr = CEGUI::WindowManager::getSingleton();
   CEGUI::Window *sheet = wmgr.createWindow("DefaultWindow", "TopGUI/Sheet");
+  CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
 
-  scoreboard = wmgr.createWindow("TaharezLook/StaticText", "TopGUI/Scoreboard");
+  // DEFAULT SCOREBOARD (IDX=0)
+  CEGUI::Window* scoreboard = wmgr.createWindow("TaharezLook/StaticText", "TopGUI/Scoreboard");
   scoreboard->setText("Score: 0");
   scoreboard->setPosition(CEGUI::UVector2(CEGUI::UDim(0.45, 0), CEGUI::UDim(0.00, 0)));
   scoreboard->setSize(CEGUI::USize(CEGUI::UDim(0.10, 0), CEGUI::UDim(0.05, 0)));
-
   sheet->addChild(scoreboard);
-  CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
+  scoreboard->hide();
+
+  // CLIENT/SERVER SELECTION (IDX=1)
+  CEGUI::Window* css = wmgr.createWindow("DefaultWindow", "TopGUI/CSS");
+  css->setPosition(CEGUI::UVector2(CEGUI::UDim(0.20, 0), CEGUI::UDim(0.20, 0)));
+  css->setSize(CEGUI::USize(CEGUI::UDim(0.40, 0), CEGUI::UDim(0.18, 0)));
+
+  CEGUI::Window* cssText = wmgr.createWindow("TaharezLook/StaticText", "TopGUI/CSS/Text");
+  cssText->setText("Client or server?");
+  cssText->setPosition(CEGUI::UVector2(CEGUI::UDim(0.00, 0), CEGUI::UDim(0.00, 0)));
+  cssText->setSize(CEGUI::USize(CEGUI::UDim(1.00, 0), CEGUI::UDim(0.50, 0)));
+  css->addChild(cssText);
+
+  CEGUI::Window* cssClient = wmgr.createWindow("TaharezLook/Button", "TopGUI/CSS/ClientButton");
+  cssClient->setText("Client");
+  cssClient->setPosition(CEGUI::UVector2(CEGUI::UDim(0.00, 0), CEGUI::UDim(0.50, 0)));
+  cssClient->setSize(CEGUI::USize(CEGUI::UDim(0.5, 0), CEGUI::UDim(0.50, 0)));
+  cssClient->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GUI::closeMenu,this));
+  css->addChild(cssClient);
+
+  CEGUI::Window* cssServer = wmgr.createWindow("TaharezLook/Button", "TopGUI/CSS/ServerButton");
+  cssServer->setText("Server");
+  cssServer->setPosition(CEGUI::UVector2(CEGUI::UDim(0.50, 0), CEGUI::UDim(0.50, 0)));
+  cssServer->setSize(CEGUI::USize(CEGUI::UDim(0.5, 0), CEGUI::UDim(0.50, 0)));
+  cssServer->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GUI::closeMenu,this));
+  css->addChild(cssServer);
+
+  sheet->addChild(css);
 }
 
 void GUI::injectTimestamps(const Ogre::FrameEvent& evt){
@@ -82,5 +112,7 @@ void GUI::injectMouseMovement(const OIS::MouseEvent &arg){
 void GUI::updateScore(int rallyCount){
   char buffer[20];
   sprintf(buffer, "Score: %d", rallyCount);
-  scoreboard->setText(buffer);
+  CEGUI::Window* sb = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(0);
+  sb->setText(buffer);
+
 }
