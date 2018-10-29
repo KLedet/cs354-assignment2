@@ -6,13 +6,10 @@ Filename:    OgreBall.cpp
 
 #include "OgreBall.h"
 #include "Room.cpp"
-#include "GUI.h"
-#include "Audio/src/audio.h"
 
 
-Ball* ball;
-GUI* gui;
-btVector3 vel = btVector3(0,0,0);
+
+
 
 //---------------------------------------------------------------------------
 OgreBall::OgreBall(void)
@@ -27,6 +24,7 @@ OgreBall::~OgreBall(void)
 
 void OgreBall::createScene(void)
 {
+  vel = btVector3(0.,0.,0.);
     // Create a diffuse point light
     Ogre::Light* l1 = mSceneMgr->createLight("MainLight");
     l1->setType(Ogre::Light::LT_POINT);
@@ -99,7 +97,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
         //activity ? std::cout << "Activity detected\n" : std::cout << "Activity not detected\n";
         if(activity){
             if(mNetMan->tcpClientData[0]->updated){
-                std::cout << "Message Recieved\n";
+                //std::cout << "Message Recieved\n";
                 char key;
                 int num;
                 btVector3 vel = player2->getVelocity();
@@ -140,7 +138,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
       bool activity = mNetMan->pollForActivity((int)fe.timeSinceLastFrame);
       if(activity){
         if(mNetMan->tcpServerData.updated){
-            std::cout << "Message Recieved\n";
+            //std::cout << "Message Recieved\n";
             char key;
 
             // Maybe need to adjust this
