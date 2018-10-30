@@ -10,7 +10,9 @@ Filename:    OgreBall.h
 #include "BaseApplication.h"
 #include "Player.h"
 #include "Ball.h"
-#include "KillVolume.h"
+#include "Volume.h"
+#include "GUI.h"
+#include "Audio/src/audio.h"
 //---------------------------------------------------------------------------
 
 
@@ -23,7 +25,9 @@ public:
   Player* player2;
 	Ball* ball;
     Scoreboard* scoreboard;
-    
+    GUI* gui;
+    btVector3 vel = btVector3(0,0,0);
+
     OgreBall(void);
     virtual ~OgreBall(void);
 

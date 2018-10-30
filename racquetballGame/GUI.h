@@ -18,9 +18,6 @@
 
 class GUI {
 
-private:
-  CEGUI::Window* scoreboard;
-
 public:
   GUI();
   void injectTimestamps(const Ogre::FrameEvent& evt);
@@ -30,4 +27,5 @@ public:
   void injectMouseUpInput(OIS::MouseButtonID id);
   void injectMouseMovement(const OIS::MouseEvent &arg);
   void updateScore(int rallyCount);
+  void closeMenu();
 };

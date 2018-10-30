@@ -29,7 +29,7 @@ Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaterni
 	tr.setRotation(rot);
 	tr.setOrigin(pos);
     init(node);
-    volume = new KillVolume(sim, tr);
+    volume = new Volume(sim, tr);
     body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
     sim->addRigidBody(this);
     needsUpdates = true;
@@ -57,17 +57,16 @@ void Wall::update(Ogre::Real elapsedTime){
                     GameObject* obj = static_cast<GameObject*>(col->getUserPointer());
                     if(obj) obj->update(0.0f); //doesn't matter
                 }
-                scoreboard->rally = 0;
+                int opponentID = (id + 1) % 2;
+                scoreboard->rally[opponentID] = 0;
                 scoreboard->reset = true;
                 isActive = true;
                 return;
             }
             if(!scoreboard->reset){
-                printf("rally: %d\n", scoreboard->rally);
-                scoreboard->rally++;
+                scoreboard->rally[id]++;
                 playSound("Audio/sounds/score2.wav", SDL_MIX_MAXVOLUME);
                 scoreboard->reset = true;
-                printf("rally2: %d\n", scoreboard->rally);
                 isActive = true;
             }
         }

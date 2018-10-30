@@ -2,7 +2,7 @@
 #define __Player_h_
 
 #include "GameObject.h"
-#include "KillVolume.h"
+#include "Volume.h"
 #include "Ball.h"
 
 class Player : public GameObject{
@@ -13,7 +13,7 @@ private:
 	Ogre::SceneNode* rootNode;
 	btKinematicCharacterController* controller;
 	btDiscreteDynamicsWorld* collisionWorld;
-	KillVolume* volume;
+	Volume* volume;
 	btQuaternion rot_0;
 	btQuaternion rot_1;
 	Ogre::Real last_time;

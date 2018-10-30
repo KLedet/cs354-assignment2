@@ -27,7 +27,7 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim, int pNum){
 
   collisionWorld = sim->getCollisionWorld();
   needsUpdates = true;
-	volume = new KillVolume(sim, tr);
+	volume = new Volume(sim, tr);
   init(rootNode);
 
   sim->addAction(this);
