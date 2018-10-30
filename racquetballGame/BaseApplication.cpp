@@ -225,22 +225,18 @@ bool BaseApplication::setup(void)
 
     if(mIsServer){
         std::cout << "Starting server...\n";
-        mNetMan->addNetworkInfo(PROTOCOL_TCP, NULL, 5001);
+        mNetMan->addNetworkInfo(PROTOCOL_TCP, NULL, 49157);
         mNetMan->startServer();
         mNetMan->acceptConnections();
-        // bool activity = mNetMan->pollForActivity(50000);
-        // activity ? std::cout << "Activity detected\n" : std::cout << "Activity not detected\n";
-        // activity = mNetMan->pollForActivity(50000);
-        // activity ? std::cout << "Activity detected\n" : std::cout << "Activity not detected\n";
+        std::cout << "Waiting for client connection.\n";
+        while(!mNetMan->pollForActivity(5000))
+            continue;
     }else{
         std::cout << "Starting client...\n";
         std::cout << "Input hostname: \n";
         std::cin >> response2;
-        mNetMan->addNetworkInfo(PROTOCOL_TCP, response2, 5001);
+        mNetMan->addNetworkInfo(PROTOCOL_TCP, response2, 49157);
         mNetMan->startClient();
-        // std::cout << "Send message to server: \n";
-        // std::cin >> response2;
-        // mNetMan->messageServer(PROTOCOL_TCP, response2, 100);
     }
 
 
@@ -268,6 +264,23 @@ bool BaseApplication::setup(void)
     
     // Create the scene
     createScene();
+
+    if(mIsServer){
+        while(true){
+            if(strcmp(mNetMan->tcpClientData[0]->output, "Ready") == 0){
+                mNetMan->messageClient(PROTOCOL_TCP, 0, "Ready", 6);
+                break;
+            }
+            mNetMan->pollForActivity(5000);
+        }
+    }else{
+        mNetMan->messageServer(PROTOCOL_TCP, "Ready", 6);
+        while(true){
+            mNetMan->pollForActivity(10000);
+            if(strcmp(mNetMan->tcpServerData.output, "Ready") == 0);
+                break;
+        }
+    }
 
     createFrameListener();
 
