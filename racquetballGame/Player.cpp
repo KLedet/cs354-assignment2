@@ -2,14 +2,6 @@
 #include "Audio/src/audio.h"
 
 Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim, int pNum){
-
-	Ogre::Entity* paddle = scnMgr->createEntity("cube.mesh");
-  paddle->setMaterialName("Examples/OgreLogo");
-  paddle->setCastShadows(true);
-  rootNode = scnMgr->getRootSceneNode()->createChildSceneNode();
-  rootNode->attachObject(paddle);
-  rootNode->scale(0.8f,0.4f,0.05f);
-
   last_time =0;
   mVelocity = btVector3(0,0,0);
   rot_0.setEuler(0.0,0.0,0.0);
@@ -17,8 +9,6 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim, int pNum){
   isSwinging = false;
   swingSpeed = 8.0f;
 
-  isKinematic = true;
-  mass = 10.0f;
   shape = NULL;
 
   tr.setIdentity();
@@ -27,27 +17,45 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim, int pNum){
 
   collisionWorld = sim->getCollisionWorld();
   needsUpdates = true;
-	volume = new Volume(sim, tr);
-  init(rootNode);
+	
+  volume = new Volume(tr);
+  volume->addToSim(sim);
 
-  sim->addAction(this);
-
+  addToScene(scnMgr);
+  std::cout<< "add to sim" << std::endl;
+  addToSim(sim);
+  std::cout << "set player id" << std::endl;
   playerNum = pNum;
 }
 
-void Player::init(Ogre::SceneNode* node){
+
+//have to make sure everything is defined otherwise will get compiler error!
+void Player::init(btVector3 origin, btQuaternion rot){
+}
+
+void Player::addToScene(Ogre::SceneManager* scnMgr){
+
+  Ogre::Entity* paddle = scnMgr->createEntity("cube.mesh");
+  paddle->setMaterialName("Examples/OgreLogo");
+  paddle->setCastShadows(true);
+  rootNode = scnMgr->getRootSceneNode()->createChildSceneNode();
+  rootNode->attachObject(paddle);
+  rootNode->scale(0.8f,0.4f,0.05f);
+}
+
+void Player::addToSim(Simulator* mSim){
   btTransform startTransform = tr;
 
   btConvexShape* convexShape = new btBoxShape(btVector3(35.0f, 13.0f, 3.0f));
   btConvexShape* convexShape2 = new btBoxShape(btVector3(35.0f, 13.0f, 35.0f));
 
-	volume->getTriggerVolume()->setCollisionShape(convexShape2);
+  volume->getTriggerVolume()->setCollisionShape(convexShape2);
   btPairCachingGhostObject* ghostObject = new btPairCachingGhostObject();
   ghostObject->setWorldTransform(startTransform);
   ghostObject->setCollisionShape( convexShape);
   ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 
-  motionState = new OgreMotionState(startTransform, node);
+  motionState = new OgreMotionState(startTransform, rootNode);
   motionState->setWorldTransform(startTransform);
 
   ghostObject->setUserPointer(this);
@@ -59,8 +67,7 @@ void Player::init(Ogre::SceneNode* node){
   context = new CollisionContext();
   context->theObject = this;
 
-
-
+  mSim->addAction(this);
 }
 
 void Player::input(btVector3 newVelocity){

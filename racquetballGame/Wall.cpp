@@ -1,41 +1,76 @@
 #include "Wall.h"
 #include "Audio/src/audio.h"
 
-Wall::Wall(Ogre::SceneManager* scnMgr, Simulator* sim, Ogre::Plane p, btQuaternion rot, btVector3 pos, bool backwall){
+Wall::Wall(Ogre::Plane p, btQuaternion rot, btVector3 origin, bool backwall){
+    plane = p;
+    isBackwall = backwall;
 	// Set our texture for the walls
-    std::string material_str = "Examples/BumpyMetal";
+    
     scoreboard = NULL;
-	isKinematic = false;
-	mass = 0;
+	init(origin, rot);
 
 	kill = false;
     isActive = false;
-    Ogre::Entity* wall;
 
-    if (backwall){
-	   wall = scnMgr->createEntity("backwall")  ;
+    volume = new Volume(tr);
+    
+    
+    needsUpdates = true;
+}
+
+Wall::~Wall(void){
+}
+
+void Wall::init(btVector3 origin, btQuaternion rot){
+    tr.setIdentity();
+    tr.setRotation(rot);
+    tr.setOrigin(origin);
+}
+
+void Wall::addToSim(Simulator *mSim){
+    if (!shape)
+        shape = new btBoxShape(btVector3(1.0f, 1.0f, 1.0f));
+
+    btVector3 inertia = btVector3(0,0,0);
+    btScalar restitution = .9;
+    btScalar friction = 0.0;
+    btScalar mass = 0;
+
+    motionState = new OgreMotionState(tr, rootNode);
+    motionState->setWorldTransform(tr);
+
+    if (mass != 0.0f) 
+        shape->calculateLocalInertia(mass, inertia);
+
+    btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, inertia);
+    rbInfo.m_restitution = restitution;
+    rbInfo.m_friction = friction;
+
+    body = new btRigidBody(rbInfo);
+    body->setUserPointer(this);
+    body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
+    
+    mSim->addRigidBody(this);
+
+    volume->addToSim(mSim);
+    //add volume to sim too
+}
+
+void Wall::addToScene(Ogre::SceneManager *scnMgr){
+    Ogre::Entity* wall;
+    std::string material_str = "Examples/BumpyMetal";
+
+    if (isBackwall){
+       wall = scnMgr->createEntity("backwall")  ;
         shape = new btBoxShape(btVector3(250.0f, 250.f, 5.0f));
     } else {
         wall = scnMgr->createEntity("wall");
         shape = new btBoxShape(btVector3(250.0f, 500.0f, 5.0f));
     }
     wall->setMaterialName(material_str);
-    Ogre::SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode();
-    node->attachObject(wall);
+    rootNode = scnMgr->getRootSceneNode()->createChildSceneNode();
+    rootNode->attachObject(wall);
     wall->setCastShadows(true);
-
-    
-    tr.setIdentity();
-	tr.setRotation(rot);
-	tr.setOrigin(pos);
-    init(node);
-    volume = new Volume(sim, tr);
-    body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
-    sim->addRigidBody(this);
-    needsUpdates = true;
-}
-
-Wall::~Wall(void){
 }
 
 void Wall::update(Ogre::Real elapsedTime){

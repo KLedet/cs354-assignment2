@@ -11,10 +11,13 @@ private:
 	const btCollisionObject* collidedObj;
 	btDiscreteDynamicsWorld* dynamicsWorld;
 public:
-	Volume(Simulator* sim, btTransform initPos);
+	Volume(btTransform initPos);
 	~Volume();
-	void init(Ogre::SceneNode* node=NULL);
+	void init(btVector3 origin, btQuaternion rot); //static objects will not need to have their positions updates afterwards
+	void addToSim(Simulator *mSim);
+	void addToScene(Ogre::SceneManager *mSceneMgr);
 	void update(const Ogre::Real elapsedTime=0);
+
 	bool hitRegistered() { return hit; }
 	bool isReset() { return reset;}
 	const btCollisionObject* getCollidedObject(){ return collidedObj;}

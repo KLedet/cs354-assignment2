@@ -8,24 +8,35 @@
 //TODO: refactor using inheritance
 class Ball : public GameObject{
   protected:
-    Ogre::Real bRadius;
+    
+    
+    Ogre::SceneNode* rootNode;
+
+    //clutter
     Ogre::Vector3 bDirection;
     Ogre::Real bSpeed;
-    Ogre::SceneNode* rootNode;
+    Ogre::Real bRadius;
     Ogre::Vector3 bPosition;
 
   public:
-    Ball(Ogre::SceneManager* scnMgr, Simulator* sim);
+    Ball();
     ~Ball();
+
+    void init(btVector3 origin, btQuaternion rot);
+    void addToSim(Simulator* mSim);
+    void addToScene(Ogre::SceneManager* scnMgr);
     void update(Ogre::Real elapsedTime);
-    void impulse(int pNum);
-    //not necessary
-    Ogre::SceneNode* getNode() { return rootNode; }
-    btRigidBody* getBody(){return body;}
+
     Ogre::Vector3 getPosition(){ return rootNode->getPosition(); }
     Ogre::Vector3 setPosition(Ogre::Vector3 vec){ rootNode->setPosition(vec); }
 
-    //void move(const Ogre::FrameEvent& evt);
+    //not necessary?
+    void impulse(int pNum);
+
+    //not necessary
+    Ogre::SceneNode* getNode() { return rootNode; }
+    btRigidBody* getBody(){return body;}
+
 };
 
 #endif

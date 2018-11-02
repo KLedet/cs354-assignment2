@@ -1,19 +1,21 @@
 #include "Volume.h"
 
-Volume::Volume(Simulator* sim, btTransform initTransform){
+Volume::Volume(btTransform initTransform){
 	tr = btTransform(initTransform);
 
-	init();
-	dynamicsWorld = sim->getCollisionWorld();
-	sim->addCollisionObject(triggerVolume);
 	needsUpdates = false;
 }
 
 Volume::~Volume(){
+}	
 
+void Volume::init(btVector3 origin, btQuaternion rot){
+	tr.setIdentity();
+	tr.setOrigin(origin);
+	tr.setRotation(rot);
 }
 
-void Volume::init(Ogre::SceneNode* node){
+void Volume::addToSim(Simulator *mSim){
 	collidedObj = NULL;
 	hit = false;
 	reset = false;
@@ -26,8 +28,14 @@ void Volume::init(Ogre::SceneNode* node){
 	triggerVolume->setWorldTransform(startTransform);
 	triggerVolume->setCollisionShape( convexShape);
 	triggerVolume->setCollisionFlags(triggerVolume->getCollisionFlags() |
-    	btCollisionObject::CF_NO_CONTACT_RESPONSE);
+    btCollisionObject::CF_NO_CONTACT_RESPONSE);
 	triggerVolume->setUserPointer(this);
+
+	dynamicsWorld = mSim->getCollisionWorld();
+	mSim->addCollisionObject(triggerVolume);
+}
+
+void Volume::addToScene(Ogre::SceneManager *scnMgr){
 
 }
 

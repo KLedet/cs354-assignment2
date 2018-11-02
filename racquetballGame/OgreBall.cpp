@@ -26,57 +26,63 @@ void OgreBall::createScene(void)
 {
   vel = btVector3(0.,0.,0.);
     // Create a diffuse point light
-    Ogre::Light* l1 = mSceneMgr->createLight("MainLight");
-    l1->setType(Ogre::Light::LT_POINT);
-    l1->setCastShadows(false);
-    l1->setPosition(0,200,0);
-    l1->setDiffuseColour(Ogre::ColourValue::White);
+  Ogre::Light* l1 = mSceneMgr->createLight("MainLight");
+  l1->setType(Ogre::Light::LT_POINT);
+  l1->setCastShadows(false);
+  l1->setPosition(0,200,0);
+  l1->setDiffuseColour(Ogre::ColourValue::White);
 
 	// Create a directional light for shadows
 	Ogre::Light* l2 = mSceneMgr->createLight("DirectionalLight");
 	l2->setType(Ogre::Light::LT_DIRECTIONAL);
-    l2->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
+  l2->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
 	l2->setPosition(0,200,0);
 	l2->setDiffuseColour(Ogre::ColourValue::White);
 
-    Ogre::Light* l3 = mSceneMgr->createLight("DirectionalLight3");
-    l3->setType(Ogre::Light::LT_DIRECTIONAL);
-    l3->setDirection(Ogre::Vector3::NEGATIVE_UNIT_X);
-    l3->setPosition(200,0,0);
-    l3->setDiffuseColour(Ogre::ColourValue::White);
+  Ogre::Light* l3 = mSceneMgr->createLight("DirectionalLight3");
+  l3->setType(Ogre::Light::LT_DIRECTIONAL);
+  l3->setDirection(Ogre::Vector3::NEGATIVE_UNIT_X);
+  l3->setPosition(200,0,0);
+  l3->setDiffuseColour(Ogre::ColourValue::White);
+
+  // Set up shadows
+  mSceneMgr->setShadowCasterRenderBackFaces(false);
+  mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+  mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
 
 	// Create Scoreboard
-    scoreboard = new Scoreboard();
+  scoreboard = new Scoreboard();
 
-    // Create Room
+  // Create Room
 	Room* room = new Room(mSceneMgr, mSim, scoreboard);
 
 	// Create Ball
-	ball = new Ball(mSceneMgr, mSim);
+	ball = new Ball();
+  ball->addToScene(mSceneMgr);
+  ball->addToSim(mSim);
 
-	// Create Player
-    player = new Player(mSceneMgr, mSim, 1);
+  std::cout<<"create player 1" << std::endl;
+  // Create Player
+  player = new Player(mSceneMgr, mSim, 1);
 
-    // Create Player
-    player2 = new Player(mSceneMgr, mSim, 2);
-    player2->setPosition(btVector3(0.0f, 0.0f, -250.0f));
-    player2->setRotation2();
+  std::cout << "create player 2" << std::endl;
+  // Create Player
+  player2 = new Player(mSceneMgr, mSim, 2);
+  player2->setPosition(btVector3(0.0f, 0.0f, -250.0f));
+  player2->setRotation2();
 
-    // Create GUI
+  std::cout << "init gui and audio" << std::endl;
+
+  // Create GUI
 	gui = new GUI();
 	SDL_Init(SDL_INIT_AUDIO);
 	initAudio();
 
+  std::cout << "reposition camera" << std::endl;
 
 	// Reposition camera
 	Ogre::Vector3 cam_position = player->getPosition() + Ogre::Vector3(-75, 375, 600);
 	mCamera->setPosition(cam_position);
-
-
-    // Set up shadows
-    mSceneMgr->setShadowCasterRenderBackFaces(false);
-    mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
-    mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
 }
 
 
@@ -85,7 +91,7 @@ void OgreBall::createScene(void)
 bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 {
 	// The game loop
-
+    
     if(mWindow->isClosed())
         return false;
 
@@ -93,6 +99,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
         return false;
 
     if(mIsServer){
+        
         bool activity = mNetMan->pollForActivity((int)fe.timeSinceLastFrame);
         //activity ? std::cout << "Activity detected\n" : std::cout << "Activity not detected\n";
         if(activity){
@@ -130,9 +137,9 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
             }
 
         }
-    // Have camera follow the paddle
-    mCamera->lookAt(player->getPosition());
-    mCamera->setPosition(player->getPosition() + Ogre::Vector3(-75, 375, 600));
+        // Have camera follow the paddle
+        mCamera->lookAt(player->getPosition());
+        mCamera->setPosition(player->getPosition() + Ogre::Vector3(-75, 375, 600));
     }
     else{
       bool activity = mNetMan->pollForActivity((int)fe.timeSinceLastFrame);
@@ -178,20 +185,22 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 
 		gui->injectTimestamps(fe);
     const Ogre::Real elapsedTime = fe.timeSinceLastFrame;
-
+    
     if(mIsServer){
       mSim->stepSimulation(elapsedTime);
 
+
+      
       if(ball->getBody()->getLinearVelocity().norm() < 10){
           scoreboard->rally[0] = 0;
           scoreboard->reset = true;
           ball->update(0);
       }
-
+      
   		if(scoreboard->reset){
   			gui->updateScore(scoreboard->rally[0]);
   		}
-
+      
       if(mNetMan->getClients() > 0){
         char clientBuff[128];
         snprintf(clientBuff, sizeof(clientBuff), "B:%.2f,%.2f,%.2f,P1:{(P:%.2f,%.2f,%.2f),(R:%.2f,%.2f,%.2f,%.2f)},P2:{(P:%.2f,%.2f,%.2f),(R:%.2f,%.2f,%.2f,%.2f)}",
@@ -203,7 +212,6 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
         mNetMan->messageClient(PROTOCOL_TCP, 0, clientBuff, 128);
       }
     }
-
 
     return true;
 }

@@ -5,7 +5,7 @@
 #include "OgreMotionState.h"
 #include "Simulator.h"
 
-//should be implemented as Event
+//should be implemented as Game Entity
 struct Scoreboard {
 public:
     int rally[2];
@@ -20,35 +20,39 @@ public:
 };
 
 class GameObject {
+//How to initialize:
+	//new
+	//init
+	//addtoscene
+	//addtosim (allows to separate client/server behavior)
 protected:
 	Ogre::String name;
+
+	//initialize in init()
+	btTransform tr;
 	OgreMotionState* motionState;
+	bool needsUpdates;
+
+	//don't know if we're using these
+	CollisionContext* context;
+	BulletContactCallback* cCallBack;
+
+	//don't need both
 	btRigidBody* body;
 	
 	btCollisionShape* shape;
-	
-	btTransform tr;
-	btVector3 inertia;
-
-	btScalar mass;
-	btScalar restitution;
-	btScalar friction;
-	bool isKinematic;  
-	bool needsUpdates;
-
-	CollisionContext* context;
-	BulletContactCallback* cCallBack;
-	
-
 public:
 	GameObject(void); 
 	~GameObject(void);
-	virtual void init(Ogre::SceneNode* node);
-	btRigidBody* getBody(){return body;}
-	bool doUpdates(){return needsUpdates;}
-	virtual void update(const Ogre::Real elapsedTime);
 
-	bool getIsKinematic(){ return isKinematic;}
+	bool doUpdates(){return needsUpdates;}
+	//pass all this stuff in during createScene()
+	virtual void init(btVector3 origin, btQuaternion rot) = 0; //actually this can probably be the constructor
+	virtual void addToSim(Simulator *mSim) = 0;
+	virtual void addToScene(Ogre::SceneManager *mSceneMgr) = 0;
+	virtual void update(const Ogre::Real elapsedTime) = 0;
+	//move this somewhere else
+	btRigidBody* getBody(){return body;}
 	
 };
 

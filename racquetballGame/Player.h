@@ -19,22 +19,31 @@ private:
 	Ogre::Real last_time;
 	bool isSwinging;
 	float swingSpeed;
-  int playerNum;
+	int playerNum;
 
 public:
-	void input(btVector3 newVelocity);
+	
 	Player(Ogre::SceneManager* scnMgr, Simulator* sim, int pNum);
-	~Player(void){}
-	void init(Ogre::SceneNode* node);
-	void update(Ogre::Real elapsedTime);
+	~Player(void);
+
+	void init(btVector3 origin, btQuaternion rot);
+	void addToSim(Simulator *mSim);
+	void addToScene(Ogre::SceneManager *mSceneMgr);
+	void update(const Ogre::Real elapsedTime);
+
+
+	void input(btVector3 newVelocity);
 	void swing();
 	void unswing();
 	Ogre::Vector3 getPosition(){ return rootNode->getPosition(); }
-  Ogre::Quaternion getOrientation(){ return rootNode->getOrientation(); }
-  void setPosition(btVector3 vec);
-  void setRotation2();
-  void setOgrePosition(Ogre::Vector3 vec){rootNode->setPosition(vec);}
-  void setOgreRotation(Ogre::Quaternion rot){rootNode->setOrientation(rot);}
+	Ogre::Quaternion getOrientation(){ return rootNode->getOrientation(); }
+
+	//This is really messy and needs to be changed so we can despaghettify the code
+	//we will need to implement single player back in so keep this in mind
+	void setPosition(btVector3 vec);
+	void setRotation2();
+	void setOgrePosition(Ogre::Vector3 vec){rootNode->setPosition(vec);}
+	void setOgreRotation(Ogre::Quaternion rot){rootNode->setOrientation(rot);}
 	btKinematicCharacterController* getController(){ return controller;}
 	btVector3 getVelocity(){ return mVelocity; }
 };
