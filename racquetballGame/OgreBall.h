@@ -21,19 +21,34 @@ class OgreBall : public BaseApplication
 
 
 public:
+    //this class should have not have any game objects
+    //TODO: come up with way of updating these dynamically
+    //and then get rid of them
 	Player* player;
-  Player* player2;
+    Player* player2;
 	Ball* ball;
-    Scoreboard* scoreboard;
-    GUI* gui;
     btVector3 vel = btVector3(0,0,0);
+    
+    //this may be fine
+    Scoreboard* scoreboard;
+
+    //Hooks for handlers
+    GUI* gui;
 
     OgreBall(void);
     virtual ~OgreBall(void);
 
 protected:
+
+    Simulator*                  mSim;
+    NetManager*                 mNetMan;
+
     virtual void createScene(void);
+    virtual bool setup();
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& fe);
+    virtual void createSimulator(void);
+    virtual void createNetManager(void);
+
     bool keyPressed( const OIS::KeyEvent &arg );
     bool keyReleased(const OIS::KeyEvent &arg);
 	bool mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);

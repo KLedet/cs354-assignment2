@@ -213,32 +213,6 @@ void BaseApplication::go(void)
 //---------------------------------------------------------------------------
 bool BaseApplication::setup(void)
 {
-    char response;
-    char response2[50];
-
-    createNetManager();
-
-    std::cout << "Server? (y/n): ";
-    std::cin >> response;
-
-    response == 'y' ? mIsServer = true : mIsServer = false;
-
-    if(mIsServer){
-        std::cout << "Starting server...\n";
-        mNetMan->addNetworkInfo(PROTOCOL_TCP, NULL, 49157);
-        mNetMan->startServer();
-        mNetMan->acceptConnections();
-        std::cout << "Waiting for client connection.\n";
-        while(!mNetMan->pollForActivity(5000))
-            continue;
-    }else{
-        std::cout << "Starting client...\n";
-        std::cout << "Input hostname: \n";
-        std::cin >> response2;
-        mNetMan->addNetworkInfo(PROTOCOL_TCP, response2, 49157);
-        mNetMan->startClient();
-    }
-
 
     mRoot = new Ogre::Root(mPluginsCfg);
 
@@ -258,29 +232,9 @@ bool BaseApplication::setup(void)
     createResourceListener();
     // Load resources
     loadResources();
-
-    // Create our physics simulator
-    createSimulator();
     
     // Create the scene
     createScene();
-
-    if(mIsServer){
-        while(true){
-            if(strcmp(mNetMan->tcpClientData[0]->output, "Ready") == 0){
-                mNetMan->messageClient(PROTOCOL_TCP, 0, "Ready", 6);
-                break;
-            }
-            mNetMan->pollForActivity(5000);
-        }
-    }else{
-        mNetMan->messageServer(PROTOCOL_TCP, "Ready", 6);
-        while(true){
-            mNetMan->pollForActivity(10000);
-            if(strcmp(mNetMan->tcpServerData.output, "Ready") == 0);
-                break;
-        }
-    }
 
     createFrameListener();
 
@@ -359,15 +313,3 @@ void BaseApplication::windowClosed(Ogre::RenderWindow* rw)
         }
     }
 }
-//---------------------------------------------------------------------------
-void BaseApplication::createSimulator(void)
-{
-    mSim = new Simulator();
-}
-//---------------------------------------------------------------------------
-void BaseApplication::createNetManager(void)
-{
-   mNetMan = new NetManager();
-   mNetMan->initNetManager();
-}
-//---------------------------------------------------------------------------

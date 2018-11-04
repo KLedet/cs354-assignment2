@@ -20,6 +20,81 @@ OgreBall::~OgreBall(void)
 {
 }
 
+bool OgreBall::setup(void)
+{
+    char response;
+    char response2[50];
+
+    createNetManager();
+
+    std::cout << "Server? (y/n): ";
+    std::cin >> response;
+
+    response == 'y' ? mIsServer = true : mIsServer = false;
+
+    if(mIsServer){
+        std::cout << "Starting server...\n";
+        mNetMan->addNetworkInfo(PROTOCOL_TCP, NULL, 49157);
+        mNetMan->startServer();
+        mNetMan->acceptConnections();
+        std::cout << "Waiting for client connection.\n";
+        while(!mNetMan->pollForActivity(5000))
+            continue;
+    }else{
+        std::cout << "Starting client...\n";
+        std::cout << "Input hostname: \n";
+        std::cin >> response2;
+        mNetMan->addNetworkInfo(PROTOCOL_TCP, response2, 49157);
+        mNetMan->startClient();
+    }
+
+
+    mRoot = new Ogre::Root(mPluginsCfg);
+
+    setupResources();
+
+    bool carryOn = configure();
+    if (!carryOn) return false;
+
+    chooseSceneManager();
+    createCamera();
+    createViewports();
+
+    // Set default mipmap level (NB some APIs ignore this)
+    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+
+    // Create any resource listeners (for loading screens)
+    createResourceListener();
+    // Load resources
+    loadResources();
+
+    // Create our physics simulator
+    createSimulator();
+    
+    // Create the scene
+    createScene();
+
+    if(mIsServer){
+        while(true){
+            if(strcmp(mNetMan->tcpClientData[0]->output, "Ready") == 0){
+                mNetMan->messageClient(PROTOCOL_TCP, 0, "Ready", 6);
+                break;
+            }
+            mNetMan->pollForActivity(5000);
+        }
+    }else{
+        mNetMan->messageServer(PROTOCOL_TCP, "Ready", 6);
+        while(true){
+            mNetMan->pollForActivity(10000);
+            if(strcmp(mNetMan->tcpServerData.output, "Ready") == 0);
+                break;
+        }
+    }
+
+    createFrameListener();
+
+    return true;
+}
 //---------------------------------------------------------------------------
 
 void OgreBall::createScene(void)
@@ -91,6 +166,7 @@ void OgreBall::createScene(void)
 bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 {
 	// The game loop
+  //no logic should be written here. it should all be done within the objects themselves
     
     if(mWindow->isClosed())
         return false;
@@ -99,7 +175,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
         return false;
 
     if(mIsServer){
-        
+        //this should be done elsewhere
         bool activity = mNetMan->pollForActivity((int)fe.timeSinceLastFrame);
         //activity ? std::cout << "Activity detected\n" : std::cout << "Activity not detected\n";
         if(activity){
@@ -189,8 +265,6 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     if(mIsServer){
       mSim->stepSimulation(elapsedTime);
 
-
-      
       if(ball->getBody()->getLinearVelocity().norm() < 10){
           scoreboard->rally[0] = 0;
           scoreboard->reset = true;
@@ -225,6 +299,13 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
 
 	//Inject input into the GUI
 	gui->injectDownInput(arg);
+
+  //directly setting velocities and hardcoding messages
+  //should instead do:
+  //InputHandler->injectUpInput
+  //NetHandler->injectUpInput
+  //that way we neither A) have to register listeners for everything that needs to handle a key event nor
+  // B) hard code anything
 
   switch(arg.key){
   	case OIS::KC_W:
@@ -271,6 +352,8 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
 {
 
 	gui->injectUpInput(arg);
+
+  
 
   switch(arg.key){
   	case OIS::KC_W:
@@ -336,6 +419,19 @@ bool OgreBall::mouseMoved(const OIS::MouseEvent &arg){
 	gui->injectMouseMovement(arg);
 	return true;
 }
+
+//---------------------------------------------------------------------------
+void OgreBall::createSimulator(void)
+{
+    mSim = new Simulator();
+}
+//---------------------------------------------------------------------------
+void OgreBall::createNetManager(void)
+{
+   mNetMan = new NetManager();
+   mNetMan->initNetManager();
+}
+//---------------------------------------------------------------------------
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN
