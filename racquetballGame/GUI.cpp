@@ -36,6 +36,8 @@ void GUI::setHostname(const CEGUI::EventArgs& args){
 
 GUI::GUI(){
   CEGUI::OgreRenderer* renderer = &CEGUI::OgreRenderer::bootstrapSystem();
+  isSingleplayer = true;
+  isServer = true;
 
   CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
   CEGUI::Font::setDefaultResourceGroup("Fonts");
