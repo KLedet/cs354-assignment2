@@ -31,6 +31,7 @@ public:
 
   bool isSingleplayer;
   bool isServer;
+  bool hostnameSet;
   const char* hostname;
 
   void setSingleplayer(const CEGUI::EventArgs& args);

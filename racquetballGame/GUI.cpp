@@ -29,6 +29,7 @@ void GUI::setClient(const CEGUI::EventArgs& args){
 void GUI::setHostname(const CEGUI::EventArgs& args){
   CEGUI::Window* hn = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(2);
   hostname = hn->getChildAtIdx(1)->getText().c_str();
+  hostnameSet = true;
   //std::cout << hostname << std::endl;
   hn->hide();
   CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(1)->show();
@@ -38,6 +39,7 @@ GUI::GUI(){
   CEGUI::OgreRenderer* renderer = &CEGUI::OgreRenderer::bootstrapSystem();
   isSingleplayer = true;
   isServer = true;
+  hostnameSet = false;
 
   CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
   CEGUI::Font::setDefaultResourceGroup("Fonts");
@@ -47,7 +49,7 @@ GUI::GUI(){
 
   CEGUI::SchemeManager::getSingleton().createFromFile( "TaharezLook.scheme" );
   CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
-  //CEGUI::System::getSingleton()rgs.getDefaultGUIContext().getMouseCursor().hide();
+  //CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
 
   CEGUI::WindowManager &wmgr = CEGUI::WindowManager::getSingleton();
   CEGUI::Window *sheet = wmgr.createWindow("DefaultWindow", "TopGUI/Sheet");
