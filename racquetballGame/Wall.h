@@ -8,13 +8,13 @@ protected:
 	Volume* volume;
 	Scoreboard* scoreboard;
 	Ogre::SceneNode* rootNode;
+	bool lastHit;
 	bool kill;
 	bool isActive;
 	bool isBackwall; //use inheritance
-	Ogre::Plane plane; //Don't think we actually use this
 	int id;
 public:
-	Wall(Ogre::Plane p, btQuaternion rot, btVector3 origin, bool backwall=false);
+	Wall(btQuaternion rot, btVector3 origin, bool backwall=false);
 	~Wall(void);
 
 	void init(btVector3 origin, btQuaternion rot);

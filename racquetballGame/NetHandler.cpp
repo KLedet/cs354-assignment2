@@ -76,3 +76,7 @@ void NetHandler::readTransform(Ogre::SceneNode* node){
     node->setPosition(newPos);
     node->setOrientation(newRot);
 }
+
+void messagePump(){
+	
+}

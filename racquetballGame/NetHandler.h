@@ -44,6 +44,7 @@ public:
 	bool connectionEstablished(){return connected;}
 	void sendTransform(Ogre::SceneNode* node);
 	void readTransform(Ogre::SceneNode* node);
+	void messagePump();
 };
 
 #endif

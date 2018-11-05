@@ -40,7 +40,6 @@ void Volume::addToScene(Ogre::SceneManager *scnMgr){
 }
 
 void Volume::update(Ogre::Real elapsedTime){
-
 	//don't need elapse time for this
 	btManifoldArray manifoldArray;
 	btBroadphasePairArray& pairArray =
@@ -73,13 +72,12 @@ void Volume::update(Ogre::Real elapsedTime){
 				collidedObj = isFirstBody ? manifold->getBody1() : manifold->getBody0();
 				hit = true;
 				reset = true;
+				//std::cout << "contact";
 				return;
 			}
 		}
 	}
-	if(reset && !hit){
-		reset = false;
-	}
+	//std::cout << "no contact" << std::endl;
 	hit = false;
 	collidedObj = NULL;
 }

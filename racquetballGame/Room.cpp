@@ -25,40 +25,43 @@ Room::Room(Ogre::SceneManager* scnMgr, Simulator* sim, Scoreboard* score){
                             Ogre::Vector3::UNIT_Y);
 
     btQuaternion q(0, - SIMD_PI / 2, 0);
-    Wall* w1 = new Wall(plane, q, btVector3(0, -250, 0));
+    Wall* w1 = new Wall(q, btVector3(0, -250, 0));
     w1->addToScene(scnMgr);
     w1->addToSim(sim);
 
     q = btQuaternion(0, SIMD_PI / 2, 0);
-    Wall* w2 = new Wall(plane, q, btVector3(0, 250, 0));
+    Wall* w2 = new Wall(q, btVector3(0, 250, 0));
     w2->addToScene(scnMgr);
     w2->addToSim(sim);
     
     btQuaternion pitch(0, -SIMD_PI / 2, 0);
     q = btQuaternion(SIMD_PI / 2, 0, 0);
-    Wall* w3 = new Wall(plane, pitch * q, btVector3(-250, 0, 0));
+    Wall* w3 = new Wall(pitch * q, btVector3(-250, 0, 0));
     w3->addToScene(scnMgr);
     w3->addToSim(sim);   
 
     q = btQuaternion(- SIMD_PI / 2, 0, 0);
-    Wall* w4 = new Wall(plane, pitch * q, btVector3(250,0, 0));
+    Wall* w4 = new Wall(pitch * q, btVector3(250,0, 0));
     w4->addToScene(scnMgr);
     w4->addToSim(sim);
 
     q = btQuaternion(SIMD_PI, 0, 0);
-    Wall* w5 = new Wall(plane, q, btVector3(0,0, 500), true);
+    Wall* w5 = new Wall(q, btVector3(0,0, 500), true);
+
     w5->addToScene(scnMgr);
     w5->addToSim(sim);
 
     //kill wall
     w5->isKill(true);
     w5->setScoreboard(score);
+    w5->setID(0);
     //identity, scoring wall
     q = btQuaternion(0,0,0,1.0f);
-    Wall* w6= new Wall(plane, q, btVector3(0, 0, -500), true);
+    Wall* w6= new Wall(q, btVector3(0, 0, -500), true);
     w6->addToScene(scnMgr);
     w6->addToSim(sim);
     w6->setScoreboard(score);
+    w6->setID(1);
     w6->isKill(true);
     
 

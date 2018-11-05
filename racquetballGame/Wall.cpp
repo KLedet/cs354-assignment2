@@ -1,8 +1,7 @@
 #include "Wall.h"
 #include "Audio/src/audio.h"
 
-Wall::Wall(Ogre::Plane p, btQuaternion rot, btVector3 origin, bool backwall){
-    plane = p;
+Wall::Wall(btQuaternion rot, btVector3 origin, bool backwall){
     isBackwall = backwall;
 	// Set our texture for the walls
     
@@ -14,8 +13,9 @@ Wall::Wall(Ogre::Plane p, btQuaternion rot, btVector3 origin, bool backwall){
 
     volume = new Volume(tr);
     
-    
+    lastHit=false;
     needsUpdates = true;
+
 }
 
 Wall::~Wall(void){
@@ -75,41 +75,23 @@ void Wall::addToScene(Ogre::SceneManager *scnMgr){
 
 void Wall::update(Ogre::Real elapsedTime){
     volume->update();
-
     bool hit = volume->hitRegistered();
     
-
-    if(volume->hitRegistered())
-      playSound("Audio/sounds/bounce.wav", SDL_MIX_MAXVOLUME/6);
-
-    
-    if(scoreboard){
-
-        if (volume->hitRegistered()){
-            if(kill){
-                const btCollisionObject* col = volume->getCollidedObject();
-                if(col){
-                    GameObject* obj = static_cast<GameObject*>(col->getUserPointer());
-                    if(obj) obj->update(0.0f); //doesn't matter
-                }
-                int opponentID = (id + 1) % 2;
-                scoreboard->rally[opponentID] = 0;
-                scoreboard->reset = true;
-                isActive = true;
-                return;
-            }
-            if(!scoreboard->reset){
-                scoreboard->rally[id]++;
-                playSound("Audio/sounds/score2.wav", SDL_MIX_MAXVOLUME);
-                scoreboard->reset = true;
-                isActive = true;
+    bool onEntered = hit && !lastHit;
+    lastHit = hit;
+    if(onEntered){
+        playSound("Audio/sounds/bounce.wav", SDL_MIX_MAXVOLUME/6);
+        if(kill){
+            const btCollisionObject* col = volume->getCollidedObject();
+            if(col){
+                GameObject* obj = static_cast<GameObject*>(col->getUserPointer());
+                if(obj) obj->update(0.0f); //doesn't matter
             }
         }
-        else if(isActive){
-            isActive = false;
-            scoreboard->reset = false;
+        if(scoreboard){
+            scoreboard->rally[id]++;
+            scoreboard->reset = true;
+            playSound("Audio/sounds/score2.wav", SDL_MIX_MAXVOLUME);
         }
-
     }
-    
 }
