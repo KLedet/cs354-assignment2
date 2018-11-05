@@ -117,8 +117,6 @@ protected:
     bool                        mCursorWasVisible;	// Was cursor visible before dialog appeared?
     bool                        mShutDown;
 
-    bool                        mIsServer;
-
     //OIS Input devices
     OIS::InputManager*          mInputManager;
     OIS::Mouse*                 mMouse;

@@ -20,7 +20,6 @@ Filename:    OgreBall.h
 class OgreBall : public BaseApplication
 {
 
-
 public:
     //this class should have not have any game objects
     //TODO: come up with way of updating these dynamically
@@ -28,7 +27,6 @@ public:
 	Player* player;
     Player* player2;
 	Ball* ball;
-    btVector3 vel = btVector3(0,0,0);
     
     //this may be fine
     Scoreboard* scoreboard;
@@ -39,9 +37,16 @@ public:
     OgreBall(void);
     virtual ~OgreBall(void);
 
+    virtual void go(void);
 protected:
-    bool singleplayer;
-    bool pause;
+    //setup flags
+    bool                        singleplayer;
+    bool                        mIsServer;
+
+    //state flags
+    bool                        pause;
+
+    int controlID;
     Simulator*                  mSim;
     NetManager*                 mNetMan;
 
@@ -50,7 +55,6 @@ protected:
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& fe);
     virtual void createSimulator(void);
     virtual void createNetManager(void);
-
     bool keyPressed( const OIS::KeyEvent &arg );
     bool keyReleased(const OIS::KeyEvent &arg);
 	bool mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);

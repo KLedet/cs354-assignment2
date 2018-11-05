@@ -22,8 +22,16 @@
 //wrapper to handle OIS events with NetManager
 class NetHandler{
 protected:
+	enum {
+		MSG_TRANSFORM,
+		MSG_KEY_UP,
+		MSG_KEY_DOWN,
+		MSG_MOUSE_UP,
+		MSG_MOUSE_DOWN,
+	};
 	NetManager* mNetMan;
 	bool server;
+	bool connected;
 public:
 	NetHandler(NetManager* netMan);
 	~NetHandler(void);
@@ -32,6 +40,8 @@ public:
 	void injectMouseDownInput(OIS::MouseButtonID id);
 	void injectMouseUpInput(OIS::MouseButtonID id);
 	bool isServer(){return server;}
+	void setIsServer(bool server_val){ server = server_val;}
+	bool connectionEstablished(){return connected;}
 	void sendTransform(Ogre::SceneNode* node);
 	void readTransform(Ogre::SceneNode* node);
 };

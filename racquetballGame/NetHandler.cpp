@@ -2,6 +2,7 @@
 
 NetHandler::NetHandler(NetManager* netManager){
 	mNetMan = netManager;
+	server = false;
 }
 
 NetHandler::~NetHandler(){

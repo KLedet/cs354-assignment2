@@ -19,89 +19,105 @@ OgreBall::OgreBall(void)
 OgreBall::~OgreBall(void)
 {
 }
+//---------------------------------------------------------------------------
+void OgreBall::go(void)
+{
+#ifdef _DEBUG
+#ifndef OGRE_STATIC_LIB
+    mResourcesCfg = m_ResourcePath + "resources_d.cfg";
+    mPluginsCfg = m_ResourcePath + "plugins_d.cfg";
+#else
+    mResourcesCfg = "resources_d.cfg";
+    mPluginsCfg = "plugins_d.cfg";
+#endif
+#else
+#ifndef OGRE_STATIC_LIB
+    mResourcesCfg = m_ResourcePath + "resources.cfg";
+    mPluginsCfg = m_ResourcePath + "plugins.cfg";
+#else
+    mResourcesCfg = "resources.cfg";
+    mPluginsCfg = "plugins.cfg";
+#endif
+#endif
 
+    if (!setup())
+        return;
+
+    mRoot->startRendering();
+
+    // Clean up
+    destroyScene();
+}
+//---------------------------------------------------------------------------
 bool OgreBall::setup(void)
 {
-    pause = false;
-    char response;
-    char response2[50];
+  pause = false;
+  singleplayer = false;
+  controlID = 0;
+  char response;
+  char response2[50];
+  //TODO: modify this so that it sets the multiplayer flag first
+  
+  createNetManager();
 
-    createNetManager();
+  std::cout << "Server? (y/n): ";
+  std::cin >> response;
 
-    std::cout << "Server? (y/n): ";
-    std::cin >> response;
+  response == 'y' ? mIsServer = true : mIsServer = false;
 
-    response == 'y' ? mIsServer = true : mIsServer = false;
+  nethandler->setIsServer(mIsServer);
 
-    if(mIsServer){
-        std::cout << "Starting server...\n";
-        mNetMan->addNetworkInfo(PROTOCOL_TCP, NULL, 49157);
-        mNetMan->startServer();
-        mNetMan->acceptConnections();
-        std::cout << "Waiting for client connection.\n";
-        while(!mNetMan->pollForActivity(5000))
-            continue;
-    }else{
-        std::cout << "Starting client...\n";
-        std::cout << "Input hostname: \n";
-        std::cin >> response2;
-        mNetMan->addNetworkInfo(PROTOCOL_TCP, response2, 49157);
-        mNetMan->startClient();
-    }
+  if(mIsServer){
+    std::cout << "Starting server...\n";
+    mNetMan->addNetworkInfo(PROTOCOL_TCP, NULL, 49157);
+    mNetMan->startServer();
+    mNetMan->acceptConnections();
+    std::cout << "Waiting for client connection.\n";
+    while(!mNetMan->pollForActivity(5000))
+      continue;
+  }else{
+    std::cout << "Starting client...\n";
+    std::cout << "Input hostname: \n";
+    std::cin >> response2;
+    mNetMan->addNetworkInfo(PROTOCOL_TCP, response2, 49157);
+    mNetMan->startClient();
+  }
 
 
-    mRoot = new Ogre::Root(mPluginsCfg);
+  mRoot = new Ogre::Root(mPluginsCfg);
 
-    setupResources();
+  setupResources();
 
-    bool carryOn = configure();
-    if (!carryOn) return false;
+  bool carryOn = configure();
+  if (!carryOn) return false;
 
-    chooseSceneManager();
-    createCamera();
-    createViewports();
+  chooseSceneManager();
+  createCamera();
+  createViewports();
 
-    // Set default mipmap level (NB some APIs ignore this)
-    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+  // Set default mipmap level (NB some APIs ignore this)
+  Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
-    // Create any resource listeners (for loading screens)
-    createResourceListener();
-    // Load resources
-    loadResources();
+  // Create any resource listeners (for loading screens)
+  createResourceListener();
+  // Load resources
+  loadResources();
 
-    // Create our physics simulator
-    createSimulator();
-    
-    // Create the scene
-    createScene();
+  // Create our physics simulator
+  createSimulator();
+  
+  // Create the scene
+  //can we create scene later? so that we can make the GUI and do all the setup and then switch mode
+  createScene();
 
-    createFrameListener();
-    /*
-    if(mIsServer){
-        while(true){
-            if(strcmp(mNetMan->tcpClientData[0]->output, "Ready") == 0){
-                mNetMan->messageClient(PROTOCOL_TCP, 0, "Ready", 6);
-                break;
-            }
-            mNetMan->pollForActivity(5000);
-        }
-    }else{
-        mNetMan->messageServer(PROTOCOL_TCP, "Ready", 6);
-        while(true){
-            mNetMan->pollForActivity(10000);
-            if(strcmp(mNetMan->tcpServerData.output, "Ready") == 0);
-                break;
-        }
-    }
-  */
+  createFrameListener();
 
-    return true;
+  return true;
 }
 //---------------------------------------------------------------------------
 
 void OgreBall::createScene(void)
 {
-  vel = btVector3(0.,0.,0.);
     // Create a diffuse point light
   Ogre::Light* l1 = mSceneMgr->createLight("MainLight");
   l1->setType(Ogre::Light::LT_POINT);
@@ -150,6 +166,7 @@ void OgreBall::createScene(void)
 
   std::cout << "init gui and audio" << std::endl;
 
+  //should probably be done in setup since this is app related stuff
   // Create GUI
 	gui = new GUI();
 	SDL_Init(SDL_INIT_AUDIO);
@@ -167,9 +184,7 @@ void OgreBall::createScene(void)
 //---------------------------------------------------------------------------
 bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 {
-	// The game loop
-  //no logic should be written here. it should all be done within the objects themselves
-    
+
     if(mWindow->isClosed())
         return false;
 
@@ -217,11 +232,9 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
           }
 
         }
-        // Have camera follow the paddle
-        mCamera->lookAt(player->getPosition());
-        mCamera->setPosition(player->getPosition() + Ogre::Vector3(-75, 375, 600));
+        
     }
-    
+
     // Need to capture/update each device
     mKeyboard->capture();
     mMouse->capture();
@@ -231,48 +244,48 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 
 		gui->injectTimestamps(fe);
     const Ogre::Real elapsedTime = fe.timeSinceLastFrame;
-    
-    if(mIsServer){
-      //std::cout<< "Server frame here:" << std::endl;
-      //step sim
-      if(!pause)
-        mSim->stepSimulation(elapsedTime);
-      /*
-      if(ball->getBody()->getLinearVelocity().norm() < 10){
-          scoreboard->rally[0] = 0;
-          scoreboard->reset = true;
-          ball->update(0);
-      }*/
-      
-      //update gui
-  		if(scoreboard->reset){
-  			gui->updateScore(scoreboard->rally[0]);
-  		}
-      
-      //message clients
-      if(mNetMan->getClients() > 0){
-        Ogre::SceneNode* ball_node = ball->getNode();
-        Ogre::SceneNode* player1_node = player->getSceneNode();
-        Ogre::SceneNode* player2_node = player2->getSceneNode();
-        nethandler->sendTransform(ball_node);
-        nethandler->sendTransform(player1_node);
-      }
-    } else {
+    if (!pause){
+      if(mIsServer){
+        //Server frame
 
-      if(mNetMan->scanForActivity()){
+        //step sim
+        if(!pause)
+          mSim->stepSimulation(elapsedTime);
+        
+        //update gui
+    		if(scoreboard->reset){
+    			gui->updateScore(scoreboard->rally[0]);
+    		}
+        
+        //message clients
+        if(mNetMan->getClients() > 0){
           Ogre::SceneNode* ball_node = ball->getNode();
-          nethandler->readTransform(ball_node);
-      }
-      if(mNetMan->scanForActivity()){
           Ogre::SceneNode* player1_node = player->getSceneNode();
-          nethandler->readTransform(player1_node);
-            //std::cout << "new position: " << newPos << std::endl;
-      }
-      // Have camera follow the paddle
-      mCamera->lookAt(player2->getPosition());
-      mCamera->setPosition(player2->getPosition() + Ogre::Vector3(-75, 375, -600));
-    }
+          Ogre::SceneNode* player2_node = player2->getSceneNode();
+          nethandler->sendTransform(ball_node);
+          nethandler->sendTransform(player2_node);
+        }
 
+        // Have camera follow the paddle
+        mCamera->lookAt(player->getPosition());
+        mCamera->setPosition(player->getPosition() + Ogre::Vector3(-75, 375, 600));
+
+      } else {
+
+        if(mNetMan->scanForActivity()){
+            Ogre::SceneNode* ball_node = ball->getNode();
+            nethandler->readTransform(ball_node);
+        }
+        if(mNetMan->scanForActivity()){
+            Ogre::SceneNode* player2_node = player2->getSceneNode();
+            nethandler->readTransform(player2_node);
+              //std::cout << "new position: " << newPos << std::endl;
+        }
+        // Have camera follow the paddle
+        mCamera->lookAt(player2->getPosition());
+        mCamera->setPosition(player2->getPosition() + Ogre::Vector3(-75, 375, -600));
+      }
+    }
     return true;
 }
 //---------------------------------------------------------------------------
@@ -286,14 +299,23 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
 	//Inject input into the GUI
 	gui->injectDownInput(arg);
 
-  //directly setting velocities and hardcoding messages
-  //should instead do:
-  //InputHandler->injectUpInput
-  //NetHandler->injectUpInput
-  //that way we neither A) have to register listeners for everything that needs to handle a key event nor
-  // B) hard code anything
-  if(!mIsServer)
+  if(!mIsServer){
     nethandler->injectDownInput(arg);
+  }else {
+    btVector3 vel = player->getVelocity();
+    switch(arg.key){
+    case OIS::KC_W:
+      break;
+    case OIS::KC_S:
+      break;
+    case OIS::KC_A:
+      break;
+    case OIS::KC_D:
+      break;
+    default:
+      break;
+    }
+  }
 
   //controller handling
 
@@ -304,46 +326,6 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
     default:
       break;
   }
-
-  /*
-  switch(arg.key){
-  	case OIS::KC_W:
-        if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "W:3", 5);
-        }
-        else
-  		    vel.setY(3.0);
-  		break;
-  	case OIS::KC_S:
-        if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "S:3", 5);
-        }
-        else
-  		    vel.setY(-3.0);
-  		break;
-  	case OIS::KC_A:
-        if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "A:3", 5);
-        }
-        else
-  		    vel.setX(-3.0);
-  		break;
-  	case OIS::KC_D:
-        if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "D:3", 5);
-        }
-        else
-  		    vel.setX(3.0);
-  		break;
-	case OIS::KC_M:
-		toggleAudioMute();
-  	default:
-  		break;
-  }
-  if(vel != btVector3(0,0,0))
-    {
-      player->input(vel);
-    }*/
   return true;
 }
 //---------------------------------------------------------------------------
@@ -353,71 +335,25 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
 	gui->injectUpInput(arg);
   if(!mIsServer)
     nethandler->injectUpInput(arg);
-  /*
-  switch(arg.key){
-  	case OIS::KC_W:
-        vel.setY(0);
-        if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "W:0", 5);
-        }
-        else
-            player->input(vel);
-  		break;
-  	case OIS::KC_S:
-  		vel.setY(0);
-        if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "S:0", 5);
-        }
-        else
-            player->input(vel);
-  		break;
-  	case OIS::KC_A:
-  		vel.setX(0);
-        if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "A:0", 5);
-        }
-        else
-            player->input(vel);
-  		break;
-  	case OIS::KC_D:
-  		vel.setX(0);
-        if(!mIsServer){
-            mNetMan->messageServer(PROTOCOL_TCP, "D:0", 5);
-        }
-        else
-            player->input(vel);
-  		break;
-  	default:
-  		break;
-  }
-  */
-    return true;
+  return true;
 }
 
 
 //---------------------------------------------------------------------------
 
 bool OgreBall::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
-    gui->injectMouseDownInput(id);
-    if(!mIsServer)
+  gui->injectMouseDownInput(id);
+  if(!mIsServer)
     nethandler->injectMouseDownInput(id);
-    /*
-    if(!mIsServer)
-            mNetMan->messageServer(PROTOCOL_TCP, "M:1", 5);
-    else
-        player->swing();*/
+    
 	return true;
 }
 
 bool OgreBall::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 	gui->injectMouseUpInput(id);
   if(!mIsServer)
-  nethandler->injectMouseUpInput(id);
-  /*
-    if(!mIsServer)
-            mNetMan->messageServer(PROTOCOL_TCP, "M:0", 5);
-    else
-        player->unswing();*/
+    nethandler->injectMouseUpInput(id);
+  
 	return true;
 }
 
