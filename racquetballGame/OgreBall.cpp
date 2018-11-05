@@ -73,7 +73,7 @@ bool OgreBall::setup(void)
     mNetMan->startServer();
     mNetMan->acceptConnections();
     std::cout << "Waiting for client connection.\n";
-    while(!mNetMan->pollForActivity(5000))
+    while(!mNetMan->scanForActivity())
       continue;
   }else{
     std::cout << "Starting client...\n";
@@ -190,9 +190,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 
     if(mShutDown)
         return false;
-
-      //std::cout << "READ MESSAGES" << std::endl;
-      
+    
     if(mIsServer){
         //this should be done elsewhere
         //TODO: do not handle directly. defer to appropriate handler.
@@ -252,7 +250,7 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
         //update gui
     		if(scoreboard->reset){
     			gui->updateScore(scoreboard->rally[0]);
-          std::cout << scoreboard->rally[0] << " " << scoreboard->rally[1] << std::endl;
+          //std::cout << scoreboard->rally[0] << " " << scoreboard->rally[1] << std::endl;
     		}
         
         //message clients
