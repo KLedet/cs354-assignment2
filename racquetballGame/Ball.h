@@ -26,7 +26,7 @@ class Ball : public GameObject{
     void addToSim(Simulator* mSim);
     void addToScene(Ogre::SceneManager* scnMgr);
     void update(Ogre::Real elapsedTime);
-
+    
     Ogre::Vector3 getPosition(){ return rootNode->getPosition(); }
     Ogre::Vector3 setPosition(Ogre::Vector3 vec){ rootNode->setPosition(vec); }
 

@@ -1496,7 +1496,7 @@ void NetManager::readTCPSocket(int clientIdx) {
   }
 
   memset(cData->output, 0, MESSAGE_LENGTH);
-
+  
   result = recvTCP(tcpSockets[idxSocket], cData->output,
       MESSAGE_LENGTH);
 

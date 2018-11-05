@@ -30,14 +30,13 @@ public:
 	void addToSim(Simulator *mSim);
 	void addToScene(Ogre::SceneManager *mSceneMgr);
 	void update(const Ogre::Real elapsedTime);
-
-
+	
 	void input(btVector3 newVelocity);
 	void swing();
 	void unswing();
 	Ogre::Vector3 getPosition(){ return rootNode->getPosition(); }
 	Ogre::Quaternion getOrientation(){ return rootNode->getOrientation(); }
-
+	Ogre::SceneNode* getSceneNode(){return rootNode;}
 	//This is really messy and needs to be changed so we can despaghettify the code
 	//we will need to implement single player back in so keep this in mind
 	void setPosition(btVector3 vec);

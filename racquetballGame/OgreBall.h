@@ -13,6 +13,7 @@ Filename:    OgreBall.h
 #include "Volume.h"
 #include "GUI.h"
 #include "Audio/src/audio.h"
+#include "NetHandler.h"
 //---------------------------------------------------------------------------
 
 
@@ -34,12 +35,13 @@ public:
 
     //Hooks for handlers
     GUI* gui;
-
+    NetHandler* nethandler;
     OgreBall(void);
     virtual ~OgreBall(void);
 
 protected:
-
+    bool singleplayer;
+    bool pause;
     Simulator*                  mSim;
     NetManager*                 mNetMan;
 
