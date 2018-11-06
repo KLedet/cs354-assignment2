@@ -342,28 +342,70 @@ void OgreBall::worldStepMP(const Ogre::FrameEvent& fe){
         while(mNetMan->scanForActivity()){
           if(mNetMan->tcpClientData[0]->updated && !s_paused){
             char evt[10];
+            char args[20];
             char key;
-            int num = 0;
-            btVector3 velDelta = btVector3(0.0,0.0,0.0);
-            btVector3 vel = player2->getVelocity();
-            //sscanf(mNetMan->tcpClientData[0]->output, "%c:%d", &key, &num);
-            strcpy(evt, mNetMan->tcpClientData[0]->output);
-            
-            std::cout << "evt: " << evt << std::endl;
-            //printf("About to switch. key:%c, num:%d\n", key, num);
-            std::cout << "player2 velocity: " << vel.x() << " " << vel.y() <<  " " << vel.z() << std::endl;
-            switch(key){
-            case('Y'):
-              velDelta.setY(num);
-              break;
-            case('X'):
-              velDelta.setX(num);
-              break;
-            case('M'):
-                num > 0 ? player2->swing() : player2->unswing();
-                break;
+            int num = 3;
+            int index = 0;
+            bool readMoreMessages = true;
+            while(mNetMan->tcpClientData[0]->output[index] != 0){
+              btVector3 velDelta = btVector3(0.0,0.0,0.0);
+              btVector3 vel = player2->getVelocity();
+              strcpy(evt, mNetMan->tcpClientData[0]->output + index);
+              //std::cout << "evt: " << evt << " " << index;
+              index += strlen(evt)+1; // C C C C C 0
+              if (strcmp(evt, "keydown") == 0){
+                
+                strcpy(evt, mNetMan->tcpClientData[0]->output + index); 
+                index += 2;
+                key = evt[0];
+                switch(key){
+                case('W'):
+                  velDelta.setY(num);
+                  break;
+                case('S'):
+                  velDelta.setY(-num);
+                  break;
+                case('A'):
+                  velDelta.setX(num);
+                  break;
+                case 'D':
+                  velDelta.setX(-num);
+                  break;
+                default:
+                  break;
+                }
+                player2->input(vel + velDelta);
+              }
+              if(strcmp(evt, "keyup") == 0){
+                strcpy(evt, mNetMan->tcpClientData[0]->output + index); 
+                index+=2;
+                key = evt[0];
+                switch(key){
+                case('W'):
+                  velDelta.setY(-num);
+                  break;
+                case('S'):
+                  velDelta.setY(num);
+                  break;
+                case('A'):
+                  velDelta.setX(-num);
+                  break;
+                case 'D':
+                  velDelta.setX(num);
+                  break;
+                default:
+                  break;
+                }
+                player2->input(vel + velDelta);
+              }
+              if(strcmp(evt, "mousedown") == 0){
+                player2->swing();
+              }
+              if(strcmp(evt, "mouseup") == 0){
+                player2->unswing();
+              }
+              
             }
-            player2->input(vel + velDelta);
           }
         }
     }
@@ -502,7 +544,9 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
       toggleAudioMute();
       break;
       case OIS::KC_P:
-      s_paused = !s_paused;
+        if(singleplayer){
+          s_paused = !s_paused;
+        }
     default:
       break;
   }

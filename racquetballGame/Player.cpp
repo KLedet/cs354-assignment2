@@ -71,6 +71,25 @@ void Player::addToSim(Simulator* mSim){
 }
 
 void Player::input(btVector3 newVelocity){
+  if(newVelocity.x() > 3){
+    newVelocity.setX(3);
+  }
+  if(newVelocity.x() < -3){
+    newVelocity.setX(-3);
+  }
+  if(newVelocity.y() > 3) {
+    newVelocity.setY(3);
+  }
+  if(newVelocity.y() < -3) {
+    newVelocity.setY(-3);
+  }
+  if(newVelocity.z() > 3){
+    newVelocity.setZ(3);
+  }
+  if(newVelocity.z() < -3){
+    newVelocity.setZ(-3);
+  }
+
 	mVelocity = newVelocity;
 	//TODO: rotate with player's orientation
 	controller->setWalkDirection(mVelocity);

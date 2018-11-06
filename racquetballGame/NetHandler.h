@@ -34,6 +34,8 @@ public:
 		NET_AUDIO = 32,
 	};
 
+	EventType mType;
+
 	NetEvent(NetHandler* handler, NetEvent::EventType type, char* args);
 	~NetEvent(void);
 };
