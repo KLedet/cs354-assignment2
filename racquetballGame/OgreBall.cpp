@@ -272,7 +272,7 @@ void OgreBall::initMultiPlayer(){
 //---------------------------------------------------------------------------
 bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 {
-    //game state behavior
+    //game state
     if(mWindow->isClosed())
         return false;
 
@@ -315,6 +315,8 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     if(!setupComplete && s_networkSetupComplete && s_modeSetupComplete){
 
     }
+
+    //device capture
     mKeyboard->capture();
     mMouse->capture();
 
@@ -339,36 +341,29 @@ void OgreBall::worldStepMP(const Ogre::FrameEvent& fe){
         //TODO: do not handle directly. defer to appropriate handler.
         while(mNetMan->scanForActivity()){
           if(mNetMan->tcpClientData[0]->updated && !s_paused){
-
+            char evt[10];
             char key;
-            int num;
+            int num = 0;
+            btVector3 velDelta = btVector3(0.0,0.0,0.0);
             btVector3 vel = player2->getVelocity();
-            sscanf(mNetMan->tcpClientData[0]->output, "%c:%d", &key, &num);
-
-            printf("About to switch. key:%c, num:%d\n", key, num);
-
+            //sscanf(mNetMan->tcpClientData[0]->output, "%c:%d", &key, &num);
+            strcpy(evt, mNetMan->tcpClientData[0]->output);
+            
+            std::cout << "evt: " << evt << std::endl;
+            //printf("About to switch. key:%c, num:%d\n", key, num);
+            std::cout << "player2 velocity: " << vel.x() << " " << vel.y() <<  " " << vel.z() << std::endl;
             switch(key){
-            case('W'):
-                vel.setY(num);
-                
-                break;
-            case('S'):
-                vel.setY(-num);
-                
-                break;
-            case('D'):
-                vel.setX(-num);
-                
-                break;
-            case('A'):
-                vel.setX(num);
-                
-                break;
+            case('Y'):
+              velDelta.setY(num);
+              break;
+            case('X'):
+              velDelta.setX(num);
+              break;
             case('M'):
                 num > 0 ? player2->swing() : player2->unswing();
                 break;
             }
-            player2->input(vel);
+            player2->input(vel + velDelta);
           }
         }
     }
@@ -381,7 +376,7 @@ void OgreBall::worldStepMP(const Ogre::FrameEvent& fe){
         //update gui
         if(scoreboard->reset){
           gui->updateScore(scoreboard->rally[0], scoreboard->rally[1]);
-          std::cout << scoreboard->rally[0] << " " << scoreboard->rally[1] << std::endl;
+          //std::cout << scoreboard->rally[0] << " " << scoreboard->rally[1] << std::endl;
         }
       }
       //message clients
@@ -499,7 +494,7 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
     }
     player->input(vel + velDelta);
   }
-}*/
+  }*/
   //controller handling
 
   switch(arg.key){
@@ -522,7 +517,27 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
   if(nethandler){
     nethandler->injectUpInput(arg);
   }
-
+  if(player && mIsServer){
+      btVector3 vel = player->getVelocity();
+    btVector3 velDelta = btVector3(0.0,0.0,0.0);
+    switch(arg.key){
+    case OIS::KC_W:
+      velDelta.setY(-3);
+      break;
+    case OIS::KC_S:
+      velDelta.setY(3);
+      break;
+    case OIS::KC_A:
+      velDelta.setX(3);
+      break;
+    case OIS::KC_D:
+      velDelta.setX(-3);
+      break;
+    default:
+      break;
+    }
+    player->input(vel + velDelta);
+  }
   /*
   if(!mIsServer){
     nethandler->injectUpInput(arg);
@@ -562,6 +577,9 @@ bool OgreBall::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
   if(nethandler){
     nethandler->injectMouseDownInput(id);
   }
+  if(player && mIsServer){
+    player->swing();
+  }
   /*
   if(setupComplete){ 
   if(!mIsServer){
@@ -579,7 +597,12 @@ bool OgreBall::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 	gui->injectMouseUpInput(id);
   if(nethandler){
     nethandler->injectMouseUpInput(id);
-  }/*
+
+  }
+  if(player && mIsServer){
+    player->unswing();
+  }
+  /*
   if(setupComplete){
    if(!mIsServer){
     nethandler->injectMouseUpInput(id);

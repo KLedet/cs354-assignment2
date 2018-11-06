@@ -25,13 +25,13 @@ class NetHandler;
 struct NetEvent{
 public:
 	enum EventType {
-		NET_TRANSFORM,
-		NET_KEY_UP,
-		NET_KEY_DOWN,
-		NET_MOUSE_UP,
-		NET_MOUSE_DOWN,
-		NET_CLOSE,
-		NET_AUDIO,
+		NET_TRANSFORM = 0,
+		NET_KEY_UP = 1,
+		NET_KEY_DOWN = 2,
+		NET_MOUSE_UP = 4,
+		NET_MOUSE_DOWN = 8,
+		NET_CLOSE= 16,
+		NET_AUDIO = 32,
 	};
 
 	NetEvent(NetHandler* handler, NetEvent::EventType type, char* args);
