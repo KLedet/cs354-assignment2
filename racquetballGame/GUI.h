@@ -1,3 +1,6 @@
+#ifndef __GUI_h_
+#define __GUI_h_
+
 #include <CEGUI/CEGUI.h>
 #include <CEGUI/RendererModules/Ogre/Renderer.h>
 #include <string>
@@ -43,3 +46,6 @@ public:
   void setHostname(const CEGUI::EventArgs& args);
 
 };
+
+
+#endif

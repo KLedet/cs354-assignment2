@@ -34,6 +34,7 @@ public:
     //Hooks for handlers
     GUI* gui;
     NetHandler* nethandler;
+    InputHandler* playerInputHandler;
     OgreBall(void);
     virtual ~OgreBall(void);
 
@@ -42,9 +43,12 @@ protected:
     //setup flags
     bool                        singleplayer;
     bool                        mIsServer;
-
+    bool                        setupComplete;
     //state flags
-    bool                        pause;
+    bool                        s_paused;
+    bool                        s_start;
+    bool                        s_modeSetupComplete;
+    bool                        s_networkSetupComplete;
 
     int controlID;
     Simulator*                  mSim;
@@ -54,7 +58,11 @@ protected:
     virtual bool setup();
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& fe);
     virtual void createSimulator(void);
-    virtual void createNetManager(void);
+    virtual void createNetManager(bool isServer);
+    void worldStepSP(const Ogre::FrameEvent& fe);
+    void worldStepMP(const Ogre::FrameEvent& fe);
+    void initSinglePlayer();
+    void initMultiPlayer();
     bool keyPressed( const OIS::KeyEvent &arg );
     bool keyReleased(const OIS::KeyEvent &arg);
 	bool mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);

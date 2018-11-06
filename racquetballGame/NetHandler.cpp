@@ -2,60 +2,71 @@
 
 NetHandler::NetHandler(NetManager* netManager){
 	mNetMan = netManager;
-	server = false;
+	isServer = false;
+	connected = false;
 }
 
 NetHandler::~NetHandler(){
 	delete mNetMan;
 }
 
-
+void NetHandler::addObject(GameObject* obj){
+	objList.push_back(obj);
+}
 void NetHandler::injectDownInput(const OIS::KeyEvent& arg){
-	std::cout<< "Keydown" << std::endl;
+	if(!isServer){
+		std::cout<< "Keydown" << std::endl;
 
-	switch(arg.key){
-	case OIS::KC_W:
-		mNetMan->messageServer(PROTOCOL_TCP, "W:3", 5);
-		break;
-	case OIS::KC_S:
-		mNetMan->messageServer(PROTOCOL_TCP, "S:3", 5);
-		break;
-	case OIS::KC_A:
-		mNetMan->messageServer(PROTOCOL_TCP, "A:3", 5);
-		break;
-	case OIS::KC_D:
-		mNetMan->messageServer(PROTOCOL_TCP, "D:3", 5);
-		break;
-	default:
-		break;
+		switch(arg.key){
+		case OIS::KC_W:
+			mNetMan->messageServer(PROTOCOL_TCP, "W:3", 5);
+			break;
+		case OIS::KC_S:
+			mNetMan->messageServer(PROTOCOL_TCP, "S:3", 5);
+			break;
+		case OIS::KC_A:
+			mNetMan->messageServer(PROTOCOL_TCP, "A:3", 5);
+			break;
+		case OIS::KC_D:
+			mNetMan->messageServer(PROTOCOL_TCP, "D:3", 5);
+			break;
+		default:
+			break;
+		}
 	}
 }
 void NetHandler::injectUpInput(const OIS::KeyEvent& arg){
-	std::cout << "keyup" << std::endl;
-	switch(arg.key){
-	case OIS::KC_W:
-		mNetMan->messageServer(PROTOCOL_TCP, "W:0", 5);
-		break;
-	case OIS::KC_S:
-		mNetMan->messageServer(PROTOCOL_TCP, "S:0", 5);
-		break;
-	case OIS::KC_A:
-		mNetMan->messageServer(PROTOCOL_TCP, "A:0", 5);
-		break;
-	case OIS::KC_D:
-		mNetMan->messageServer(PROTOCOL_TCP, "D:0", 5);
-		break;
-	default:
-		break;
+	if(!isServer){
+		std::cout << "keyup" << std::endl;
+		switch(arg.key){
+		case OIS::KC_W:
+			mNetMan->messageServer(PROTOCOL_TCP, "W:0", 5);
+			break;
+		case OIS::KC_S:
+			mNetMan->messageServer(PROTOCOL_TCP, "S:0", 5);
+			break;
+		case OIS::KC_A:
+			mNetMan->messageServer(PROTOCOL_TCP, "A:0", 5);
+			break;
+		case OIS::KC_D:
+			mNetMan->messageServer(PROTOCOL_TCP, "D:0", 5);
+			break;
+		default:
+			break;
+		}
 	}
 }
 void NetHandler::injectMouseDownInput(OIS::MouseButtonID id){
-	mNetMan->messageServer(PROTOCOL_TCP, "M:1", 5);
-	std::cout << "mousedown" << std::endl;
+	if(!isServer){
+		mNetMan->messageServer(PROTOCOL_TCP, "M:1", 5);
+		std::cout << "mousedown" << std::endl;
+	}
 }
 void NetHandler::injectMouseUpInput(OIS::MouseButtonID id){
-	mNetMan->messageServer(PROTOCOL_TCP, "M:1", 5);
-	std::cout << "mouseup" << std::endl;
+	if(!isServer){
+		mNetMan->messageServer(PROTOCOL_TCP, "M:0", 5);
+		std::cout << "mouseup" << std::endl;
+	}
 }
 
 void NetHandler::sendTransform(Ogre::SceneNode* node){
@@ -77,6 +88,8 @@ void NetHandler::readTransform(Ogre::SceneNode* node){
     node->setOrientation(newRot);
 }
 
-void messagePump(){
-	
+void NetHandler::messagePump(){
+	bool activity = mNetMan->scanForActivity();
+	while(activity){
+	}
 }

@@ -51,38 +51,20 @@ void OgreBall::go(void)
 //---------------------------------------------------------------------------
 bool OgreBall::setup(void)
 {
-  pause = false;
-  singleplayer = false;
+  s_paused = true;
+  s_start = false;
+  singleplayer = true;
+  s_modeSetupComplete = false;
+  s_networkSetupComplete = false;
+  setupComplete = false;
+  mIsServer = false;
+
   controlID = 0; //might use this, might not. we'll see.
   char response;
   char response2[50];
-  //TODO: modify this so that it sets the multiplayer flag first
   
-  createNetManager();
-
-  std::cout << "Server? (y/n): ";
-  std::cin >> response;
-
-  response == 'y' ? mIsServer = true : mIsServer = false;
-
-  nethandler->setIsServer(mIsServer);
-
-  if(mIsServer){
-    std::cout << "Starting server...\n";
-    mNetMan->addNetworkInfo(PROTOCOL_TCP, NULL, 49157);
-    mNetMan->startServer();
-    mNetMan->acceptConnections();
-    std::cout << "Waiting for client connection.\n";
-    while(!mNetMan->scanForActivity())
-      continue;
-  }else{
-    std::cout << "Starting client...\n";
-    std::cout << "Input hostname: \n";
-    std::cin >> response2;
-    mNetMan->addNetworkInfo(PROTOCOL_TCP, response2, 49157);
-    mNetMan->startClient();
-  }
-
+  mNetMan = NULL;
+  nethandler= NULL;
 
   mRoot = new Ogre::Root(mPluginsCfg);
 
@@ -106,9 +88,13 @@ bool OgreBall::setup(void)
   // Create our physics simulator
   createSimulator();
   
+  gui = new GUI();
+
+  SDL_Init(SDL_INIT_AUDIO);
+  initAudio();
   // Create the scene
   //can we create scene later? so that we can make the GUI and do all the setup and then switch mode
-  createScene();
+  //createScene();
 
   createFrameListener();
 
@@ -168,7 +154,7 @@ void OgreBall::createScene(void)
 
   //should probably be done in setup since this is app related stuff
   // Create GUI
-	gui = new GUI();
+	
 	SDL_Init(SDL_INIT_AUDIO);
 	initAudio();
 
@@ -179,23 +165,180 @@ void OgreBall::createScene(void)
 	mCamera->setPosition(cam_position);
 }
 
+void OgreBall::initSinglePlayer(){
+  std::cout << "SP create scene" << std::endl;
+    // Create a diffuse point light
+  Ogre::Light* l1 = mSceneMgr->createLight("MainLight");
+  l1->setType(Ogre::Light::LT_POINT);
+  l1->setCastShadows(false);
+  l1->setPosition(0,200,0);
+  l1->setDiffuseColour(Ogre::ColourValue::White);
+
+  // Create a directional light for shadows
+  Ogre::Light* l2 = mSceneMgr->createLight("DirectionalLight");
+  l2->setType(Ogre::Light::LT_DIRECTIONAL);
+  l2->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
+  l2->setPosition(0,200,0);
+  l2->setDiffuseColour(Ogre::ColourValue::White);
+
+  Ogre::Light* l3 = mSceneMgr->createLight("DirectionalLight3");
+  l3->setType(Ogre::Light::LT_DIRECTIONAL);
+  l3->setDirection(Ogre::Vector3::NEGATIVE_UNIT_X);
+  l3->setPosition(200,0,0);
+  l3->setDiffuseColour(Ogre::ColourValue::White);
+
+  // Set up shadows
+  mSceneMgr->setShadowCasterRenderBackFaces(false);
+  mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+  mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
+
+  // Create Scoreboard
+  scoreboard = new Scoreboard();
+
+  // Create Room
+  Room* room = new Room(mSceneMgr, mSim, scoreboard);
 
 
+  // Create Ball
+  ball = new Ball();
+  ball->addToScene(mSceneMgr);
+  ball->addToSim(mSim);
+
+  std::cout<<"create player 1" << std::endl;
+  // Create Player
+  player = new Player(mSceneMgr, mSim, 0);
+
+  std::cout << "reposition camera" << std::endl;
+
+  // Reposition camera
+  Ogre::Vector3 cam_position = player->getPosition() + Ogre::Vector3(-75, 375, 600);
+  mCamera->setPosition(cam_position);
+}
+
+void OgreBall::initMultiPlayer(){
+  std::cout << "MP create scene" << std::endl;
+    // Create a diffuse point light
+  Ogre::Light* l1 = mSceneMgr->createLight("MainLight");
+  l1->setType(Ogre::Light::LT_POINT);
+  l1->setCastShadows(false);
+  l1->setPosition(0,200,0);
+  l1->setDiffuseColour(Ogre::ColourValue::White);
+
+  // Create a directional light for shadows
+  Ogre::Light* l2 = mSceneMgr->createLight("DirectionalLight");
+  l2->setType(Ogre::Light::LT_DIRECTIONAL);
+  l2->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
+  l2->setPosition(0,200,0);
+  l2->setDiffuseColour(Ogre::ColourValue::White);
+
+  Ogre::Light* l3 = mSceneMgr->createLight("DirectionalLight3");
+  l3->setType(Ogre::Light::LT_DIRECTIONAL);
+  l3->setDirection(Ogre::Vector3::NEGATIVE_UNIT_X);
+  l3->setPosition(200,0,0);
+  l3->setDiffuseColour(Ogre::ColourValue::White);
+
+  // Set up shadows
+  mSceneMgr->setShadowCasterRenderBackFaces(false);
+  mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+  mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
+
+  // Create Scoreboard
+  scoreboard = new Scoreboard();
+
+  // Create Room
+  Room* room = new Room(mSceneMgr, mSim, scoreboard);
+
+  // Create Ball
+  ball = new Ball();
+  ball->addToScene(mSceneMgr);
+  ball->addToSim(mSim);
+
+  std::cout<<"create player 1" << std::endl;
+  // Create Player
+  player = new Player(mSceneMgr, mSim, 0);
+
+  std::cout << "create player 2" << std::endl;
+  // Create Player
+  player2 = new Player(mSceneMgr, mSim, 1);
+  player2->setPosition(btVector3(0.0f, 0.0f, -250.0f));
+  player2->setRotation2();
+
+  std::cout << "reposition camera" << std::endl;
+
+  // Reposition camera
+  Ogre::Vector3 cam_position = player->getPosition() + Ogre::Vector3(-75, 375, 600);
+  mCamera->setPosition(cam_position);
+}
 //---------------------------------------------------------------------------
 bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 {
-
+    //game state behavior
     if(mWindow->isClosed())
         return false;
 
     if(mShutDown)
         return false;
+
+    //setup using GUI flags
+      
+    if(!s_modeSetupComplete && gui->playerModeSelected){
+      std::cout << "mode select + init scene" << std::endl;
+      if(gui->isSingleplayer){
+        initSinglePlayer();
+        mIsServer = true;
+        singleplayer = true;
+        setupComplete = true;
+        s_networkSetupComplete = true;
+      }else{
+        initMultiPlayer();
+        singleplayer = false;
+      }
+      s_modeSetupComplete = true;
+    }
     
-    if(mIsServer){
+    if(!s_networkSetupComplete && gui->hostStatusSelected){
+      std::cout << "create net manager" << std::endl;
+      singleplayer = false;
+      createNetManager(gui->isServer);
+      setupComplete = true;
+    }
+    if(!s_networkSetupComplete && gui->hostnameSet ){
+      std::cout << "Starting client...\n";
+      std::cout << "hostname:  " << gui->hostname << std::endl;
+      mNetMan->addNetworkInfo(PROTOCOL_TCP, gui->hostname, 49157);
+      mNetMan->startClient();
+      mNetMan->acceptConnections();
+      s_networkSetupComplete = true;
+      setupComplete = true;
+      std::cout << "Waiting for client connection.\n";
+    }
+    if(!setupComplete && s_networkSetupComplete && s_modeSetupComplete){
+
+    }
+    mKeyboard->capture();
+    mMouse->capture();
+
+
+    gui->injectTimestamps(fe);
+    
+
+    if(setupComplete){
+      if(singleplayer){
+        worldStepSP(fe);
+      }else{
+        worldStepMP(fe);
+      }
+    }
+    return true;
+}
+//---------------------------------------------------------------------------
+void OgreBall::worldStepMP(const Ogre::FrameEvent& fe){
+  const Ogre::Real elapsedTime = fe.timeSinceLastFrame;
+  if(mIsServer){
         //this should be done elsewhere
         //TODO: do not handle directly. defer to appropriate handler.
         while(mNetMan->scanForActivity()){
-          if(mNetMan->tcpClientData[0]->updated){
+          if(mNetMan->tcpClientData[0]->updated && !s_paused){
 
             char key;
             int num;
@@ -230,63 +373,71 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
         }
     }
 
-    // Need to capture/update each device
-    mKeyboard->capture();
-    mMouse->capture();
-    //input handled in device listeners
-
-    //update player velocity before physics stepsimulation
-
-		gui->injectTimestamps(fe);
-    const Ogre::Real elapsedTime = fe.timeSinceLastFrame;
-    if (!pause){
-      if(mIsServer){
-        //Server frame
-
-        //step sim
-        if(!pause)
-          mSim->stepSimulation(elapsedTime);
-        
+    //update player velocity before physics stepsimulation 
+       
+    if(mIsServer){
+      if(!s_paused){
+        mSim->stepSimulation(elapsedTime);
         //update gui
-    		if(scoreboard->reset){
-    			gui->updateScore(scoreboard->rally[0]);
-          //std::cout << scoreboard->rally[0] << " " << scoreboard->rally[1] << std::endl;
-    		}
-        
-        //message clients
-        if(mNetMan->getClients() > 0){
-          Ogre::SceneNode* ball_node = ball->getNode();
-          Ogre::SceneNode* player1_node = player->getSceneNode();
-          Ogre::SceneNode* player2_node = player2->getSceneNode();
-          nethandler->sendTransform(ball_node);
-          nethandler->sendTransform(player1_node);
-          nethandler->sendTransform(player2_node);
+        if(scoreboard->reset){
+          gui->updateScore(scoreboard->rally[0], scoreboard->rally[1]);
+          std::cout << scoreboard->rally[0] << " " << scoreboard->rally[1] << std::endl;
         }
-
-        // Have camera follow the paddle
-        mCamera->lookAt(player->getPosition());
-        mCamera->setPosition(player->getPosition() + Ogre::Vector3(-75, 375, 600));
-
-      } else {
-
-        while(mNetMan->scanForActivity()){
-          Ogre::SceneNode* ball_node = ball->getNode();
-          nethandler->readTransform(ball_node);
-          if(mNetMan->scanForActivity()){
-              Ogre::SceneNode* player1_node = player->getSceneNode();
-              nethandler->readTransform(player1_node);
-          }
-          if(mNetMan->scanForActivity()){
-              Ogre::SceneNode* player2_node = player2->getSceneNode();
-              nethandler->readTransform(player2_node);
-          }
-        }
-        // Have camera follow the paddle
-        mCamera->lookAt(player2->getPosition());
-        mCamera->setPosition(player2->getPosition() + Ogre::Vector3(-75, 375, -600));
       }
+      //message clients
+      if(mNetMan->getClients() > 0){
+        if(!s_start){
+          s_paused = !s_paused;
+          s_start = true;
+        }
+        Ogre::SceneNode* ball_node = ball->getNode();
+        Ogre::SceneNode* player1_node = player->getSceneNode();
+        Ogre::SceneNode* player2_node = player2->getSceneNode();
+        nethandler->sendTransform(ball_node);
+        nethandler->sendTransform(player1_node);
+        nethandler->sendTransform(player2_node);
+      }
+
+      // Have camera follow the paddle
+      mCamera->lookAt(player->getPosition());
+      mCamera->setPosition(player->getPosition() + Ogre::Vector3(-75, 375, 600));
+
+    } else {
+
+      while(mNetMan->scanForActivity()){
+        Ogre::SceneNode* ball_node = ball->getNode();
+        nethandler->readTransform(ball_node);
+        if(mNetMan->scanForActivity()){
+            Ogre::SceneNode* player1_node = player->getSceneNode();
+            nethandler->readTransform(player1_node);
+        }
+        if(mNetMan->scanForActivity()){
+            Ogre::SceneNode* player2_node = player2->getSceneNode();
+            nethandler->readTransform(player2_node);
+        }
+      }
+      // Have camera follow the paddle
+      mCamera->lookAt(player2->getPosition());
+      mCamera->setPosition(player2->getPosition() + Ogre::Vector3(-75, 375, -600));
     }
-    return true;
+  
+}
+//---------------------------------------------------------------------------
+
+void OgreBall::worldStepSP(const Ogre::FrameEvent& fe){
+  const Ogre::Real elapsedTime = fe.timeSinceLastFrame;
+
+    //update player velocity before physics stepsimulation 
+    if(!s_paused){
+        mSim->stepSimulation(elapsedTime);
+        //update gui
+        if(scoreboard->reset){
+          gui->updateScore(scoreboard->rally[1]);
+        }
+        mCamera->lookAt(player->getPosition());
+      mCamera->setPosition(player->getPosition() + Ogre::Vector3(-75, 375, 600));
+      }
+  
 }
 //---------------------------------------------------------------------------
 
@@ -298,10 +449,36 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
 
 	//Inject input into the GUI
 	gui->injectDownInput(arg);
-
+  
+  if(nethandler){
+    nethandler->injectDownInput(arg);
+  }
+    if(player && mIsServer){
+      btVector3 vel = player->getVelocity();
+    btVector3 velDelta = btVector3(0.0,0.0,0.0);
+    switch(arg.key){
+    case OIS::KC_W:
+      velDelta.setY(3);
+      break;
+    case OIS::KC_S:
+      velDelta.setY(-3);
+      break;
+    case OIS::KC_A:
+      velDelta.setX(-3);
+      break;
+    case OIS::KC_D:
+      velDelta.setX(3);
+      break;
+    default:
+      break;
+    }
+    player->input(vel + velDelta);
+  }
+  /*
   if(!mIsServer){
     nethandler->injectDownInput(arg);
   }else {
+    if(player){
     btVector3 vel = player->getVelocity();
     btVector3 velDelta = btVector3(0.0,0.0,0.0);
     switch(arg.key){
@@ -322,13 +499,15 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
     }
     player->input(vel + velDelta);
   }
-
+}*/
   //controller handling
 
   switch(arg.key){
     case OIS::KC_M:
       toggleAudioMute();
       break;
+      case OIS::KC_P:
+      s_paused = !s_paused;
     default:
       break;
   }
@@ -339,9 +518,16 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
 {
 
 	gui->injectUpInput(arg);
+
+  if(nethandler){
+    nethandler->injectUpInput(arg);
+  }
+
+  /*
   if(!mIsServer){
     nethandler->injectUpInput(arg);
   }else {
+    if(player){
     btVector3 vel = player->getVelocity();
     btVector3 velDelta = btVector3(0.0,0.0,0.0);
     switch(arg.key){
@@ -363,6 +549,7 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
     player->input(vel + velDelta);
   }
 
+} */
   return true;
 }
 
@@ -371,23 +558,37 @@ bool OgreBall::keyReleased(const OIS::KeyEvent &arg)
 
 bool OgreBall::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
   gui->injectMouseDownInput(id);
+
+  if(nethandler){
+    nethandler->injectMouseDownInput(id);
+  }
+  /*
+  if(setupComplete){ 
   if(!mIsServer){
     nethandler->injectMouseDownInput(id);
   } else {
+    if (player)
     player->swing();
   }
+}*/
     
 	return true;
 }
 
 bool OgreBall::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id){
 	gui->injectMouseUpInput(id);
-  if(!mIsServer){
+  if(nethandler){
+    nethandler->injectMouseUpInput(id);
+  }/*
+  if(setupComplete){
+   if(!mIsServer){
     nethandler->injectMouseUpInput(id);
   } else {
+    if(player)
     player->unswing();
   }
-  
+}
+  */
 	return true;
 }
 
@@ -395,18 +596,30 @@ bool OgreBall::mouseMoved(const OIS::MouseEvent &arg){
 	gui->injectMouseMovement(arg);
 	return true;
 }
-
+//-------------------------------------------------------------------
 //---------------------------------------------------------------------------
 void OgreBall::createSimulator(void)
 {
     mSim = new Simulator();
 }
 //---------------------------------------------------------------------------
-void OgreBall::createNetManager(void)
+void OgreBall::createNetManager(bool isServer)
 {
-   mNetMan = new NetManager();
-   mNetMan->initNetManager();
-   nethandler = new NetHandler(mNetMan);
+  mIsServer = isServer;
+  mNetMan = new NetManager();
+  mNetMan->initNetManager();
+  nethandler = new NetHandler(mNetMan);
+
+  nethandler->setIsServer(isServer);
+
+  if(isServer){
+    std::cout << "Starting server...\n";
+    mNetMan->addNetworkInfo(PROTOCOL_TCP, NULL, 49157);
+    mNetMan->startServer();
+    mNetMan->acceptConnections();
+    s_networkSetupComplete = true;
+    std::cout << "Waiting for client connection.\n";
+  }
 }
 //---------------------------------------------------------------------------
 

@@ -18,33 +18,55 @@
 #endif
 
 #include "NetManager.h"
-
+#include "GameObject.h"
 //wrapper to handle OIS events with NetManager
-class NetHandler{
-protected:
-	enum {
-		MSG_TRANSFORM,
-		MSG_KEY_UP,
-		MSG_KEY_DOWN,
-		MSG_MOUSE_UP,
-		MSG_MOUSE_DOWN,
+
+class NetHandler;
+struct NetEvent{
+public:
+	enum EventType {
+		NET_TRANSFORM,
+		NET_KEY_UP,
+		NET_KEY_DOWN,
+		NET_MOUSE_UP,
+		NET_MOUSE_DOWN,
+		NET_CLOSE,
+		NET_AUDIO,
 	};
+
+	NetEvent(NetHandler* handler, NetEvent::EventType type, char* args);
+	~NetEvent(void);
+};
+class InputHandler{
+public:
+	InputHandler(void) {}
+	~InputHandler(void) {}
+	virtual void injectDownInput(const OIS::KeyEvent& arg){}
+	virtual void injectUpInput(const OIS::KeyEvent& arg){}
+	virtual void injectMouseDownInput(OIS::MouseButtonID id){}
+	virtual void injectMouseUpInput(OIS::MouseButtonID id){}
+};
+class NetHandler : public InputHandler{
+protected:
+	
 	NetManager* mNetMan;
-	bool server;
+	bool isServer;
 	bool connected;
+	std::vector<GameObject*> objList;
 public:
 	NetHandler(NetManager* netMan);
 	~NetHandler(void);
-	void injectDownInput(const OIS::KeyEvent& arg);
-	void injectUpInput(const OIS::KeyEvent& arg);
-	void injectMouseDownInput(OIS::MouseButtonID id);
-	void injectMouseUpInput(OIS::MouseButtonID id);
-	bool isServer(){return server;}
-	void setIsServer(bool server_val){ server = server_val;}
+
+	void addObject(GameObject *obj);
+	virtual void injectDownInput(const OIS::KeyEvent& arg);
+	virtual void injectUpInput(const OIS::KeyEvent& arg);
+	virtual void injectMouseDownInput(OIS::MouseButtonID id);
+	virtual void injectMouseUpInput(OIS::MouseButtonID id);
+	bool getIsServer(){return isServer;}
+	void setIsServer(bool server_val){ isServer = server_val;}
 	bool connectionEstablished(){return connected;}
 	void sendTransform(Ogre::SceneNode* node);
 	void readTransform(Ogre::SceneNode* node);
 	void messagePump();
 };
-
 #endif

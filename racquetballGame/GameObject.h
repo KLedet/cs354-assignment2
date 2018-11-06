@@ -5,7 +5,7 @@
 #include "OgreMotionState.h"
 #include "Simulator.h"
 
-//should be implemented as Game Entity
+//functionally a GUI hook
 struct Scoreboard {
 public:
     int rally[2];
@@ -32,6 +32,7 @@ protected:
 	btTransform tr;
 	OgreMotionState* motionState;
 	bool needsUpdates;
+	Ogre::SceneNode* rootNode;
 
 	//don't know if we're using these
 	CollisionContext* context;
@@ -51,9 +52,9 @@ public:
 	virtual void addToSim(Simulator *mSim) = 0;
 	virtual void addToScene(Ogre::SceneManager *mSceneMgr) = 0;
 	virtual void update(const Ogre::Real elapsedTime) = 0;
+	virtual Ogre::SceneNode* getNode(){return rootNode;}
 	//move this somewhere else
 	btRigidBody* getBody(){return body;}
-	
 };
 
 #endif

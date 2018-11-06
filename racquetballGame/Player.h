@@ -41,8 +41,7 @@ public:
 	//we will need to implement single player back in so keep this in mind
 	void setPosition(btVector3 vec);
 	void setRotation2();
-	void setOgrePosition(Ogre::Vector3 vec){rootNode->setPosition(vec);}
-	void setOgreRotation(Ogre::Quaternion rot){rootNode->setOrientation(rot);}
+	
 	btKinematicCharacterController* getController(){ return controller;}
 	btVector3 getVelocity(){ return mVelocity; }
 };
