@@ -284,12 +284,14 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
     if(!s_modeSetupComplete && gui->playerModeSelected){
       std::cout << "mode select + init scene" << std::endl;
       if(gui->isSingleplayer){
+        std::cout << "init_singleplayer" << std::endl;
         initSinglePlayer();
         mIsServer = true;
         singleplayer = true;
         setupComplete = true;
         s_networkSetupComplete = true;
       }else{
+        std::cout << "init_multiplayer" << std::endl;
         initMultiPlayer();
         singleplayer = false;
       }
