@@ -4,24 +4,28 @@
 
 void GUI::setSingleplayer(const CEGUI::EventArgs& args){
   isSingleplayer = true;
+  playerModeSelected = true;
   CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(4)->hide();
   CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(0)->show();
 }
 
 void GUI::setMultiplayer(const CEGUI::EventArgs& args){
   isSingleplayer = false;
+  playerModeSelected = true;
   CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(4)->hide();
   CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(3)->show();
 }
 
 void GUI::setServer(const CEGUI::EventArgs& args){
   isServer = true;
+  hostStatusSelected = true;
   CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(3)->hide();
   CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(1)->show();
 }
 
 void GUI::setClient(const CEGUI::EventArgs& args){
   isServer = false;
+  hostStatusSelected = true;
   CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(3)->hide();
   CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(2)->show();
 }
@@ -38,7 +42,9 @@ void GUI::setHostname(const CEGUI::EventArgs& args){
 GUI::GUI(){
   CEGUI::OgreRenderer* renderer = &CEGUI::OgreRenderer::bootstrapSystem();
   isSingleplayer = true;
+  playerModeSelected = false;
   isServer = true;
+  hostStatusSelected = false;
   hostnameSet = false;
 
   CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
@@ -206,10 +212,20 @@ void GUI::injectMouseMovement(const OIS::MouseEvent &arg){
     sys.injectMouseWheelChange(arg.state.Z.rel / 120.0f);
 }
 
-void GUI::updateScore(int rallyCount){
-  char buffer[20];
-  sprintf(buffer, "Score: %d", rallyCount);
-  CEGUI::Window* sb = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(0);
-  sb->setText(buffer);
+void GUI::updateScore(int redCount, int blueCount){
+  if(isSingleplayer){
+    char buffer[20];
+    sprintf(buffer, "Score: %d", redCount);
+    CEGUI::Window* sb = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(0);
+    sb->setText(buffer);
+  } else {
+    CEGUI::Window* sb = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(1);
+    char redBuffer[20];
+    sprintf(redBuffer, "Score: %d", redCount);
+    sb->getChildAtIdx(0)->setText(redBuffer);
+    char blueBuffer[20];
+    sprintf(blueBuffer, "Score: %d", blueCount);
+    sb->getChildAtIdx(1)->setText(blueBuffer);
+  }
 
 }

@@ -27,10 +27,12 @@ public:
   void injectMouseDownInput(OIS::MouseButtonID id);
   void injectMouseUpInput(OIS::MouseButtonID id);
   void injectMouseMovement(const OIS::MouseEvent &arg);
-  void updateScore(int rallyCount);
+  void updateScore(int redCount, int blueCount=0);
 
   bool isSingleplayer;
+  bool playerModeSelected;
   bool isServer;
+  bool hostStatusSelected;
   bool hostnameSet;
   const char* hostname;
 
