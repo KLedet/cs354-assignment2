@@ -36,6 +36,34 @@ material Examples/OgreLogo
 	}
 }
 
+material Red
+{
+  technique
+  {
+     pass
+      {
+        texture_unit
+        {
+          texture Red.png
+        }
+     }   
+  }
+}
+
+material Blue
+{
+  technique
+  {
+     pass
+      {
+        texture_unit
+        {
+          texture Blue.png
+        }
+     }   
+  }
+}
+
 material Examples/BeachStones
 {
 	technique

@@ -1,6 +1,8 @@
 #include "Player.h"
 #include "Audio/src/audio.h"
 
+int pCnt = 0;
+
 Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim, int pNum){
   last_time =0;
   mVelocity = btVector3(0,0,0);
@@ -8,6 +10,8 @@ Player::Player(Ogre::SceneManager* scnMgr, Simulator* sim, int pNum){
   rot_1.setEuler(- SIMD_PI / 2 ,0.0,0.0);
   isSwinging = false;
   swingSpeed = 8.0f;
+
+  pCnt++;
 
   shape = NULL;
 
@@ -36,7 +40,10 @@ void Player::init(btVector3 origin, btQuaternion rot){
 void Player::addToScene(Ogre::SceneManager* scnMgr){
 
   Ogre::Entity* paddle = scnMgr->createEntity("cube.mesh");
-  paddle->setMaterialName("Examples/OgreLogo");
+  if(pCnt < 2)
+    paddle->setMaterialName("Red");
+  else
+    paddle->setMaterialName("Blue");
   paddle->setCastShadows(true);
   rootNode = scnMgr->getRootSceneNode()->createChildSceneNode();
   rootNode->attachObject(paddle);
