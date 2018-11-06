@@ -75,6 +75,8 @@ void Ball::addToSim(Simulator* mSim){
 //bootleg event system
 void Ball::update(Ogre::Real elapsedTime){
 	btTransform transform;
+  int z_dir;
+  int wallID = (int) elapsedTime; // using time param for our wall ID
 	
 	transform.setRotation(btQuaternion(1.0f,1.0f,1.0f,0));
 	transform.setOrigin(btVector3(0,0,-30));
@@ -87,7 +89,8 @@ void Ball::update(Ogre::Real elapsedTime){
   Ogre::Real x_val = (Ogre::Real)(rand() % 8 + 50);
   if(rand() % 3 == 1)
     x_val *= -1;
-	body->setLinearVelocity(btVector3(x_val,100,-300));
+  wallID == 1 ? z_dir = 1 : z_dir = -1;
+	body->setLinearVelocity(btVector3(x_val,100,z_dir*300));
 
 
 }

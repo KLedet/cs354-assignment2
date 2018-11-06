@@ -85,7 +85,7 @@ void Wall::update(Ogre::Real elapsedTime){
             const btCollisionObject* col = volume->getCollidedObject();
             if(col){
                 GameObject* obj = static_cast<GameObject*>(col->getUserPointer());
-                if(obj) obj->update(0.0f); //doesn't matter
+                if(obj) obj->update((Ogre::Real)this->getID()); //doesn't matter
             }
         }
         if(scoreboard){
