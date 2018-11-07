@@ -221,10 +221,10 @@ void GUI::updateScore(int redCount, int blueCount){
   } else {
     CEGUI::Window* sb = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->getChildAtIdx(1);
     char redBuffer[20];
-    sprintf(redBuffer, "Score: %d", redCount);
+    sprintf(redBuffer, "Red: %d", redCount);
     sb->getChildAtIdx(0)->setText(redBuffer);
     char blueBuffer[20];
-    sprintf(blueBuffer, "Score: %d", blueCount);
+    sprintf(blueBuffer, "Blue: %d", blueCount);
     sb->getChildAtIdx(1)->setText(blueBuffer);
   }
 

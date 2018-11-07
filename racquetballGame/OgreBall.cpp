@@ -339,126 +339,187 @@ bool OgreBall::frameRenderingQueued(const Ogre::FrameEvent& fe)
 void OgreBall::worldStepMP(const Ogre::FrameEvent& fe){
   const Ogre::Real elapsedTime = fe.timeSinceLastFrame;
   if(mIsServer){
-        //this should be done elsewhere
-        //TODO: do not handle directly. defer to appropriate handler.
-        while(mNetMan->scanForActivity()){
-          if(mNetMan->tcpClientData[0]->updated && !s_paused){
-            char evt[10];
-            char args[20];
-            char key;
-            int num = 3;
-            int index = 0;
-            bool readMoreMessages = true;
-            while(mNetMan->tcpClientData[0]->output[index] != 0){
-              btVector3 velDelta = btVector3(0.0,0.0,0.0);
-              btVector3 vel = player2->getVelocity();
-              strcpy(evt, mNetMan->tcpClientData[0]->output + index);
-              //std::cout << "evt: " << evt << " " << index;
-              index += strlen(evt)+1; // C C C C C 0
-              if (strcmp(evt, "keydown") == 0){
-                
-                strcpy(evt, mNetMan->tcpClientData[0]->output + index); 
-                index += 2;
-                key = evt[0];
-                switch(key){
-                case('W'):
-                  velDelta.setY(num);
-                  break;
-                case('S'):
-                  velDelta.setY(-num);
-                  break;
-                case('A'):
-                  velDelta.setX(num);
-                  break;
-                case 'D':
-                  velDelta.setX(-num);
-                  break;
-                default:
-                  break;
-                }
-                player2->input(vel + velDelta);
-              }
-              if(strcmp(evt, "keyup") == 0){
-                strcpy(evt, mNetMan->tcpClientData[0]->output + index); 
-                index+=2;
-                key = evt[0];
-                switch(key){
-                case('W'):
-                  velDelta.setY(-num);
-                  break;
-                case('S'):
-                  velDelta.setY(num);
-                  break;
-                case('A'):
-                  velDelta.setX(-num);
-                  break;
-                case 'D':
-                  velDelta.setX(num);
-                  break;
-                default:
-                  break;
-                }
-                player2->input(vel + velDelta);
-              }
-              if(strcmp(evt, "mousedown") == 0){
-                player2->swing();
-              }
-              if(strcmp(evt, "mouseup") == 0){
-                player2->unswing();
-              }
-              
+    //this should be done elsewhere
+    //TODO: do not handle directly. defer to appropriate handler.
+    while(mNetMan->scanForActivity()){
+      if(mNetMan->tcpClientData[0]->updated && !s_paused){
+        char evt[10];
+        char args[20];
+        char key;
+        int num = 3;
+        int index = 0;
+        bool readMoreMessages = true;
+        while(mNetMan->tcpClientData[0]->output[index] != 0){
+          btVector3 velDelta = btVector3(0.0,0.0,0.0);
+          btVector3 vel = player2->getVelocity();
+          strcpy(evt, mNetMan->tcpClientData[0]->output + index);
+          //std::cout << "evt: " << evt << " " << index;
+          index += strlen(evt)+1; // C C C C C 0
+          if (strcmp(evt, "keydown") == 0){
+            
+            strcpy(evt, mNetMan->tcpClientData[0]->output + index); 
+            index += 2;
+            key = evt[0];
+            switch(key){
+            case('W'):
+              velDelta.setY(num);
+              break;
+            case('S'):
+              velDelta.setY(-num);
+              break;
+            case('A'):
+              velDelta.setX(num);
+              break;
+            case 'D':
+              velDelta.setX(-num);
+              break;
+            default:
+              break;
             }
+            player2->input(vel + velDelta);
           }
+          if(strcmp(evt, "keyup") == 0){
+            strcpy(evt, mNetMan->tcpClientData[0]->output + index); 
+            index+=2;
+            key = evt[0];
+            switch(key){
+            case('W'):
+              velDelta.setY(-num);
+              break;
+            case('S'):
+              velDelta.setY(num);
+              break;
+            case('A'):
+              velDelta.setX(-num);
+              break;
+            case 'D':
+              velDelta.setX(num);
+              break;
+            default:
+              break;
+            }
+            player2->input(vel + velDelta);
+          }
+          if(strcmp(evt, "mousedown") == 0){
+            player2->swing();
+          }
+          if(strcmp(evt, "mouseup") == 0){
+            player2->unswing();
+          }
+          
         }
+      }
+    }
+  
+    if(!s_paused){
+      mSim->stepSimulation(elapsedTime);
+      //update gui
+      if(scoreboard->reset){
+        gui->updateScore(scoreboard->rally[1], scoreboard->rally[0] );
+        //std::cout << scoreboard->rally[0] << " " << scoreboard->rally[1] << std::endl;
+        nethandler->sendScore(scoreboard->rally[0], scoreboard->rally[1]);
+        scoreboard->reset = false;
+      }
+    }
+    //message clients
+    if(mNetMan->getClients() > 0){
+      if(!s_start){
+        s_paused = !s_paused;
+        s_start = true;
+      }
+    
+      nethandler->sendTransform(ball->getTransform(), 'B');
+      nethandler->sendTransform(player->getTransform(), '1');
+      nethandler->sendTransform(player2->getTransform(), '2');
     }
 
-    //update player velocity before physics stepsimulation 
-       
-    if(mIsServer){
-      if(!s_paused){
-        mSim->stepSimulation(elapsedTime);
-        //update gui
-        if(scoreboard->reset){
-          gui->updateScore(scoreboard->rally[0], scoreboard->rally[1]);
-          //std::cout << scoreboard->rally[0] << " " << scoreboard->rally[1] << std::endl;
-        }
-      }
-      //message clients
-      if(mNetMan->getClients() > 0){
-        if(!s_start){
-          s_paused = !s_paused;
-          s_start = true;
-        }
-        Ogre::SceneNode* ball_node = ball->getNode();
-        Ogre::SceneNode* player1_node = player->getSceneNode();
-        Ogre::SceneNode* player2_node = player2->getSceneNode();
-        nethandler->sendTransform(ball_node);
-        nethandler->sendTransform(player1_node);
-        nethandler->sendTransform(player2_node);
-      }
+    // Have camera follow the paddle
+    mCamera->lookAt(player->getPosition());
+    mCamera->setPosition(player->getPosition() + Ogre::Vector3(-75, 375, 600));
 
-      // Have camera follow the paddle
-      mCamera->lookAt(player->getPosition());
-      mCamera->setPosition(player->getPosition() + Ogre::Vector3(-75, 375, 600));
+  } else {
 
-    } else {
-
-      while(mNetMan->scanForActivity()){
-        Ogre::SceneNode* ball_node = ball->getNode();
-        nethandler->readTransform(ball_node);
-        if(mNetMan->scanForActivity()){
-            Ogre::SceneNode* player1_node = player->getSceneNode();
-            nethandler->readTransform(player1_node);
-        }
-        if(mNetMan->scanForActivity()){
-            Ogre::SceneNode* player2_node = player2->getSceneNode();
-            nethandler->readTransform(player2_node);
-        }
+    while(mNetMan->scanForActivity()){
+      
+      char args[20];
+      
+      int index = 0;
+      bool readMoreMessages = true;
+      /*
+      for(int i = 0; i < 256; i++){
+        std::cout << (unsigned char)mNetMan->tcpServerData.output[i] << " ";
       }
-      // Have camera follow the paddle
-      mCamera->lookAt(player2->getPosition());
-      mCamera->setPosition(player2->getPosition() + Ogre::Vector3(-75, 375, -600));
+      std::cout << std::endl;*/
+      while(readMoreMessages){
+        char evt[40]; //message buffer
+        strcpy(evt, mNetMan->tcpServerData.output + index);
+        //std::cout << "evt: " << evt << " " << index;
+        index += strlen(evt)+1; // C C C C C 0
+        
+        if(strcmp(evt, "transform") == 0){
+          char objID;
+          btTransform tr;
+          btTransformData dataIn;
+          readMoreMessages = true;
+          strcpy(evt, mNetMan->tcpServerData.output + index); 
+          index+=2;
+          objID = evt[0];
+          //std::cout << "transform : " << objID << std::endl;
+          memcpy(&dataIn, mNetMan->tcpServerData.output + index, sizeof(dataIn));
+          tr.deSerializeFloat(dataIn);
+          index+= sizeof(dataIn);
+          /*
+          std::cout << new_pos << std::endl;
+          memcpy(&new_rot, mNetMan->tcpServerData.output + index, sizeof(new_rot));
+          index += sizeof(new_rot);
+          std::cout << new_rot << std::endl;
+          */
+          
+          switch(objID){
+            case('B'):
+              ball->setTransform(tr);
+              break;
+            case('1'):
+              player->setTransform(tr);
+              break;
+            case('2'):
+              player2->setTransform(tr);
+              break;
+            default:
+              break;
+          }
+        
+        } else if (strcmp(evt, "score") == 0) {
+          std::cout << "score!" << std::endl;
+          int score1;
+          int score2;
+          memcpy(&score1, mNetMan->tcpServerData.output + index, sizeof(score1));
+          index+=sizeof(score1);
+          memcpy(&score2, mNetMan->tcpServerData.output + index, sizeof(score2));
+          index+=sizeof(score1);
+          gui->updateScore(score2, score1);
+          readMoreMessages = true;
+        } else {
+          readMoreMessages = false;
+        }
+        
+      }
+      /*
+      Ogre::SceneNode* ball_node = ball->getNode();
+      nethandler->readTransform(ball_node);
+      if(mNetMan->scanForActivity()){
+          Ogre::SceneNode* player1_node = player->getNode();
+          nethandler->readTransform(player1_node);
+      }
+      if(mNetMan->scanForActivity()){
+          Ogre::SceneNode* player2_node = player2->getNode();
+          nethandler->readTransform(player2_node);
+      }*/
     }
+    // Have camera follow the paddle
+    mCamera->lookAt(player2->getPosition());
+    mCamera->setPosition(player2->getPosition() + Ogre::Vector3(-75, 375, -600));
+  }
   
 }
 //---------------------------------------------------------------------------

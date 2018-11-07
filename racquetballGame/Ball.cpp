@@ -80,9 +80,9 @@ void Ball::update(Ogre::Real elapsedTime){
 	
 	transform.setRotation(btQuaternion(1.0f,1.0f,1.0f,0));
 	transform.setOrigin(btVector3(0,0,-30));
-  tr = transform;
-	body->setWorldTransform(transform);
-	motionState->setWorldTransform(transform);
+  tr = btTransform(transform);
+	body->setWorldTransform(tr);
+	motionState->setWorldTransform(tr);
 
   srand(time(0));
 

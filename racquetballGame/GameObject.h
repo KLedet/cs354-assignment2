@@ -53,6 +53,15 @@ public:
 	virtual void addToScene(Ogre::SceneManager *mSceneMgr) = 0;
 	virtual void update(const Ogre::Real elapsedTime) = 0;
 	virtual Ogre::SceneNode* getNode(){return rootNode;}
+	void setTransform(btTransform &newTr) { 
+		tr = newTr; 
+		motionState->setWorldTransform(tr);
+	}
+	btTransform &getTransform(){ 
+		motionState->getWorldTransform(tr);
+		return tr;
+	}
+
 	//move this somewhere else
 	btRigidBody* getBody(){return body;}
 };

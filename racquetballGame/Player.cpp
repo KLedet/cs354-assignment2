@@ -136,7 +136,7 @@ void Player::update(Ogre::Real elapsedTime){
   controller->getGhostObject()->setWorldTransform(trans);
   controller->setWalkDirection(mVelocity);
 	motionState->setWorldTransform(trans);
-
+  tr = trans;
 
   volume->update();
   volume->getTriggerVolume()->setWorldTransform(btTransform(btQuaternion(1.0, 1.0, 1.0, 0), origin ));
@@ -169,6 +169,7 @@ void Player::setPosition(btVector3 vec){
   btTransform trans;
   trans.setRotation(controller->getGhostObject()->getWorldTransform().getRotation());
   trans.setOrigin(vec);
+  tr = trans;
   controller->getGhostObject()->setWorldTransform(trans);
 }
 

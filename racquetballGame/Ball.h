@@ -8,9 +8,6 @@
 //TODO: refactor using inheritance
 class Ball : public GameObject{
   protected:
-    
-    
-    Ogre::SceneNode* rootNode;
 
     //clutter
     Ogre::Vector3 bDirection;
@@ -34,7 +31,6 @@ class Ball : public GameObject{
     void impulse(int pNum);
 
     //not necessary
-    Ogre::SceneNode* getNode() { return rootNode; }
     btRigidBody* getBody(){return body;}
 
 };

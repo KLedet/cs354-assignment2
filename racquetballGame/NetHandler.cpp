@@ -10,12 +10,12 @@ NetHandler::~NetHandler(){
 	delete mNetMan;
 }
 
-void NetHandler::addObject(GameObject* obj){
-	objList.push_back(obj);
+void NetHandler::addObject(char key, GameObject* obj){
+	objList[key] = obj;
 }
 void NetHandler::injectDownInput(const OIS::KeyEvent& arg){
 	if(!isServer){
-		std::cout<< "Keydown" << std::endl;
+		//std::cout<< "Keydown" << std::endl;
 		char msgBuff[] = "keydown";
 		char keyBuff[2];
 		char key;
@@ -47,7 +47,7 @@ void NetHandler::injectDownInput(const OIS::KeyEvent& arg){
 }
 void NetHandler::injectUpInput(const OIS::KeyEvent& arg){
 	if(!isServer){
-		std::cout << "keyup" << std::endl;
+		//std::cout << "keyup" << std::endl;
 		char msgBuff[] = "keyup";
 		char keyBuff[2];
 		int num;
@@ -88,25 +88,63 @@ void NetHandler::injectMouseDownInput(OIS::MouseButtonID id){
 	if(!isServer){
 		char msgBuff[] = "mousedown";
 		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 10);
-		std::cout << "mousedown" << std::endl;
+		//std::cout << "mousedown" << std::endl;
 	}
 }
 void NetHandler::injectMouseUpInput(OIS::MouseButtonID id){
 	if(!isServer){
 		char msgBuff[] = "mouseup";
 		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 8);
-		std::cout << "mouseup" << std::endl;
+		//std::cout << "mouseup" << std::endl;
 	}
 }
 
-void NetHandler::sendTransform(Ogre::SceneNode* node){
+void NetHandler::sendTransform(btTransform tr, char objID){
+	char cmdBuff[] = "transform";
+	char idBuff[2];
+	btTransformData data;
+	tr.serializeFloat(data);
+	/*
 	Ogre::Vector3 pos = node->getPosition();
+	std::cout << sizeof(pos) << std::endl;
 	Ogre::Quaternion rot = node->getOrientation();
-	int message_length = sizeof(pos) + sizeof(rot);
+	std::cout << sizeof(rot) << std::endl;*/
+	int message_length = sizeof(data);
+	/*for (int i = 0; i < 4; i++){
+		std::cout << data.m_origin.m_floats[i] << " " ;
+	}
+
+	std::cout << std::endl;*/
 	char msgBuff[message_length];
+	idBuff[0] = objID;
+	idBuff[1] = 0;
+	/*
     memcpy(msgBuff, &pos, sizeof(pos));
     memcpy(msgBuff + sizeof(pos), &rot, sizeof(rot));
-	mNetMan->messageClient(PROTOCOL_TCP, 0, msgBuff, 256);
+    */
+    memcpy(msgBuff, &data, sizeof(data));
+    mNetMan->messageClient(PROTOCOL_TCP, 0, cmdBuff, 10);
+    mNetMan->messageClient(PROTOCOL_TCP, 0, idBuff, 2);
+	mNetMan->messageClient(PROTOCOL_TCP, 0, msgBuff, message_length);
+}
+
+void NetHandler::sendScore(int score1, int score2){
+	char cmdBuff[] = "score";
+	/*
+	Ogre::Vector3 pos = node->getPosition();
+	std::cout << sizeof(pos) << std::endl;
+	Ogre::Quaternion rot = node->getOrientation();
+	std::cout << sizeof(rot) << std::endl;*/
+	/*
+    memcpy(msgBuff, &pos, sizeof(pos));
+    memcpy(msgBuff + sizeof(pos), &rot, sizeof(rot));
+    */
+    int message_length = sizeof(score1) + sizeof(score2);
+	char msgBuff[message_length];
+    memcpy(msgBuff, &score1, sizeof(score1));
+    memcpy(msgBuff + sizeof(score1), &score2, sizeof(score2));
+    mNetMan->messageClient(PROTOCOL_TCP, 0, cmdBuff, 6);
+	mNetMan->messageClient(PROTOCOL_TCP, 0, msgBuff, message_length);
 }
 
 void NetHandler::readTransform(Ogre::SceneNode* node){

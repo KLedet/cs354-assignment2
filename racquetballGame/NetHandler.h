@@ -39,6 +39,7 @@ public:
 	NetEvent(NetHandler* handler, NetEvent::EventType type, char* args);
 	~NetEvent(void);
 };
+
 class InputHandler{
 public:
 	InputHandler(void) {}
@@ -48,18 +49,19 @@ public:
 	virtual void injectMouseDownInput(OIS::MouseButtonID id){}
 	virtual void injectMouseUpInput(OIS::MouseButtonID id){}
 };
+
 class NetHandler : public InputHandler{
 protected:
 	
 	NetManager* mNetMan;
 	bool isServer;
 	bool connected;
-	std::vector<GameObject*> objList;
+	std::map<char, GameObject*> objList;
 public:
 	NetHandler(NetManager* netMan);
 	~NetHandler(void);
 
-	void addObject(GameObject *obj);
+	void addObject(char key, GameObject *obj);
 	virtual void injectDownInput(const OIS::KeyEvent& arg);
 	virtual void injectUpInput(const OIS::KeyEvent& arg);
 	virtual void injectMouseDownInput(OIS::MouseButtonID id);
@@ -67,8 +69,12 @@ public:
 	bool getIsServer(){return isServer;}
 	void setIsServer(bool server_val){ isServer = server_val;}
 	bool connectionEstablished(){return connected;}
-	void sendTransform(Ogre::SceneNode* node);
+	void sendTransform(btTransform tr, char objID);
+	void sendScore(int score1, int score2);
+
+	//unused
 	void readTransform(Ogre::SceneNode* node);
+	void readNodeID(Ogre::SceneNode* node, int index){}
 	void messagePump();
 };
 #endif

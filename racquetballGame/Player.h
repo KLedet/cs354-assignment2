@@ -10,7 +10,6 @@ class Player : public GameObject{
 	//TODO: attach the camera to the player
 private:
 	btVector3 mVelocity;
-	Ogre::SceneNode* rootNode;
 	btKinematicCharacterController* controller;
 	btDiscreteDynamicsWorld* collisionWorld;
 	Volume* volume;
