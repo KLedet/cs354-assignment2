@@ -16,7 +16,7 @@ void NetHandler::addObject(char key, GameObject* obj){
 void NetHandler::injectDownInput(const OIS::KeyEvent& arg){
 	if(!isServer){
 		//std::cout<< "Keydown" << std::endl;
-		char msgBuff[] = "KD";
+		char msgBuff[5] = "KD";
 		char keyBuff[2];
 		char key;
 		int num;
@@ -38,49 +38,43 @@ void NetHandler::injectDownInput(const OIS::KeyEvent& arg){
 			return; //return early to avoid messaging anything
 			break;
 		}
-		keyBuff[0] = key;
-		keyBuff[1] = 0;
+		msgBuff[2] = 0;
+		msgBuff[3] = key;
+		msgBuff[4] = 0;
 		//sprintf(msgBuff, "%c:%d", key, num);
-		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 3);
-		mNetMan->messageServer(PROTOCOL_TCP, keyBuff, 2);
+		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 5);
+		//mNetMan->messageServer(PROTOCOL_TCP, keyBuff, 2);
 	}
 }
 void NetHandler::injectUpInput(const OIS::KeyEvent& arg){
 	if(!isServer){
 		//std::cout << "keyup" << std::endl;
-		char msgBuff[] = "KU";
+		char msgBuff[5] = "KU";
 		char keyBuff[2];
-		int num;
 		char key;
 		switch(arg.key){
 		case OIS::KC_W:
 			key = 'W';
-			num = -3;
-			
 			break;
 		case OIS::KC_S:
 			key = 'S';
-			num = 3;
-			
 			break;
 		case OIS::KC_A:
 			key = 'A';
-			num = -3;
-			
 			break;
 		case OIS::KC_D:
 			key = 'D';
-			num = 3;
 			break;
 		default:
 			return; //return early to avoid messaging anything
 			break;
 		}
-		keyBuff[0] = key;
-		keyBuff[1] = 0;
+		msgBuff[2] = 0;
+		msgBuff[3] = key;
+		msgBuff[4] = 0;
 		//sprintf(msgBuff, "%c:%d", key, num);
-		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 3);
-		mNetMan->messageServer(PROTOCOL_TCP, keyBuff, 2);
+		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 5);
+		//mNetMan->messageServer(PROTOCOL_TCP, keyBuff, 2);
 		//mNetMan->messageServer(PROTOCOL_TCP, numBuff, sizeof(numBuff)+1);
 	}
 }

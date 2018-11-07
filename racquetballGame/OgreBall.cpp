@@ -345,7 +345,11 @@ void OgreBall::worldStepMP(const Ogre::FrameEvent& fe){
         int num = 3;
         int index = 0;
         bool readMoreMessages = true;
-        while(index < 128){
+        for(int i = 0; i < 256; i++){
+          std::cout << (unsigned char)mNetMan->tcpClientData[0]->output[i] << " ";
+        }
+        std::cout << std::endl;
+        while(index < 256){
           btVector3 velDelta = btVector3(0.0,0.0,0.0);
           btVector3 vel = player2->getVelocity();
           strcpy(evt, mNetMan->tcpClientData[0]->output + index);
@@ -441,11 +445,8 @@ void OgreBall::worldStepMP(const Ogre::FrameEvent& fe){
       
       int index = 0;
       bool readMoreMessages = true;
-      /*
-      for(int i = 0; i < 256; i++){
-        std::cout << (unsigned char)mNetMan->tcpServerData.output[i] << " ";
-      }
-      std::cout << std::endl;*/
+      
+      
       while(readMoreMessages){
         char evt[40]; //message buffer
         strcpy(evt, mNetMan->tcpServerData.output + index);

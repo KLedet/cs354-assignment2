@@ -100,8 +100,8 @@ void Ball::impulse(int pNum){
   body->activate();
   btVector3 vel = body->getLinearVelocity();
   if(pNum == 0)
-    body->setLinearVelocity(btVector3(vel.x(), vel.y(), -200));
+    body->setLinearVelocity(btVector3(vel.x(), vel.y(), -400));
   else if(pNum == 1)
-    body->setLinearVelocity(btVector3(vel.x(), vel.y(), 200));
+    body->setLinearVelocity(btVector3(vel.x(), vel.y(), 400));
 	body->activate();
 }
