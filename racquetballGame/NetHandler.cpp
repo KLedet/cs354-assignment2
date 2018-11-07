@@ -16,7 +16,7 @@ void NetHandler::addObject(char key, GameObject* obj){
 void NetHandler::injectDownInput(const OIS::KeyEvent& arg){
 	if(!isServer){
 		//std::cout<< "Keydown" << std::endl;
-		char msgBuff[] = "keydown";
+		char msgBuff[] = "KD";
 		char keyBuff[2];
 		char key;
 		int num;
@@ -41,14 +41,14 @@ void NetHandler::injectDownInput(const OIS::KeyEvent& arg){
 		keyBuff[0] = key;
 		keyBuff[1] = 0;
 		//sprintf(msgBuff, "%c:%d", key, num);
-		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 8);
+		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 3);
 		mNetMan->messageServer(PROTOCOL_TCP, keyBuff, 2);
 	}
 }
 void NetHandler::injectUpInput(const OIS::KeyEvent& arg){
 	if(!isServer){
 		//std::cout << "keyup" << std::endl;
-		char msgBuff[] = "keyup";
+		char msgBuff[] = "KU";
 		char keyBuff[2];
 		int num;
 		char key;
@@ -79,22 +79,22 @@ void NetHandler::injectUpInput(const OIS::KeyEvent& arg){
 		keyBuff[0] = key;
 		keyBuff[1] = 0;
 		//sprintf(msgBuff, "%c:%d", key, num);
-		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 6);
+		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 3);
 		mNetMan->messageServer(PROTOCOL_TCP, keyBuff, 2);
 		//mNetMan->messageServer(PROTOCOL_TCP, numBuff, sizeof(numBuff)+1);
 	}
 }
 void NetHandler::injectMouseDownInput(OIS::MouseButtonID id){
 	if(!isServer){
-		char msgBuff[] = "mousedown";
-		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 10);
+		char msgBuff[] = "MD";
+		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 3);
 		//std::cout << "mousedown" << std::endl;
 	}
 }
 void NetHandler::injectMouseUpInput(OIS::MouseButtonID id){
 	if(!isServer){
-		char msgBuff[] = "mouseup";
-		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 8);
+		char msgBuff[] = "MU";
+		mNetMan->messageServer(PROTOCOL_TCP, msgBuff, 3);
 		//std::cout << "mouseup" << std::endl;
 	}
 }

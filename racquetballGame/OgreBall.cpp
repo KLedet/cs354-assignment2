@@ -7,10 +7,6 @@ Filename:    OgreBall.cpp
 #include "OgreBall.h"
 #include "Room.cpp"
 
-
-
-
-
 //---------------------------------------------------------------------------
 OgreBall::OgreBall(void)
 {
@@ -355,7 +351,7 @@ void OgreBall::worldStepMP(const Ogre::FrameEvent& fe){
           strcpy(evt, mNetMan->tcpClientData[0]->output + index);
           //std::cout << "evt: " << evt << " " << index;
           index += strlen(evt)+1; // C C C C C 0
-          if (strcmp(evt, "keydown") == 0){
+          if (strcmp(evt, "KD") == 0){
             
             strcpy(evt, mNetMan->tcpClientData[0]->output + index); 
             index += 2;
@@ -378,7 +374,7 @@ void OgreBall::worldStepMP(const Ogre::FrameEvent& fe){
             }
             player2->input(vel + velDelta);
           }
-          if(strcmp(evt, "keyup") == 0){
+          if(strcmp(evt, "KU") == 0){
             strcpy(evt, mNetMan->tcpClientData[0]->output + index); 
             index+=2;
             key = evt[0];
@@ -400,10 +396,10 @@ void OgreBall::worldStepMP(const Ogre::FrameEvent& fe){
             }
             player2->input(vel + velDelta);
           }
-          if(strcmp(evt, "mousedown") == 0){
+          if(strcmp(evt, "MD") == 0){
             player2->swing();
           }
-          if(strcmp(evt, "mouseup") == 0){
+          if(strcmp(evt, "MU") == 0){
             player2->unswing();
           }
           
@@ -490,7 +486,6 @@ void OgreBall::worldStepMP(const Ogre::FrameEvent& fe){
           }
         
         } else if (strcmp(evt, "score") == 0) {
-          std::cout << "score!" << std::endl;
           int score1;
           int score2;
           memcpy(&score1, mNetMan->tcpServerData.output + index, sizeof(score1));
@@ -553,7 +548,7 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
   if(nethandler){
     nethandler->injectDownInput(arg);
   }
-    if(player && mIsServer){
+  if(player && mIsServer){
       btVector3 vel = player->getVelocity();
     btVector3 velDelta = btVector3(0.0,0.0,0.0);
     switch(arg.key){
@@ -609,6 +604,8 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
       case OIS::KC_P:
         if(singleplayer){
           s_paused = !s_paused;
+        } else {
+
         }
     default:
       break;
