@@ -345,7 +345,7 @@ void OgreBall::worldStepMP(const Ogre::FrameEvent& fe){
         int num = 3;
         int index = 0;
         bool readMoreMessages = true;
-        while(mNetMan->tcpClientData[0]->output[index] != 0){
+        while(index < 128){
           btVector3 velDelta = btVector3(0.0,0.0,0.0);
           btVector3 vel = player2->getVelocity();
           strcpy(evt, mNetMan->tcpClientData[0]->output + index);
@@ -605,7 +605,9 @@ bool OgreBall::keyPressed( const OIS::KeyEvent &arg )
         if(singleplayer){
           s_paused = !s_paused;
         } else {
-
+          if( player2 && !mIsServer){
+            player2->input(btVector3(0,0,0));
+          }
         }
     default:
       break;

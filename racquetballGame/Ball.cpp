@@ -89,7 +89,7 @@ void Ball::update(Ogre::Real elapsedTime){
   Ogre::Real x_val = (Ogre::Real)(rand() % 8 + 50);
   if(rand() % 3 == 1)
     x_val *= -1;
-  wallID == 1 ? z_dir = 1 : z_dir = -1;
+  wallID == 1 ? z_dir = -1 : z_dir = 1;
 	body->setLinearVelocity(btVector3(x_val,100,z_dir*300));
 
 
@@ -97,9 +97,11 @@ void Ball::update(Ogre::Real elapsedTime){
 
 void Ball::impulse(int pNum){
 	//printf("impulse\n");
+  body->activate();
+  btVector3 vel = body->getLinearVelocity();
   if(pNum == 0)
-    body->applyCentralImpulse(btVector3(0, 0, -20));
+    body->setLinearVelocity(btVector3(vel.x(), vel.y(), -200));
   else if(pNum == 1)
-    body->applyCentralImpulse(btVector3(0, 0, 20));
+    body->setLinearVelocity(btVector3(vel.x(), vel.y(), 200));
 	body->activate();
 }
